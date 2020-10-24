@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapViews;
+using SadConsole; //we're using the extension method `Contains`
 using SadRogue.Primitives;
 using TheSadRogue.Integration;
+using TheSadRogue.Integration.Extensions;
 using Region = GoRogue.MapGeneration.Region; //notice how region comes from GoRogue
 using ScreenObject = SadConsole.ScreenObject; //ScreenObject is from SadConsole
 using ScreenSurface = SadConsole.ScreenSurface; //ScreenSurface from SadConsole
@@ -12,34 +14,45 @@ using Console = SadConsole.Console; //Console referring to the SadConsole.Consol
 namespace ExampleGame
 {
     /// <summary>
-    /// If I were to make the simplest Game Screen I could...
+    /// A _very_ simple game UI
     /// </summary>
-    public class ExampleGameUi : ScreenObject
+    public class GameUi : ScreenObject
     {
-        public RogueLikeMap Map;
-        public ScreenSurface MapWindow;
-        public Console MessageLogWindow;
+        public readonly RogueLikeMap Map;
+        public readonly RogueLikeEntity PlayerCharacter;
+        public readonly ScreenSurface MapWindow;
+        public readonly Console MessageLogWindow;
         private readonly int _width, _height, _mapWidth, _mapHeight;
-        public ExampleGameUi(in int width, in int height, in int mapWidth, in int mapHeight)
+        public GameUi(in int width, in int height, in int mapWidth, in int mapHeight)
         {
             _width = width;
             _height = height;
             _mapWidth = mapWidth;
             _mapHeight = mapHeight;
-        }
-
-        public virtual void GenerateMap()
-        {
-            Map = GenerateBackrooms();
-            MessageLogWindow = new SadConsole.Console(_width / 4, _height);
-            MapWindow = new SadConsole.ScreenSurface(_mapWidth, _mapHeight, Map.RenderingCellData);
+            MessageLogWindow = new SadConsole.Console(_width / 4, _height / 5);
+            Map = GenerateMap();
+            PlayerCharacter = GeneratePlayerCharacter();
+            MapWindow = new SadConsole.ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
+            
+            foreach(ICellSurface glyphLayer in Map.RenderingGlyphs)
+                MapWindow.Children.Add(new ScreenSurface(_mapWidth, _mapHeight, glyphLayer.ToEnumerable().ToArray()));
+            
             Children.Add(MapWindow);
         }
 
-        private RogueLikeMap GenerateBackrooms()
+        private RogueLikeEntity GeneratePlayerCharacter()
+        {
+            RogueLikeEntity player = new RogueLikeEntity((_width/2,_height/2),1, layer: 1);
+            RogueLikeComponent motionControl = new PlayerControlsComponent();
+            player.AddComponent(motionControl);
+            Map.AddEntity(player);
+            return player;
+        }
+
+        private RogueLikeMap GenerateMap()
         {
             Random r = new Random();
-            double rotationAngle = r.NextDouble() * 20;
+            double rotationAngle = r.NextDouble() * 30;
             var scene = new RogueLikeMap(_mapWidth,_mapHeight, 31, Distance.Manhattan);
             int xOffset = r.Next(-13, 13) - 13;
             int yOffset = r.Next(-13, 13) - 13;

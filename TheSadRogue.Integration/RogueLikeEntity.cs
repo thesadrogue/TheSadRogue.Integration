@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using GoRogue.GameFramework.Components;
@@ -30,11 +31,12 @@ namespace TheSadRogue.Integration
         }
         public ColoredGlyph ToColoredGlyph() => Glyph;
         
-        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true) : base(Color.White, Color.Black, glyph)
+        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 0) : base(Color.White, Color.Black, glyph)
         {
             Position = position;
             IsWalkable = walkable;
             IsTransparent = transparent;
+            Layer = layer;
             Initialize();
         }
 
@@ -43,27 +45,17 @@ namespace TheSadRogue.Integration
             Position = position;
             Initialize();
         }
-        public RogueLikeEntity(int width, int height) : base(width, height)
-        {
-            Initialize();
-        }
-
-        public RogueLikeEntity(int width, int height, Font font, Point fontSize) : base(width, height, font, fontSize)
-        {
-            Initialize();
-        }
         public RogueLikeEntity(Color foreground, Color background, int glyph) : base(foreground, background, glyph)
         {
             Initialize();
         }
-
-        public RogueLikeEntity(AnimatedScreenSurface animation) : base(animation)
-        {          
-            Initialize();
-        }
-
         private void Initialize()
         {
+            GoRogueComponents =  new ComponentCollection();
+            GoRogueComponents.ComponentAdded += On_ComponentAdded;
+            GoRogueComponents.ComponentRemoved += On_ComponentRemoved;
+            Moved += SadConsole_Moved;
+            Moved += GoRogue_Moved;
         }
 
         public void OnMapChanged(Map? newMap)
@@ -90,27 +82,26 @@ namespace TheSadRogue.Integration
 
         #region event handlers
         // Handle the case where GoRogue's Position property was the one that initiated the move
-        private void GoRogue_Moved(object sender, ItemMovedEventArgs<IGameObject> e)
+        private void GoRogue_Moved(object? sender, GameObjectPropertyChanged<Point> gameObjectPropertyChanged)
         {
             if (Position != base.Position) // We need to sync entity
                 base.Position = Position;
-
-            // SadConsole's Entity position set can't fail so no need to check for success here
         }
 
         // Handle the case where SadConsole's Position property was the one that initiated the move
-        private void SadConsole_Moved(object sender, EntityMovedEventArgs e)
+        private void SadConsole_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
-            if (Position != base.Position)
+            if (Position != change.NewValue)
             {
-                Position = base.Position;
+                Position = change.NewValue;
 
                 // In this case, GoRogue wouldn't allow the position set, so set SadConsole's position back to the way it was
                 // to keep them in sync.  Since GoRogue's position never changed, this won't infinite loop.
-                if (Position != base.Position)
-                    base.Position = Position;
+                if (((IGameObject)this).Position != change.NewValue)
+                    Position = change.OldValue;
             }
         }
+        
         //from GameObject
         private void On_ComponentAdded(object? s, ComponentChangedEventArgs e)
         {
@@ -133,8 +124,20 @@ namespace TheSadRogue.Integration
         
         #endregion
         #region components
-        //todo - AddComponent
-        //todo - AddComponents
+
+        public void AddComponent(IRogueLikeComponent component)
+        {
+            SadComponents.Add(component);
+            GoRogueComponents.Add(component);
+        }
+        public void AddComponents(IEnumerable<IRogueLikeComponent> components)
+        {
+            foreach (var component in components)
+                SadComponents.Add(component);
+            
+            GoRogueComponents.Add(components);
+        }
+        
         //todo - HasComponent<T>()
         //todo - HasComponents(???)
         //todo - HasComponent(string name)

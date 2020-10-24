@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GoRogue.MapGeneration;
-using GoRogue.MapViews;
-using SadConsole;
-using SadRogue.Primitives;
-using TheSadRogue.Integration;
-
-namespace ExampleGame
+﻿namespace ExampleGame
 {
     class Program
     {
@@ -25,8 +17,7 @@ namespace ExampleGame
 
         private static void Init()
         {
-            var ui = new ExampleGameUi(Width, Height, _mapWidth, _mapHeight);
-            ui.GenerateMap();
+            var ui = new GameUi(Width, Height, _mapWidth, _mapHeight);
             SadConsole.GameHost.Instance.Screen.Children.Add(ui);
         }
     }
