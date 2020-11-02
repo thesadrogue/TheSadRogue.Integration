@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="GoRogue" Version="3.0.0-alpha01-debug01-debug" />
+      <PackageReference Include="GoRogue" Version="3.0.0-alpha03-debug" />
       <PackageReference Include="SadConsole.Host.SFML" Version="9.0.0-beta2" />
       <PackageReference Include="TheSadRogue.Primitives" Version="1.0.0-alpha6-debug" />
     </ItemGroup>
