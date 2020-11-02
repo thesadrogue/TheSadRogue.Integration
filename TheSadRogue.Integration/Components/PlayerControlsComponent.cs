@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GoRogue;
-using GoRogue.GameFramework;
 using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;

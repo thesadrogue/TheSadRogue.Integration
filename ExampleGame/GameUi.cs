@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoRogue.GameFramework;
+using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadConsole; //we're using the extension method `Contains`
 using SadRogue.Primitives;
@@ -34,10 +36,15 @@ namespace ExampleGame
             PlayerCharacter = GeneratePlayerCharacter();
             MapWindow = new SadConsole.ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
             
-            foreach(ICellSurface glyphLayer in Map.RenderingGlyphs)
-                MapWindow.Children.Add(new ScreenSurface(_mapWidth, _mapHeight, glyphLayer.ToEnumerable().ToArray()));
-            
             Children.Add(MapWindow);
+            foreach(ICellSurface glyphLayer in Map.Renderers)
+                MapWindow.Children.Add(new ScreenSurface(_mapWidth, _mapHeight, glyphLayer.ToEnumerable().ToArray()));
+        }
+
+        private RogueLikeMap GenerateMap()
+        {
+            MapGenerator generator = new MapGenerator(_mapWidth, _mapHeight);
+            return generator.GenerateMap();
         }
 
         private RogueLikeEntity GeneratePlayerCharacter()
@@ -45,50 +52,9 @@ namespace ExampleGame
             RogueLikeEntity player = new RogueLikeEntity((_width/2,_height/2),1, layer: 1);
             RogueLikeComponent motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
+            player.IsFocused = true;
             Map.AddEntity(player);
             return player;
-        }
-
-        private RogueLikeMap GenerateMap()
-        {
-            Random r = new Random();
-            double rotationAngle = r.NextDouble() * 30;
-            var scene = new RogueLikeMap(_mapWidth,_mapHeight, 31, Distance.Manhattan);
-            int xOffset = r.Next(-13, 13) - 13;
-            int yOffset = r.Next(-13, 13) - 13;
-            
-            Rectangle wholeMap = new Rectangle(xOffset, yOffset,_mapWidth + xOffset,_mapHeight +yOffset);
-            IEnumerable<Rectangle> rooms = wholeMap.BisectRecursive(8);
-
-            Point center = (_mapWidth/2, _mapHeight/2);
-            
-            foreach (var room in rooms)
-            {
-                Region region = Region.FromRectangle("room", room).Rotate(rotationAngle, center);
-                foreach (var point in region.InnerPoints.Positions)
-                {
-                    if (scene.Contains(point))
-                    {
-                        var terrain = new RogueLikeEntity(point, '.', true, true);
-                        scene.SetTerrain(terrain);
-                    }
-                }
-                foreach (var point in region.OuterPoints.Positions)
-                {
-                    if (scene.Contains(point))
-                    {
-                        var terrain = new RogueLikeEntity(point, '#', false, false);
-                        scene.SetTerrain(terrain);
-                    }
-                }
-            }
-
-            foreach (var p in scene.Positions().Where(p => scene.GetTerrainAt(p) == null))
-            {
-                var terrain = new RogueLikeEntity(p, '.', true, true);
-                scene.SetTerrain(terrain);
-            }
-            return scene;
         }
     }
 }
