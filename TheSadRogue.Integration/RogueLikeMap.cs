@@ -25,7 +25,6 @@ namespace TheSadRogue.Integration
             width, height, 4, distanceMeasurement)
         {
             FovHandler = fovHandler;
-            
             Init(width, height);
         }
         public RogueLikeMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
