@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using GoRogue.GameFramework;
 using GoRogue.SpatialMaps;
 using SadConsole;
-using SadRogue.Primitives;
-using Layer = SadConsole.LayeredScreenSurface.Layer;
 
 namespace TheSadRogue.Integration.Extensions
 {
@@ -18,7 +16,7 @@ namespace TheSadRogue.Integration.Extensions
                 foreach (RogueLikeEntity entity in layer.Items)
                 {
                     var glyph = entity.Glyph;
-                    surface.SetGlyph(entity.Position.X, entity.Position.Y, glyph.Glyph, glyph.Foreground, glyph.Background);
+                    surface.SetGlyph(entity.Position.X, entity.Position.Y, entity.Glyph, entity.Foreground, entity.Background);
                 }
 
                 yield return surface;

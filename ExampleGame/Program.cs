@@ -4,7 +4,7 @@
     {
         public const int Width = 80;
         public const int Height = 25;
-        private const int _mapWidth = 400;
+        private const int _mapWidth = 200;
         private const int _mapHeight = 125;
 
         static void Main(string[] args)

@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using GoRogue.GameFramework;
-using GoRogue.MapGeneration;
-using GoRogue.MapViews;
-using SadConsole; //we're using the extension method `Contains`
-using SadRogue.Primitives;
+using ExampleGame.MapGeneration;
+using SadConsole;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Extensions;
-using Region = GoRogue.MapGeneration.Region; //notice how region comes from GoRogue
-using ScreenObject = SadConsole.ScreenObject; //ScreenObject is from SadConsole
-using ScreenSurface = SadConsole.ScreenSurface; //ScreenSurface from SadConsole
-using Console = SadConsole.Console; //Console referring to the SadConsole.Console
+using ScreenObject = SadConsole.ScreenObject; 
+using ScreenSurface = SadConsole.ScreenSurface; 
+using Console = SadConsole.Console; 
 
 namespace ExampleGame
 {
@@ -31,10 +25,10 @@ namespace ExampleGame
             _height = height;
             _mapWidth = mapWidth;
             _mapHeight = mapHeight;
-            MessageLogWindow = new SadConsole.Console(_width / 4, _height / 5);
+            MessageLogWindow = new Console(_width / 4, _height / 5);
             Map = GenerateMap();
             PlayerCharacter = GeneratePlayerCharacter();
-            MapWindow = new SadConsole.ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
+            MapWindow = new ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
             
             Children.Add(MapWindow);
             foreach(ICellSurface glyphLayer in Map.Renderers)
@@ -49,7 +43,7 @@ namespace ExampleGame
 
         private RogueLikeEntity GeneratePlayerCharacter()
         {
-            RogueLikeEntity player = new RogueLikeEntity((_width/2,_height/2),1, layer: 1);
+            RogueLikeEntity player = new RogueLikeEntity((_mapWidth/2,_mapHeight/2),1, layer: 1);
             RogueLikeComponent motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
             player.IsFocused = true;

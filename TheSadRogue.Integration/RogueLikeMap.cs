@@ -14,19 +14,14 @@ namespace TheSadRogue.Integration
     public class RogueLikeMap : Map
     {
         public IMapView<ColoredGlyph> TerrainSurface
-            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Glyph);
+            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val));
         public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
-        public event EventHandler FieldOfViewRecalculated;
-        public IFieldOfViewHandler FovHandler;
-        public LayeredScreenSurface LayeredSurface;
+        //public event EventHandler FieldOfViewRecalculated;
+        //public IFieldOfViewHandler FovHandler;
+        //public LayeredScreenSurface LayeredSurface;
         
         #region constructors
-        public RogueLikeMap(int width, int height, IFieldOfViewHandler fovHandler, Distance distanceMeasurement) : this(
-            width, height, 4, distanceMeasurement)
-        {
-            FovHandler = fovHandler;
-            Init(width, height);
-        }
+
         public RogueLikeMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = 4294967295, uint layersBlockingTransparency = 4294967295,
             uint entityLayersSupportingMultipleItems = 0) : base(width, height, numberOfEntityLayers,
@@ -34,11 +29,6 @@ namespace TheSadRogue.Integration
             entityLayersSupportingMultipleItems)
         {
             Init(width, height);
-        }
-
-        public RogueLikeMap(ISettableMapView<IGameObject?> terrainLayer, int numberOfEntityLayers, Distance distanceMeasurement, uint layersBlockingWalkability = 4294967295, uint layersBlockingTransparency = 4294967295, uint entityLayersSupportingMultipleItems = 0) : base(terrainLayer, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency, entityLayersSupportingMultipleItems)
-        {
-            Init(terrainLayer.Width, terrainLayer.Height);
         }
         public void Init(int width, int height)
         {
