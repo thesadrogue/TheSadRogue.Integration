@@ -17,4 +17,8 @@
       <ProjectReference Include="..\TheSadRogue.Integration\TheSadRogue.Integration.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="MapGeneration\ContextComponents" />
+    </ItemGroup>
+
 </Project>

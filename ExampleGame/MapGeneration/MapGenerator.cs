@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExampleGame.MapGeneration.GenerationSteps;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
 using TheSadRogue.Integration;
 
-namespace ExampleGame
+namespace ExampleGame.MapGeneration
 {
 	public class MapGenerator
 	{
@@ -17,11 +18,11 @@ namespace ExampleGame
 		private Generator _generator;
 		public ArrayMap<bool> Map;
 		
-		private ArrayMap<bool> _caveMap;
-		private ArrayMap<bool> _mazeMap;
-		private ArrayMap<bool> _backroomsMap;
-		private ArrayMap<bool> _cryptMap;
-		private ArrayMap<bool> _spiralMap;
+		// private ArrayMap<bool> _caveMap;
+		// private ArrayMap<bool> _mazeMap;
+		// private ArrayMap<bool> _backroomsMap;
+		// private ArrayMap<bool> _cryptMap;
+		// private ArrayMap<bool> _spiralMap;
 		
 		public MapGenerator(int mapWidth, int mapHeight, int percentWalls = 40)
 		{
@@ -30,48 +31,107 @@ namespace ExampleGame
 			PercentAreWalls = percentWalls;
 			
 			Map = new ArrayMap<bool>(mapWidth, mapHeight);
-			_caveMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			_mazeMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			_backroomsMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			_cryptMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			_spiralMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			// _caveMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			// _mazeMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			// _backroomsMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			// _cryptMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			// _spiralMap = new ArrayMap<bool>(mapWidth, mapHeight);
 
 			_random = new Random();
 		}
         public RogueLikeMap GenerateMap()
         {
-	        /*
-	         * Intended implementation (not yet done):
-	         * - Create a great, big grid of regions that encompasses the entire map.
-	         * - For each one of those regions that is within the map,
-	         *   - Pick a random generation algorithm
-	         *   - Perform that algorithm's generation step on this region
-	         */
             RogueLikeMap map = new RogueLikeMap(MapWidth,MapHeight, 4, Distance.Manhattan);
 
             IEnumerable<Region> regions = GenerateRegions();
-            List<Region> mazeSections = new List<Region>();
+
             foreach (var region in regions)
             {
-                int chance = _random.Next(0, 100);
-                if (chance < 40)
-                    DrawRoom(map, region);
-                else if (chance < 66)
-                    DrawCave(map, region);
-                else
-                    mazeSections.Add(region);
+	            if (region.Top >= 0 || region.Left >= 0 || region.Bottom < MapHeight || region.Right < MapWidth)
+	            {
+		            int chance = _random.Next(0, 101);
+		            int floorGlyph;
+		            int wallGlyph;
+		            IEnumerable<GenerationStep> steps;
+		             if (chance < 20)
+		             {
+			            steps = GetCaveSteps();
+			            floorGlyph = ',';
+			            wallGlyph = '&';
+		             }
+		             else if (chance < 40)
+		             {
+			             steps = GetCryptSteps();
+			             floorGlyph = '.';
+			             wallGlyph = '#';
+		             }
+		            else 
+		             if (chance < 60)
+		             {
+			             steps = GetBackroomsSteps();
+			             floorGlyph = '+';
+			             wallGlyph = '&';
+		             }
+		             else if (chance < 80)
+		             {
+			            steps = GetHallSteps();
+			            floorGlyph = '`';
+			            wallGlyph = '#';
+		             }
+		             else
+		             {
+			            steps = GetSpiralSteps();
+			            floorGlyph = ',';
+			            wallGlyph = '&';
+		            }
+		            
+		            _generator = new Generator(region.Width, region.Height);
+		            _generator.AddSteps(steps);
+		            _generator = _generator.Generate();
+		            
+		            var minimap = _generator.Context.GetFirst<ISettableMapView<bool>>();
+		            for (int i = 0; i < minimap.Width; i++)
+		            {
+			            for (int j = 0; j < minimap.Height; j++)
+			            {
+				            Point here = (i + region.Left, j + region.Top);
+				            bool walkable = minimap[i, j];
+				            if (region.Contains(here) && map.Contains(here))
+				            {
+					            map.SetTerrain(new RogueLikeEntity(here, walkable ? floorGlyph : wallGlyph, walkable, walkable));
+				            }
+			            }
+		            }
+
+	            }
             }
 
-            foreach (var region in mazeSections)
+            foreach (var here in map.Terrain.Positions().Where((nil) => !map[nil].Any()))
             {
-                DrawMaze(map, region);
+	            map.SetTerrain(new RogueLikeEntity(here, '`'));
             }
             return map;
+        }
+
+        private IEnumerable<Region> GenerateRegions()
+        {
+	        double rotationAngle = _random.Next(360);
+	        int minimumDimension = _random.Next(4, 16);
+	        var scene = new RogueLikeMap(MapWidth,MapHeight, 31, Distance.Manhattan);
+
+	        Rectangle wholeMap = new Rectangle(-MapWidth, -MapHeight,MapWidth * 2,MapHeight * 2);
+	        Point center = (MapWidth / 2, MapHeight / 2);
+            
+	        foreach (var room in wholeMap.BisectRecursive(12))
+		        yield return Region.FromRectangle("room", room).Rotate(rotationAngle, center);
+	        
         }
 
         private IEnumerable<GenerationStep> GetCaveSteps()
         {
 	        yield return new CaveSeedingStep();
+	        yield return new CaveGenerationStep();
+	        yield return new CaveGenerationStep();
 	        yield return new CaveGenerationStep();
         }
 
@@ -167,20 +227,6 @@ namespace ExampleGame
                 var terrain = new RogueLikeEntity(p, '.', true, true);
                 map.SetTerrain(terrain);
             }
-        }
-
-        private IEnumerable<Region> GenerateRegions()
-        {
-            double rotationAngle = _random.Next(360);
-            int minimumDimension = _random.Next(4, 16);
-            var scene = new RogueLikeMap(MapWidth,MapHeight, 31, Distance.Manhattan);
-
-            Rectangle wholeMap = new Rectangle(-MapWidth/2, -MapHeight/2,MapWidth * 3 / 2,MapHeight * 3 / 2);
-            Point center = (MapWidth / 2, MapHeight / 2);
-            
-            foreach (var room in wholeMap.BisectRecursive(12))
-	            yield return Region.FromRectangle("room", room).Rotate(rotationAngle, center);
-	        
         }
         #endregion
 	}

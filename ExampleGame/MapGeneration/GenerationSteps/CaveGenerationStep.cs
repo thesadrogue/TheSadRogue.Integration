@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 
-namespace ExampleGame
+namespace ExampleGame.MapGeneration.GenerationSteps
 {
     public class CaveGenerationStep : GenerationStep
     {
         private ISettableMapView<bool> map;
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
-            map = context.GetFirst<ISettableMapView<bool>>();
+            map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
             var proposedMap = new ArrayMap<bool>(context.Width, context.Height);
             for (int i = 0; i < map.Width; i++)
             {

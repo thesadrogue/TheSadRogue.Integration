@@ -4,18 +4,18 @@ using System.Linq;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
-using SFML.Window;
 
-namespace ExampleGame
+namespace ExampleGame.MapGeneration.GenerationSteps
 {
     public class BackroomGenerationStep : GenerationStep
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
-            var map = context.GetFirst<ISettableMapView<bool>>();
+            var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
             var rooms = new List<Rectangle>();
             var largeRooms = new List<Rectangle>();
+            
             int thirdWidth = map.Width / 3;
             int halfWidth = map.Width / 2;
             int thirdHeight = map.Height / 3;
@@ -60,8 +60,15 @@ namespace ExampleGame
                 rooms.AddRange(rectangle.BisectRecursive(random.Next(3,9)));
 
             foreach (var room in rooms)
-                foreach (var point in room.PerimeterPositions())
-                    map[point] = false;
+            {
+                foreach (var point in room.Positions())
+                {
+                    if (room.PerimeterPositions().Contains(point))
+                        map[point] = false;
+                    else
+                        map[point] = true;
+                }
+            }
             
             yield return null;
         }
