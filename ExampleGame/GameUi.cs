@@ -1,11 +1,11 @@
 using System.Linq;
 using ExampleGame.MapGeneration;
-using SadConsole; //we're using the extension method `Contains`
+using SadConsole;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Extensions;
-using ScreenObject = SadConsole.ScreenObject; //ScreenObject is from SadConsole
-using ScreenSurface = SadConsole.ScreenSurface; //ScreenSurface from SadConsole
-using Console = SadConsole.Console; //Console referring to the SadConsole.Console
+using ScreenObject = SadConsole.ScreenObject; 
+using ScreenSurface = SadConsole.ScreenSurface; 
+using Console = SadConsole.Console; 
 
 namespace ExampleGame
 {

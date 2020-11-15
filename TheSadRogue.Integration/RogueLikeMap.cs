@@ -21,6 +21,7 @@ namespace TheSadRogue.Integration
         //public LayeredScreenSurface LayeredSurface;
         
         #region constructors
+
         public RogueLikeMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = 4294967295, uint layersBlockingTransparency = 4294967295,
             uint entityLayersSupportingMultipleItems = 0) : base(width, height, numberOfEntityLayers,
