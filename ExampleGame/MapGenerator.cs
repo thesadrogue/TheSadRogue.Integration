@@ -10,34 +10,50 @@ namespace ExampleGame
 {
 	public class MapGenerator
 	{
-		Random _random = new Random();
-		public ArrayMap<bool> Map;
-		private ArrayMap<bool> _caveMap;
-		private ArrayMap<bool> _mazeMap;
+		private Random _random;
 		public int MapWidth { get; }
 		public int MapHeight { get; }
 		public int PercentAreWalls { get; }
-
+		private Generator _generator;
+		public ArrayMap<bool> Map;
+		
+		private ArrayMap<bool> _caveMap;
+		private ArrayMap<bool> _mazeMap;
+		private ArrayMap<bool> _backroomsMap;
+		private ArrayMap<bool> _cryptMap;
+		private ArrayMap<bool> _spiralMap;
+		
 		public MapGenerator(int mapWidth, int mapHeight, int percentWalls = 40)
 		{
 			MapWidth = mapWidth;
 			MapHeight = mapHeight;
 			PercentAreWalls = percentWalls;
-
+			
 			Map = new ArrayMap<bool>(mapWidth, mapHeight);
 			_caveMap = new ArrayMap<bool>(mapWidth, mapHeight);
 			_mazeMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			_backroomsMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			_cryptMap = new ArrayMap<bool>(mapWidth, mapHeight);
+			_spiralMap = new ArrayMap<bool>(mapWidth, mapHeight);
+
+			_random = new Random();
 		}
         public RogueLikeMap GenerateMap()
         {
-            Random r = new Random();
+	        /*
+	         * Intended implementation (not yet done):
+	         * - Create a great, big grid of regions that encompasses the entire map.
+	         * - For each one of those regions that is within the map,
+	         *   - Pick a random generation algorithm
+	         *   - Perform that algorithm's generation step on this region
+	         */
             RogueLikeMap map = new RogueLikeMap(MapWidth,MapHeight, 4, Distance.Manhattan);
-            MakeCavernBackground();
-            IEnumerable<Region> regions = GenerateBackrooms();
+
+            IEnumerable<Region> regions = GenerateRegions();
             List<Region> mazeSections = new List<Region>();
             foreach (var region in regions)
             {
-                int chance = r.Next(0, 100);
+                int chance = _random.Next(0, 100);
                 if (chance < 40)
                     DrawRoom(map, region);
                 else if (chance < 66)
@@ -53,13 +69,34 @@ namespace ExampleGame
             return map;
         }
 
+        private IEnumerable<GenerationStep> GetCaveSteps()
+        {
+	        yield return new CaveSeedingStep();
+	        yield return new CaveGenerationStep();
+        }
+
+        private IEnumerable<GenerationStep> GetHallSteps() 
+	        => DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0);
+
+        private IEnumerable<GenerationStep> GetBackroomsSteps()
+        {
+	        yield return new BackroomGenerationStep();
+        }
+        private IEnumerable<GenerationStep> GetCryptSteps()
+        {
+	        yield return new CryptGenerationStep();
+        }
+        private IEnumerable<GenerationStep> GetSpiralSteps()
+        {
+	        yield return new SpiralGenerationStep();
+        }
 
 		#region cavern
 		private void DrawCave(RogueLikeMap map, Region region)
 		{
 			foreach (var point in region.Points)
 			{
-				if (map.Contains(point) && !IsOutOfBounds(point.X, point.Y))
+				if (map.Contains(point))
 				{
 					if (Map[point.X, point.Y])
 					{
@@ -72,81 +109,12 @@ namespace ExampleGame
 				}
 			}
 		}
-		public void MakeCavernBackground()
-		{
-			FillRandomCells();
-			for (int row = 0; row <= MapHeight - 1; row++)
-			{
-				for (int column = 0; column <= MapWidth - 1; column++)
-				{
-					_caveMap[column, row] = PlaceWallLogic(column, row);
-				}
-			}
-		}
-
-		private void FillRandomCells()
-		{
-			for (int row = 0; row <= MapHeight - 1; row++)
-			{
-				for (int column = 0; column <= MapWidth - 1; column++)
-				{
-					if (row == 0 || row == MapHeight - 1 || column == 0 || column == MapWidth - 1)
-						_caveMap[column, row] = false;
-					else
-						_caveMap[column, row] = _random.Next(0, 2) % 2 == 0;
-				}
-			}
-		}
-
-		public bool PlaceWallLogic(int x, int y)
-		{
-			int numWalls = GetAdjacentWalls(x, y, 1, 1);
-			if (Map[x, y])
-				return numWalls >= 4;
-
-			return numWalls >= 5;
-		}
-
-		public int GetAdjacentWalls(int x, int y, int scopeX, int scopeY)
-		{
-			int startX = x - scopeX;
-			int startY = y - scopeY;
-			int endX = x + scopeX;
-			int endY = y + scopeY;
-
-			int iX = startX;
-			int iY = startY;
-
-			int wallCounter = 0;
-
-			for (iY = startY; iY <= endY; iY++)
-			{
-				for (iX = startX; iX <= endX; iX++)
-				{
-					if (!(iX == x && iY == y))
-					{
-						if (IsWall(iX, iY))
-						{
-							wallCounter += 1;
-						}
-					}
-				}
-			}
-
-			return wallCounter;
-		}
-
-		public bool IsWall(int x, int y) => IsOutOfBounds(x, y) || Map[x, y];
-
-		public bool IsOutOfBounds(int x, int y) => x < 0 || y < 0 || x > MapWidth - 1 || y > MapHeight - 1;
-
-		bool RandomPercent(int percent) => percent >= _random.Next(1, 101);
 		#endregion
 		
 		#region maze
         private void DrawMaze(RogueLikeMap map, Region region)
         {
-	        var _mazeGenerator = new Generator(MapWidth, MapHeight);
+	        var _mazeGenerator = new Generator(region.Width, region.Height);
 	        _mazeGenerator.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps(minRooms: 0, maxRooms: 0, maxCreationAttempts: 1, saveDeadEndChance: 60));
 
 	        foreach(var step in _mazeGenerator.GenerationSteps)
@@ -201,14 +169,13 @@ namespace ExampleGame
             }
         }
 
-        private IEnumerable<Region> GenerateBackrooms()
+        private IEnumerable<Region> GenerateRegions()
         {
-            double rotationAngle = _random.NextDouble() * 30;
+            double rotationAngle = _random.Next(360);
+            int minimumDimension = _random.Next(4, 16);
             var scene = new RogueLikeMap(MapWidth,MapHeight, 31, Distance.Manhattan);
-            int xOffset = _random.Next(-15, 15) - 30;
-            int yOffset = _random.Next(-15, 15) - 30;
-            
-            Rectangle wholeMap = new Rectangle(xOffset, yOffset,MapWidth + xOffset,MapHeight +yOffset);
+
+            Rectangle wholeMap = new Rectangle(-MapWidth/2, -MapHeight/2,MapWidth * 3 / 2,MapHeight * 3 / 2);
             Point center = (MapWidth / 2, MapHeight / 2);
             
             foreach (var room in wholeMap.BisectRecursive(12))

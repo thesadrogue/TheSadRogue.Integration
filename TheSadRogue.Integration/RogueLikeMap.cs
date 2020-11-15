@@ -14,11 +14,11 @@ namespace TheSadRogue.Integration
     public class RogueLikeMap : Map
     {
         public IMapView<ColoredGlyph> TerrainSurface
-            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Glyph);
+            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val));
         public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
         public event EventHandler FieldOfViewRecalculated;
         public IFieldOfViewHandler FovHandler;
-        public LayeredScreenSurface LayeredSurface;
+        //public LayeredScreenSurface LayeredSurface;
         
         #region constructors
         public RogueLikeMap(int width, int height, IFieldOfViewHandler fovHandler, Distance distanceMeasurement) : this(
