@@ -2,7 +2,10 @@ using GoRogue.MapViews;
 
 namespace TheSadRogue.Integration.Extensions
 {
-    public static class IMapViewExtensions
+    /// <summary>
+    /// An extension class for IMapView
+    /// </summary>
+    public static class MapViewExtensions
     {
         /// <summary>
         /// Converts the given mapview into an array of T[]
