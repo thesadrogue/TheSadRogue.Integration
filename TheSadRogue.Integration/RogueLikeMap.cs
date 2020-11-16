@@ -45,7 +45,6 @@ namespace TheSadRogue.Integration
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
             entityLayersSupportingMultipleItems)
         {
-           
         }
         #endregion
     }

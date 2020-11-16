@@ -60,6 +60,5 @@ namespace ExampleGame.MapGeneration.GenerationSteps
         }
         public bool IsWall(int x, int y) => IsOutOfBounds(x, y) || _map[x, y];
         public bool IsOutOfBounds(int x, int y) => x < 0 || y < 0 || x >= _map.Width || y >= _map.Height;
-
     }
 }

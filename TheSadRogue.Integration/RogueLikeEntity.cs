@@ -121,7 +121,7 @@ namespace TheSadRogue.Integration
                 }
             }
         }
-
+        
         public bool IsEnabled
         {
             get => _isEnabled;

@@ -22,7 +22,6 @@ namespace ExampleGame.MapGeneration
 			MapWidth = mapWidth;
 			MapHeight = mapHeight;
 			PercentAreWalls = percentWalls;
-			
 			_generator = new Generator(mapWidth, mapHeight);
 			_random = new Random();
 		}
