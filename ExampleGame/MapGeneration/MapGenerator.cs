@@ -16,13 +16,6 @@ namespace ExampleGame.MapGeneration
 		public int MapHeight { get; }
 		public int PercentAreWalls { get; }
 		private Generator _generator;
-		public ArrayMap<bool> Map;
-		
-		// private ArrayMap<bool> _caveMap;
-		// private ArrayMap<bool> _mazeMap;
-		// private ArrayMap<bool> _backroomsMap;
-		// private ArrayMap<bool> _cryptMap;
-		// private ArrayMap<bool> _spiralMap;
 		
 		public MapGenerator(int mapWidth, int mapHeight, int percentWalls = 40)
 		{
@@ -30,13 +23,7 @@ namespace ExampleGame.MapGeneration
 			MapHeight = mapHeight;
 			PercentAreWalls = percentWalls;
 			
-			Map = new ArrayMap<bool>(mapWidth, mapHeight);
-			// _caveMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			// _mazeMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			// _backroomsMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			// _cryptMap = new ArrayMap<bool>(mapWidth, mapHeight);
-			// _spiralMap = new ArrayMap<bool>(mapWidth, mapHeight);
-
+			_generator = new Generator(mapWidth, mapHeight);
 			_random = new Random();
 		}
         public RogueLikeMap GenerateMap()
@@ -117,12 +104,11 @@ namespace ExampleGame.MapGeneration
         {
 	        double rotationAngle = _random.Next(360);
 	        int minimumDimension = _random.Next(4, 16);
-	        var scene = new RogueLikeMap(MapWidth,MapHeight, 31, Distance.Manhattan);
 
 	        Rectangle wholeMap = new Rectangle(-MapWidth, -MapHeight,MapWidth * 2,MapHeight * 2);
 	        Point center = (MapWidth / 2, MapHeight / 2);
             
-	        foreach (var room in wholeMap.BisectRecursive(12))
+	        foreach (var room in wholeMap.BisectRecursive(minimumDimension))
 		        yield return Region.FromRectangle("room", room).Rotate(rotationAngle, center);
 	        
         }

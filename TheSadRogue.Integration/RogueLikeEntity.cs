@@ -12,6 +12,7 @@ using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
 using SadRogue.Primitives;
+using TheSadRogue.Integration.Components;
 
 namespace TheSadRogue.Integration
 {
@@ -121,18 +122,6 @@ namespace TheSadRogue.Integration
             }
         }
 
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                if (_isVisible == value) return;
-
-                _isVisible = value;
-                OnVisibleChanged();
-            }
-        }
-
         public bool IsEnabled
         {
             get => _isEnabled;
@@ -213,11 +202,10 @@ namespace TheSadRogue.Integration
             ComponentsEmpty = new List<IComponent>();
             SadComponents.CollectionChanged += Components_CollectionChanged;
             Children = new ScreenObjectCollection(this);
-        }
-        private void Initialize()
-        {
-        }
 
+            IsWalkable = true;
+            IsTransparent = true;
+        }
         #endregion
         
         #region motion

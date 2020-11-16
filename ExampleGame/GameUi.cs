@@ -2,6 +2,7 @@ using System.Linq;
 using ExampleGame.MapGeneration;
 using SadConsole;
 using TheSadRogue.Integration;
+using TheSadRogue.Integration.Components;
 using TheSadRogue.Integration.Extensions;
 using ScreenObject = SadConsole.ScreenObject; 
 using ScreenSurface = SadConsole.ScreenSurface; 
@@ -44,7 +45,7 @@ namespace ExampleGame
         private RogueLikeEntity GeneratePlayerCharacter()
         {
             RogueLikeEntity player = new RogueLikeEntity((_mapWidth/2,_mapHeight/2),1, layer: 1);
-            RogueLikeComponent motionControl = new PlayerControlsComponent();
+            RogueLikeComponentBase motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
             player.IsFocused = true;
             Map.AddEntity(player);
