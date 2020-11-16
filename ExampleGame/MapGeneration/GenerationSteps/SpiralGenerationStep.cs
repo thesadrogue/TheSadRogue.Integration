@@ -11,7 +11,6 @@ namespace ExampleGame.MapGeneration.GenerationSteps
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
-            var x = context;
             var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
             int originX = random.Next(0, map.Width);
             int originY = random.Next(0, map.Height);

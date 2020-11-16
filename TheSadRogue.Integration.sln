@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSadRogue.Integration", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleGame", "ExampleGame\ExampleGame.csproj", "{C6BF86CB-E04E-4937-843D-13A40C94595E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{319C084E-83EC-43D4-8C1C-44D7C33E9092}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{C6BF86CB-E04E-4937-843D-13A40C94595E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6BF86CB-E04E-4937-843D-13A40C94595E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6BF86CB-E04E-4937-843D-13A40C94595E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{319C084E-83EC-43D4-8C1C-44D7C33E9092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{319C084E-83EC-43D4-8C1C-44D7C33E9092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{319C084E-83EC-43D4-8C1C-44D7C33E9092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{319C084E-83EC-43D4-8C1C-44D7C33E9092}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

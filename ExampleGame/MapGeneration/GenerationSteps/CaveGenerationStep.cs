@@ -6,26 +6,26 @@ namespace ExampleGame.MapGeneration.GenerationSteps
 {
     public class CaveGenerationStep : GenerationStep
     {
-        private ISettableMapView<bool> map;
+        private ISettableMapView<bool> _map = new ArrayMap<bool>(4,4);
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
-            map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
+            _map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
             var proposedMap = new ArrayMap<bool>(context.Width, context.Height);
-            for (int i = 0; i < map.Width; i++)
+            for (int i = 0; i < _map.Width; i++)
             {
-                for (int j = 0; j < map.Height; j++)
+                for (int j = 0; j < _map.Height; j++)
                 {
                     proposedMap[i, j] = PlaceWallLogic(i, j);
                 }
             }
-            map.ApplyOverlay(proposedMap);
+            _map.ApplyOverlay(proposedMap);
             yield return null;
         }
         
         public bool PlaceWallLogic(int x, int y)
         {
             int numWalls = GetAdjacentWalls(x, y, 1, 1);
-            if (map[x, y])
+            if (_map[x, y])
                 return numWalls >= 4;
 
             return numWalls >= 5;
@@ -58,8 +58,7 @@ namespace ExampleGame.MapGeneration.GenerationSteps
 
             return wallCounter;
         }
-        public bool IsWall(int x, int y) => IsOutOfBounds(x, y) || map[x, y];
-        public bool IsOutOfBounds(int x, int y) => x < 0 || y < 0 || x >= map.Width || y >= map.Height;
-
+        public bool IsWall(int x, int y) => IsOutOfBounds(x, y) || _map[x, y];
+        public bool IsOutOfBounds(int x, int y) => x < 0 || y < 0 || x >= _map.Width || y >= _map.Height;
     }
 }
