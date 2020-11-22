@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExampleGame.MapGeneration.GenerationSteps;
+using ExampleGame.MapGeneration.TerrainGenerationSteps;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
 using TheSadRogue.Integration;
+using RogueLikeEntity = TheSadRogue.Integration.RogueLikeEntity;
 
 namespace ExampleGame.MapGeneration
 {

@@ -6,7 +6,8 @@ using TheSadRogue.Integration.Components;
 using TheSadRogue.Integration.Extensions;
 using ScreenObject = SadConsole.ScreenObject; 
 using ScreenSurface = SadConsole.ScreenSurface; 
-using Console = SadConsole.Console; 
+using Console = SadConsole.Console;
+using RogueLikeEntity = TheSadRogue.Integration.RogueLikeEntity;
 
 namespace ExampleGame
 {

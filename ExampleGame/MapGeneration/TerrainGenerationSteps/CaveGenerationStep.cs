@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace ExampleGame.MapGeneration.TerrainGenerationSteps
 {
     public class CaveGenerationStep : GenerationStep
     {

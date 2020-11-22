@@ -5,7 +5,7 @@ using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace ExampleGame.MapGeneration.TerrainGenerationSteps
 {
     public class BackroomGenerationStep : GenerationStep
     {
@@ -25,17 +25,17 @@ namespace ExampleGame.MapGeneration.GenerationSteps
             {
                 if (random.Next(0, 2) % 2 == 0)
                 {
-                    largeRooms.Add(new Rectangle(halfWidth, 0, halfWidth, map.Height));
+                    largeRooms.Add(new Rectangle(halfWidth - 1, 0, halfWidth, map.Height));
                     largeRooms.Add(new Rectangle(0, 0, halfWidth, thirdHeight));
-                    largeRooms.Add(new Rectangle(0, thirdHeight, halfWidth, thirdHeight));
-                    largeRooms.Add(new Rectangle(0, thirdHeight * 2, halfWidth, thirdHeight));
+                    largeRooms.Add(new Rectangle(0, thirdHeight - 1, halfWidth, thirdHeight));
+                    largeRooms.Add(new Rectangle(0, thirdHeight * 2 - 1, halfWidth, thirdHeight));
                 }
                 else
                 {
                     largeRooms.Add(new Rectangle(0, 0, halfWidth, map.Height));
-                    largeRooms.Add(new Rectangle(halfWidth, 0, halfWidth, thirdHeight));
-                    largeRooms.Add(new Rectangle(halfWidth, thirdHeight, halfWidth, thirdHeight));
-                    largeRooms.Add(new Rectangle(halfWidth, thirdHeight * 2, halfWidth, thirdHeight));
+                    largeRooms.Add(new Rectangle(halfWidth - 1, 0, halfWidth, thirdHeight));
+                    largeRooms.Add(new Rectangle(halfWidth - 1, thirdHeight - 1, halfWidth, thirdHeight));
+                    largeRooms.Add(new Rectangle(halfWidth - 1, thirdHeight * 2 - 1, halfWidth, thirdHeight));
                 }
             }
             else
@@ -43,16 +43,16 @@ namespace ExampleGame.MapGeneration.GenerationSteps
                 if (random.Next(0, 2) % 2 == 0)
                 {
                     largeRooms.Add(new Rectangle(0,0, map.Width, halfHeight));
-                    largeRooms.Add(new Rectangle(0, halfHeight, thirdWidth, halfHeight));
-                    largeRooms.Add(new Rectangle(thirdWidth, halfHeight, thirdWidth, halfHeight));
-                    largeRooms.Add(new Rectangle(thirdWidth * 2, halfHeight, thirdWidth, halfHeight));
+                    largeRooms.Add(new Rectangle(0, halfHeight - 1, thirdWidth, halfHeight));
+                    largeRooms.Add(new Rectangle(thirdWidth - 1, halfHeight - 1, thirdWidth, halfHeight));
+                    largeRooms.Add(new Rectangle(thirdWidth * 2 - 1, halfHeight - 1, thirdWidth, halfHeight));
                 }
                 else
                 {
-                    largeRooms.Add(new Rectangle(0,halfHeight, map.Width, halfHeight));
+                    largeRooms.Add(new Rectangle(0,halfHeight - 1, map.Width, halfHeight));
                     largeRooms.Add(new Rectangle(0, 0, thirdWidth, halfHeight));
-                    largeRooms.Add(new Rectangle(thirdWidth, 0, thirdWidth, halfHeight));
-                    largeRooms.Add(new Rectangle(thirdWidth * 2, 0, thirdWidth, halfHeight));
+                    largeRooms.Add(new Rectangle(thirdWidth - 1, 0, thirdWidth, halfHeight));
+                    largeRooms.Add(new Rectangle(thirdWidth * 2 - 1, 0, thirdWidth, halfHeight));
                 }
             }
 
