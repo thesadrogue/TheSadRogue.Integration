@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using GoRogue.GameFramework.Components;
-using GoRogue.SpatialMaps;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
@@ -21,26 +19,27 @@ namespace TheSadRogue.Integration
     /// </summary>
     public class RogueLikeEntity : ColoredGlyph, IGameObject, IScreenObject
     {
-        #region variable declaration
+        #region properties
 
-        private ColoredGlyph _glyph;
+        public bool IsTransparent { get; set; }
+        public bool UsePixelPositioning { get; set; }
+        private bool _isVisible = true;
+        private bool _isEnabled = true;
+        private bool _isfocused;
         public string Name { get; set; }
         public int ZIndex { get; }
         public uint ID { get; }
         public int Layer { get; }
         public Map? CurrentMap { get; private set; }
-        public bool IsTransparent { get; set; }
-
-        public bool UsePixelPositioning { get; set; }
+        private ColoredGlyph _glyph;
         private IScreenObject[] _childrenSerialized;
-        private IComponent[] _componentsSerialized;
-
         private Point _position;
-
         private IScreenObject _parentObject;
-        private bool _isVisible = true;
-        private bool _isEnabled = true;
-        private bool _isfocused;
+        private IComponent[] _componentsSerialized;
+        
+        public RogueLikeComponentCollection Components { get; }
+        public ObservableCollection<IComponent> SadComponents { get; }
+        public ITaggableComponentCollection GoRogueComponents { get; }
 
         public FocusBehavior FocusedMode { get; set; } = FocusBehavior.Set;
         public bool IsExclusiveMouse { get; set; }
@@ -48,13 +47,6 @@ namespace TheSadRogue.Integration
         public bool UseMouse { get; set; }
         public ScreenObjectCollection Children { get; }
 
-        protected List<IComponent> ComponentsUpdate;
-        protected List<IComponent> ComponentsRender;
-        protected List<IComponent> ComponentsMouse;
-        protected List<IComponent> ComponentsKeyboard;
-        protected List<IComponent> ComponentsEmpty;
-        public ObservableCollection<IComponent> SadComponents { get; protected set; }
-        public ITaggableComponentCollection GoRogueComponents { get; private set; }
         public bool IsWalkable { get; set; }
         public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
         public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
@@ -186,25 +178,21 @@ namespace TheSadRogue.Integration
         }
         public RogueLikeEntity(Color foreground, Color background, int glyph) : base(foreground, background, glyph)
         {
-            GoRogueComponents =  new ComponentCollection();
-            GoRogueComponents.ComponentAdded += On_ComponentAdded;
-            GoRogueComponents.ComponentRemoved += On_ComponentRemoved;
-            Moved += SadConsole_Moved;
-            Moved += GoRogue_Moved;
-            
-            UseMouse = Settings.DefaultScreenObjectUseMouse;
-            UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
-            SadComponents = new ObservableCollection<IComponent>();
-            ComponentsUpdate = new List<IComponent>();
-            ComponentsRender = new List<IComponent>();
-            ComponentsKeyboard = new List<IComponent>();
-            ComponentsMouse = new List<IComponent>();
-            ComponentsEmpty = new List<IComponent>();
-            SadComponents.CollectionChanged += Components_CollectionChanged;
-            Children = new ScreenObjectCollection(this);
-
             IsWalkable = true;
             IsTransparent = true;
+            UseMouse = Settings.DefaultScreenObjectUseMouse;
+            UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
+            
+            Components = new RogueLikeComponentCollection();
+            SadComponents = Components;
+            GoRogueComponents = Components;
+            Children = new ScreenObjectCollection(this);
+            
+            Moved += SadConsole_Moved;
+            Moved += GoRogue_Moved;
+
+            Components.ComponentAdded += OnComponentAdded;
+            Components.ComponentRemoved += OnComponentRemoved;
         }
         #endregion
         
@@ -234,7 +222,6 @@ namespace TheSadRogue.Integration
         #endregion
         
         #region event handlers
-
         protected void OnSerializingMethod(StreamingContext context)
         {
             _childrenSerialized = Children.ToArray();
@@ -279,7 +266,7 @@ namespace TheSadRogue.Integration
                     Position = change.OldValue;
             }
         }
-        private void On_ComponentAdded(object? s, ComponentChangedEventArgs e)
+        private void OnComponentAdded(object? s, ComponentChangedEventArgs e)
         {
             if (!(e.Component is IGameObjectComponent c))
                 return;
@@ -290,150 +277,11 @@ namespace TheSadRogue.Integration
 
             c.Parent = this;
         }
-        private void On_ComponentRemoved(object? s, ComponentChangedEventArgs e)
+        
+        private void OnComponentRemoved(object? s, ComponentChangedEventArgs e)
         {
             if (e.Component is IGameObjectComponent c)
                 c.Parent = null;
-        }
-        private void Components_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (object item in e.NewItems)
-                    {
-                        FilterAddItem((IComponent)item);
-                        ((IComponent)item).OnAdded(this);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (object item in e.OldItems)
-                    {
-                        FilterRemoveItem((IComponent)item);
-                        ((IComponent)item).OnRemoved(this);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (object item in e.NewItems)
-                    {
-                        FilterAddItem((IComponent)item);
-                        ((IComponent)item).OnAdded(this);
-                    }
-                    foreach (object item in e.OldItems)
-                    {
-                        FilterRemoveItem((IComponent)item);
-                        ((IComponent)item).OnRemoved(this);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    while (ComponentsRender.Count != 0)
-                    {
-                        ComponentsRender[0].OnRemoved(this);
-                        FilterRemoveItem(ComponentsRender[0]);
-                    }
-                    while (ComponentsUpdate.Count != 0)
-                    {
-                        ComponentsUpdate[0].OnRemoved(this);
-                        FilterRemoveItem(ComponentsUpdate[0]);
-                    }
-                    while (ComponentsKeyboard.Count != 0)
-                    {
-                        ComponentsKeyboard[0].OnRemoved(this);
-                        FilterRemoveItem(ComponentsKeyboard[0]);
-                    }
-                    while (ComponentsMouse.Count != 0)
-                    {
-                        ComponentsMouse[0].OnRemoved(this);
-                        FilterRemoveItem(ComponentsMouse[0]);
-                    }
-                    while (ComponentsEmpty.Count != 0)
-                    {
-                        ComponentsEmpty[0].OnRemoved(this);
-                        FilterRemoveItem(ComponentsEmpty[0]);
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            void FilterAddItem(IComponent component)
-            {
-                if (component.IsRender)
-                {
-                    if (!ComponentsRender.Contains(component))
-                        ComponentsRender.Add(component);
-                }
-
-                if (component.IsUpdate)
-                {
-                    if (!ComponentsUpdate.Contains(component))
-                        ComponentsUpdate.Add(component);
-                }
-
-                if (component.IsKeyboard)
-                {
-                    if (!ComponentsKeyboard.Contains(component))
-                        ComponentsKeyboard.Add(component);
-                }
-
-                if (component.IsMouse)
-                {
-                    if (!ComponentsMouse.Contains(component))
-                        ComponentsMouse.Add(component);
-                }
-
-                if (!component.IsRender && !component.IsUpdate && !component.IsKeyboard && !component.IsMouse)
-                {
-                    if (!ComponentsEmpty.Contains(component))
-                        ComponentsEmpty.Add(component);
-                }
-
-                ComponentsRender.Sort(CompareComponent);
-                ComponentsUpdate.Sort(CompareComponent);
-                ComponentsKeyboard.Sort(CompareComponent);
-                ComponentsMouse.Sort(CompareComponent);
-            }
-
-            void FilterRemoveItem(IComponent component)
-            {
-                if (component.IsRender)
-                {
-                    if (ComponentsRender.Contains(component))
-                        ComponentsRender.Remove(component);
-                }
-
-                if (component.IsUpdate)
-                {
-                    if (ComponentsUpdate.Contains(component))
-                        ComponentsUpdate.Remove(component);
-                }
-
-                if (component.IsKeyboard)
-                {
-                    if (ComponentsKeyboard.Contains(component))
-                        ComponentsKeyboard.Remove(component);
-                }
-
-                if (component.IsMouse)
-                {
-                    if (ComponentsMouse.Contains(component))
-                        ComponentsMouse.Remove(component);
-                }
-
-                if (!component.IsRender && !component.IsUpdate && !component.IsKeyboard && !component.IsMouse)
-                {
-                    if (!ComponentsEmpty.Contains(component))
-                        ComponentsEmpty.Remove(component);
-                }
-
-                ComponentsRender.Sort(CompareComponent);
-                ComponentsUpdate.Sort(CompareComponent);
-                ComponentsKeyboard.Sort(CompareComponent);
-                ComponentsMouse.Sort(CompareComponent);
-            }
         }
         protected virtual void OnParentChanged(IScreenObject oldParent, IScreenObject newParent)
         {
@@ -456,56 +304,26 @@ namespace TheSadRogue.Integration
         #region ScreenObject
         public virtual void Render(TimeSpan delta)
         {
-            if (!IsVisible) return;
-
-            foreach (IComponent component in ComponentsRender.ToArray())
-                component.Render(this, delta);
-
-            // don't support
-            // foreach (IScreenObject child in new List<IScreenObject>(Children))
-            //     child.Render(delta);
+            if (IsVisible)
+                Components.Render(delta);
         }
         public virtual void Update(TimeSpan delta)
         {
-            if (!IsEnabled) return;
-
-            foreach (IComponent component in ComponentsUpdate.ToArray())
-                component.Update(this, delta);
-
-            // dont support
-            // foreach (IScreenObject child in new List<IScreenObject>(Children))
-            //     child.Update(delta);
+            if (IsEnabled)
+                Components.Update(delta);
         }
         public virtual bool ProcessKeyboard(Keyboard keyboard)
         {
-            if (!UseKeyboard) return false;
-
-            foreach (IComponent component in ComponentsKeyboard.ToArray())
-            {
-                component.ProcessKeyboard(this, keyboard, out bool isHandled);
-
-                if (isHandled)
-                    return true;
-            }
-
+            if (UseKeyboard)
+                return Components.ProcessKeyboard(keyboard);
+            
             return false;
         }
 
         public virtual bool ProcessMouse(MouseScreenObjectState state)
         {
-            if (!IsVisible)
-                return false;
-
-            foreach (SadConsole.Components.IComponent component in ComponentsMouse.ToArray())
-            {
-                component.ProcessMouse(this, state, out bool isHandled);
-
-                if (isHandled)
-                    return true;
-            }
-
-            if (!UseMouse)
-                return false;
+            if (IsVisible && UseMouse)
+                return Components.ProcessMouse(state);
             
             return false;
         }
@@ -532,19 +350,52 @@ namespace TheSadRogue.Integration
             
             GoRogueComponents.Add(components);
         }
-        
-        public IEnumerable<TComponent> GetSadComponents<TComponent>()
-            where TComponent : class, IComponent
+
+        public T GetComponent<T>(string tag = "")
         {
-            foreach (IComponent component in SadComponents)
+            if (tag is "")
             {
-                if (component is TComponent)
-                    yield return (TComponent)component;
+                return GetComponents<T>().Distinct().FirstOrDefault();
+            }
+            else
+            {
+                //temporary
+                return GetComponents<T>().Distinct().FirstOrDefault();
+            }
+        }
+        public IEnumerable<IRogueLikeComponent> GetComponents()
+            => GetGoRogueComponents().Concat(GetSadComponents<IRogueLikeComponent>());
+
+        public IEnumerable<T> GetComponents<T>()
+        {
+            foreach (var component in GetComponents())
+            {
+                if (component is T rlComponent)
+                {
+                    yield return rlComponent;
+                }
+            }
+        }
+        private IEnumerable<IRogueLikeComponent> GetGoRogueComponents()
+        {
+            foreach (var pair in GoRogueComponents)
+            {
+                yield return (IRogueLikeComponent)pair.Component;
             }
         }
 
-        public TComponent GetSadComponent<TComponent>()
-            where TComponent : class, IComponent
+        public IEnumerable<TComponent> GetSadComponents<TComponent>() where TComponent : class, IComponent
+        {
+            foreach (IComponent component in SadComponents)
+            {
+                if (component is TComponent tComponent)
+                {
+                    yield return tComponent;
+                }
+            }
+        }
+
+        public TComponent GetSadComponent<TComponent>() where TComponent : class, IComponent
         {
             foreach (IComponent component in SadComponents)
             {
@@ -572,10 +423,7 @@ namespace TheSadRogue.Integration
         }
         public void SortComponents()
         {
-            ComponentsRender.Sort(CompareComponent);
-            ComponentsUpdate.Sort(CompareComponent);
-            ComponentsKeyboard.Sort(CompareComponent);
-            ComponentsMouse.Sort(CompareComponent);
+            
         }
 
         static int CompareComponent(IComponent left, IComponent right)

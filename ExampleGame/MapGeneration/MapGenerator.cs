@@ -6,6 +6,7 @@ using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
 using TheSadRogue.Integration;
+using RogueLikeEntity = TheSadRogue.Integration.RogueLikeEntity;
 
 namespace ExampleGame.MapGeneration
 {
