@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExampleGame.MapGeneration.GenerationSteps;
+using ExampleGame.MapGeneration.TerrainGenerationSteps;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
