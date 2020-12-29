@@ -25,7 +25,7 @@ namespace TheSadRogue.Integration.Components
         public event EventHandler<ComponentChangedEventArgs>? ComponentAdded;
         public event EventHandler<ComponentChangedEventArgs>? ComponentRemoved;
 
-        private IRogueLikeComponent[] _serialized;
+        //private IRogueLikeComponent[] _serialized;
         
         public RogueLikeComponentCollection()
         {
@@ -38,10 +38,10 @@ namespace TheSadRogue.Integration.Components
 
             //ComponentAdded += OnAdded;
             //ComponentRemoved += OnRemoved;
-            CollectionChanged += OnCollectionChanged;
+            CollectionChanged += Collection_Changed;
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Collection_Changed(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

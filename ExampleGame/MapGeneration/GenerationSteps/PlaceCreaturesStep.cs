@@ -6,7 +6,6 @@ namespace ExampleGame.MapGeneration.GenerationSteps
 {
     public class PlaceCreaturesStep : GenerationStep
     {
-        
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random r = new Random();

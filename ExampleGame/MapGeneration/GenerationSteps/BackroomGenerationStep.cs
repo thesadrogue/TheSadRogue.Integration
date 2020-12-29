@@ -5,7 +5,7 @@ using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
 
-namespace ExampleGame.MapGeneration.TerrainGenerationSteps
+namespace ExampleGame.MapGeneration.GenerationSteps
 {
     public class BackroomGenerationStep : GenerationStep
     {

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TheSadRogue.Integration.Components;
 using Xunit;
 

@@ -1,4 +1,4 @@
-namespace ExampleGame.Items
+namespace ExampleGame
 {
     /// <summary>
     /// Which "slot" on our character an item  goes into.

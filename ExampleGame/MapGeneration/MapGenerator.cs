@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExampleGame.MapGeneration.GenerationSteps;
-using ExampleGame.MapGeneration.TerrainGenerationSteps;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
 using SadRogue.Primitives;
@@ -13,7 +12,7 @@ namespace ExampleGame.MapGeneration
 {
 	public class MapGenerator
 	{
-		private Random _random;
+		private readonly Random _random;
 		public int MapWidth { get; }
 		public int MapHeight { get; }
 		public int PercentAreWalls { get; }
@@ -41,36 +40,35 @@ namespace ExampleGame.MapGeneration
 		            int floorGlyph;
 		            int wallGlyph;
 		            IEnumerable<GenerationStep> steps;
-		             if (chance < 20)
-		             {
-			            steps = GetCaveSteps();
-			            floorGlyph = ',';
-			            wallGlyph = '&';
-		             }
-		             else if (chance < 40)
-		             {
-			             steps = GetCryptSteps();
-			             floorGlyph = '.';
-			             wallGlyph = '#';
-		             }
-		            else 
-		             if (chance < 60)
-		             {
-			             steps = GetBackroomsSteps();
-			             floorGlyph = '+';
-			             wallGlyph = '&';
-		             }
-		             else if (chance < 80)
-		             {
-			            steps = GetHallSteps();
-			            floorGlyph = '`';
+		            if (chance < 20)
+		            {
+			           steps = GetCaveSteps();
+			           floorGlyph = ',';
+			           wallGlyph = '&';
+		            }
+		            else if (chance < 40)
+		            {
+			            steps = GetCryptSteps();
+			            floorGlyph = '.';
 			            wallGlyph = '#';
-		             }
-		             else
-		             {
-			            steps = GetSpiralSteps();
-			            floorGlyph = ',';
+		            }
+		            else if (chance < 60)
+		            {
+			            steps = GetBackroomsSteps();
+			            floorGlyph = '+';
 			            wallGlyph = '&';
+		            }
+		            else if (chance < 80)
+		            {
+			           steps = GetHallSteps();
+			           floorGlyph = '`';
+			           wallGlyph = '#';
+		            }
+		            else
+		            {
+			           steps = GetSpiralSteps();
+			           floorGlyph = ',';
+			           wallGlyph = '&';
 		            }
 		            
 		            _generator = new Generator(region.Width, region.Height);

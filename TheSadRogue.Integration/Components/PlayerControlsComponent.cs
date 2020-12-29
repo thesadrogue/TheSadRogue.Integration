@@ -21,8 +21,8 @@ namespace TheSadRogue.Integration.Components
         /// <summary>
         /// A mapping of Keys to an action that can be performed
         /// </summary>
-        public ReadOnlyDictionary<Keys, Direction.Types> Motions => _motions.AsReadOnly();
-        private readonly Dictionary<Keys, Direction.Types> _motions;
+        public ReadOnlyDictionary<Keys, Direction> Motions => _motions.AsReadOnly();
+        private readonly Dictionary<Keys, Direction> _motions;
         
         /// <summary>
         /// Creates a new component that controls it's parent entity via keystroke
@@ -30,7 +30,7 @@ namespace TheSadRogue.Integration.Components
         public PlayerControlsComponent() : base(false, false, false, true, 1)
         {
             _actions = new Dictionary<Keys, Action>();
-            _motions = new Dictionary<Keys, Direction.Types>()
+            _motions = new Dictionary<Keys, Direction>()
             {
                 { Keys.Left, Direction.Left},
                 { Keys.Right, Direction.Right},
@@ -51,11 +51,11 @@ namespace TheSadRogue.Integration.Components
         /// Create a PlayerControlsComponent with the provided dictionary of keys to movement directions
         /// </summary>
         /// <param name="motions">A dictionary of Keys to Movement Directions</param>
-        public PlayerControlsComponent(Dictionary<Keys, Direction.Types> motions) : this()
+        public PlayerControlsComponent(Dictionary<Keys, Direction> motions) : this()
         {
             _motions = motions;
         }    
-        public PlayerControlsComponent(Dictionary<Keys, Direction.Types> motions, Dictionary<Keys, Action> actions) : this()
+        public PlayerControlsComponent(Dictionary<Keys, Direction> motions, Dictionary<Keys, Action> actions) : this()
         {
             _motions = motions;
             _actions = actions;
@@ -87,7 +87,7 @@ namespace TheSadRogue.Integration.Components
         {
             foreach (var motion in Motions)
                 if (keyboard.IsKeyPressed(motion.Key))
-                    Parent.Position += motion.Value;
+                    Parent!.Position += motion.Value;
 
             foreach (KeyValuePair<Keys,Action> action in Actions)
                 if (keyboard.IsKeyPressed(action.Key))

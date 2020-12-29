@@ -3,7 +3,7 @@ using SadRogue.Primitives;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
 
-namespace ExampleGame.Items
+namespace ExampleGame.Components
 {
     /// <summary>
     /// The Component given to items
@@ -23,7 +23,7 @@ namespace ExampleGame.Items
             Slot = slot;
             Modifier = modifier;
             Appearance = new ColoredGlyph(foreground, Color.Black, glyph);
-            ((RogueLikeEntity) Parent).Appearance = Appearance;
+            ((RogueLikeEntity) Parent!).Appearance = Appearance;
         }
     }
 }

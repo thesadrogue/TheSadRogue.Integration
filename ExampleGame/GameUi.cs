@@ -20,17 +20,23 @@ namespace ExampleGame
         public readonly RogueLikeEntity PlayerCharacter;
         public readonly ScreenSurface MapWindow;
         public readonly Console MessageLogWindow;
-        private readonly int _width, _height, _mapWidth, _mapHeight;
+        private readonly int _width;
+        private readonly int _height;
+        private readonly int _mapWidth;
+        private readonly int _mapHeight;
+        
         public GameUi(in int width, in int height, in int mapWidth, in int mapHeight)
         {
             _width = width;
             _height = height;
             _mapWidth = mapWidth;
             _mapHeight = mapHeight;
-            MessageLogWindow = new Console(_width / 4, _height / 5);
+            MessageLogWindow = new Console(width / 4, height / 5);
             Map = GenerateMap();
-            PlayerCharacter = GeneratePlayerCharacter();
             MapWindow = new ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
+            MapWindow.SadComponents.Add(Map.EntityManager);
+            
+            PlayerCharacter = GeneratePlayerCharacter();
             
             Children.Add(MapWindow);
             foreach(ICellSurface glyphLayer in Map.Renderers)

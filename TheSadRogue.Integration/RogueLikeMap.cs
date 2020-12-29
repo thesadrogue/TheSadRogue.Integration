@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using GoRogue.GameFramework;
 using GoRogue.MapViews;
+using GoRogue.SpatialMaps;
 using SadConsole;
+using SadConsole.Entities;
 using SadRogue.Primitives;
 using TheSadRogue.Integration.Extensions;
 
@@ -16,7 +19,7 @@ namespace TheSadRogue.Integration
         /// An IMapView of the ColoredGlyphs on the Terrain layer (0)
         /// </summary>
         public IMapView<ColoredGlyph> TerrainSurface
-            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val));
+            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Appearance);
         
         /// <summary>
         /// A hacky way to render the initial state of entities present. TODO - come up with a better way
@@ -26,6 +29,9 @@ namespace TheSadRogue.Integration
         //public event EventHandler FieldOfViewRecalculated;
         //public IFieldOfViewHandler FovHandler;
         //public LayeredScreenSurface LayeredSurface;
+
+        public EntityLiteManager EntityManager;
+        
         
         #region constructors
 
@@ -45,7 +51,24 @@ namespace TheSadRogue.Integration
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
             entityLayersSupportingMultipleItems)
         {
+            EntityManager = new EntityLiteManager();
+            Entities.ItemAdded += Entity_Added;
         }
+
+        private void Entity_Added(object? sender, ItemEventArgs<IGameObject> e)
+        {
+            if (EntityManager.Entities.Count(entity => entity == e.Item) == 0)
+            {
+                EntityManager.Add(e.Item as RogueLikeEntity);
+            }
+        }
+
         #endregion
+
+        public void AddEntity(RogueLikeEntity entity)
+        {
+            EntityManager.Add(entity);
+            
+        }
     }
 }

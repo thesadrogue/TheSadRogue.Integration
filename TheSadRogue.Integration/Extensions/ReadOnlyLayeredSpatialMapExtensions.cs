@@ -23,9 +23,10 @@ namespace TheSadRogue.Integration.Extensions
             {
                 CellSurface surface = new CellSurface(width, height);
 
-                foreach (RogueLikeEntity entity in layer.Items)
+                foreach (var o in layer.Items)
                 {
-                    surface.SetGlyph(entity.Position.X, entity.Position.Y, entity.Glyph, entity.Foreground, entity.Background);
+                    var entity = (RogueLikeEntity) o;
+                    surface.SetGlyph(entity.Position.X, entity.Position.Y, entity.Appearance.Glyph, entity.Appearance.Foreground, entity.Appearance.Background);
                 }
 
                 yield return surface;
