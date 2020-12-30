@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.GameFramework;
-using GoRogue.MapViews;
+using SadRogue.Primitives.GridViews;
 using GoRogue.SpatialMaps;
 using SadConsole;
-using SadConsole.Entities;
 using SadRogue.Primitives;
-using TheSadRogue.Integration.Extensions;
+// using TheSadRogue.Integration.Extensions;
 
 namespace TheSadRogue.Integration
 {
@@ -18,22 +17,37 @@ namespace TheSadRogue.Integration
         /// <summary>
         /// An IMapView of the ColoredGlyphs on the Terrain layer (0)
         /// </summary>
-        public IMapView<ColoredGlyph> TerrainSurface
-            => new LambdaTranslationMap<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Appearance);
+        public IGridView<ColoredGlyph> TerrainView
+            => new LambdaTranslationGridView<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Appearance);
+
+        /// <summary>
+        /// An IMapView of the ColoredGlyphs on the Terrain layer (0)
+        /// </summary>
+        public IEnumerable<ColoredGlyph> TerrainCells
+        {
+            get
+            {
+                for (int i = 0; i < Width; i++)
+                {
+                    for (int j = 0; j < Height; j++)
+                    {
+                        yield return TerrainView[i, j];
+                    }
+                }
+            }
+        }
         
         /// <summary>
         /// A hacky way to render the initial state of entities present. TODO - come up with a better way
         /// </summary>
-        public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
+        // public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
         
         //public event EventHandler FieldOfViewRecalculated;
         //public IFieldOfViewHandler FovHandler;
         //public LayeredScreenSurface LayeredSurface;
+        
+        public IScreenSurface? EntitySurface { get; private set; }
 
-        public EntityLiteManager EntityManager;
-        
-        
-        #region constructors
 
         /// <summary>
         /// Creates a new RogueLikeMap
@@ -51,24 +65,21 @@ namespace TheSadRogue.Integration
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
             entityLayersSupportingMultipleItems)
         {
-            EntityManager = new EntityLiteManager();
             Entities.ItemAdded += Entity_Added;
         }
 
         private void Entity_Added(object? sender, ItemEventArgs<IGameObject> e)
         {
-            if (EntityManager.Entities.Count(entity => entity == e.Item) == 0)
+            if (Entities.Count(entity => entity.Item == e.Item) == 0)
             {
-                EntityManager.Add(e.Item as RogueLikeEntity);
+                AddEntity(e.Item);
+                EntitySurface!.Children.Add((RogueLikeEntity)e.Item);
             }
         }
-
-        #endregion
-
-        public void AddEntity(RogueLikeEntity entity)
+        
+        public void SetEntitySurface(IScreenSurface surface)
         {
-            EntityManager.Add(entity);
-            
+            EntitySurface = surface;
         }
     }
 }

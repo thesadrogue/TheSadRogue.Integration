@@ -3,7 +3,7 @@ using ExampleGame.MapGeneration;
 using SadConsole;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
-using TheSadRogue.Integration.Extensions;
+// using TheSadRogue.Integration.Extensions;
 using ScreenObject = SadConsole.ScreenObject; 
 using ScreenSurface = SadConsole.ScreenSurface; 
 using Console = SadConsole.Console;
@@ -33,14 +33,15 @@ namespace ExampleGame
             _mapHeight = mapHeight;
             MessageLogWindow = new Console(width / 4, height / 5);
             Map = GenerateMap();
-            MapWindow = new ScreenSurface(_mapWidth, _mapHeight, Map.TerrainSurface.ToArray());
-            MapWindow.SadComponents.Add(Map.EntityManager);
+            MapWindow = new ScreenSurface(_mapWidth, _mapHeight, Map.TerrainCells.ToArray());
+            // MapWindow.Surface = Map.TerrainCells;
+            // MapWindow.SadComponents.Add(Map.EntityManager);
             
             PlayerCharacter = GeneratePlayerCharacter();
             
             Children.Add(MapWindow);
-            foreach(ICellSurface glyphLayer in Map.Renderers)
-                MapWindow.Children.Add(new ScreenSurface(_mapWidth, _mapHeight, glyphLayer.ToEnumerable().ToArray()));
+            // foreach(ICellSurface glyphLayer in Map.Renderers)
+            //     MapWindow.Children.Add(new ScreenSurface(glyphLayer));
         }
 
         private RogueLikeMap GenerateMap()

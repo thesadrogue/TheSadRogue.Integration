@@ -15,7 +15,7 @@ namespace TheSadRogue.Integration
     /// <summary>
     /// Everything that will be rendered to the screen, except for written text
     /// </summary>
-    public class RogueLikeEntity : EntityLite, IGameObject
+    public class RogueLikeEntity : Entity, IGameObject
     {
         public bool IsTransparent { get; set; }
         public bool IsWalkable { get; set; }
@@ -84,23 +84,25 @@ namespace TheSadRogue.Integration
         
         #region event handlers
         
-        public event EventHandler<ItemMovedEventArgs<IGameObject>>? Moved;
-        private void GoRogue_Moved(object? sender, ItemMovedEventArgs<IGameObject> change)
+        public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;
+        public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
+        public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
+        private void GoRogue_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
-            if (Position != change.NewPosition)
+            if (Position != change.NewValue)
             {
-                Position = change.NewPosition;
-                if (((IScreenObject)this).Position != change.NewPosition)
-                    Position = change.OldPosition;
+                Position = change.NewValue;
+                if (((IScreenObject)this).Position != change.NewValue)
+                    Position = change.OldValue;
             }
         }
-        private void SadConsole_Moved(object? sender, ItemMovedEventArgs<IGameObject> change)
+        private void SadConsole_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
-            if (Position != change.NewPosition)
+            if (Position != change.NewValue)
             {
-                Position = change.NewPosition;
-                if (((IGameObject)this).Position != change.NewPosition)
-                    Position = change.OldPosition;
+                Position = change.NewValue;
+                if (((IGameObject)this).Position != change.NewValue)
+                    Position = change.OldValue;
             }
         }
         private void Component_Added(object? s, ComponentChangedEventArgs e)

@@ -103,14 +103,14 @@ namespace TheSadRogue.Integration.Components
         public IEnumerable<T> GetAll<T>() where T : class => _components.GetAll<T>();
         public IEnumerator<ComponentTagPair> GetEnumerator() => _components.GetEnumerator();
         public T GetFirst<T>() where T : class => _components.GetFirst<T>();
-        public T GetFirst<T>(string? tag = null) where T : class => _components.GetFirst<T>(tag);
-        public T GetFirstOrDefault<T>() where T : class => _components.GetFirstOrDefault<T>();
-        public T GetFirstOrDefault<T>(string? tag = null) where T : class => _components.GetFirstOrDefault<T>(tag);
+        public T GetFirst<T>(string? tag) where T : class => _components.GetFirst<T>(tag);
+        public T? GetFirstOrDefault<T>() where T : class => _components.GetFirstOrDefault<T>();
+        public T? GetFirstOrDefault<T>(string? tag) where T : class => _components.GetFirstOrDefault<T>(tag);
         public bool Contains<T>() where T : class => _components.Contains<T>();
-        public bool Contains<T>(string? tag = null) where T : class => _components.Contains<T>(tag);
+        public bool Contains<T>(string? tag) where T : class => _components.Contains<T>(tag);
         public bool Contains(Type componentType) => _components.Contains(componentType);
         public bool Contains(params ComponentTypeTagPair[] componentTypesAndTags) => _components.Contains(componentTypesAndTags);
-        public bool Contains(Type componentType, string? tag = null) => _components.Contains(componentType, tag);
+        public bool Contains(Type componentType, string? tag) => _components.Contains(componentType, tag);
         public bool Contains(params Type[] componentTypes) => _components.Contains(componentTypes);
         public void Remove(string tag)
         {

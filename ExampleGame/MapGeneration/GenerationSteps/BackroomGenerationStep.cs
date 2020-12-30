@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
+// using GoRogue.MapViews;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace ExampleGame.MapGeneration.GenerationSteps
 {
@@ -12,7 +13,7 @@ namespace ExampleGame.MapGeneration.GenerationSteps
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
-            var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
+            var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
             var rooms = new List<Rectangle>();
             var largeRooms = new List<Rectangle>();
             

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
+// using GoRogue.MapViews;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
 namespace ExampleGame.MapGeneration.GenerationSteps
 {
@@ -11,7 +12,7 @@ namespace ExampleGame.MapGeneration.GenerationSteps
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
-            var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
+            var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
             int originX = random.Next(0, map.Width);
             int originY = random.Next(0, map.Height);
             Point origin = (originX, originY);

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ExampleGame.MapGeneration.GenerationSteps;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
+// using GoRogue.MapViews;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
 using RogueLikeEntity = TheSadRogue.Integration.RogueLikeEntity;
 
@@ -75,7 +76,7 @@ namespace ExampleGame.MapGeneration
 		            _generator.AddSteps(steps);
 		            _generator = _generator.Generate();
 		            
-		            var minimap = _generator.Context.GetFirst<ISettableMapView<bool>>();
+		            var minimap = _generator.Context.GetFirst<ISettableGridView<bool>>();
 		            for (int i = 0; i < minimap.Width; i++)
 		            {
 			            for (int j = 0; j < minimap.Height; j++)

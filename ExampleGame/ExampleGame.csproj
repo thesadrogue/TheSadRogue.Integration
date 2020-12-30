@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <PackageReference Include="GoRogue" Version="3.0.0-alpha01-debug" />
-      <PackageReference Include="SadConsole" Version="9.0.0-beta3" />
       <PackageReference Include="SadConsole.Host.SFML" Version="9.0.0-beta3" />
     </ItemGroup>
 
