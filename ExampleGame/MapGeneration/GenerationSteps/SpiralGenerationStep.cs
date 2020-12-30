@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
-// using GoRogue.MapViews;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -17,18 +16,20 @@ namespace ExampleGame.MapGeneration.GenerationSteps
             int originY = random.Next(0, map.Height);
             Point origin = (originX, originY);
 
-            Func<double, Point> spiral = theta => origin + new PolarCoordinate(theta / 3, theta).ToCartesian();
-  
+            
+
             for (double i = 0; i < 100; i += 0.01)
             {
-                Point here = spiral(i);
+                Point here = Spiral((originX, originY), i);
                 if (map.Contains(here))
                 {
-                    map[spiral(i)] = true;
+                    map[Spiral(origin, i)] = true;
                 }
             }
 
             yield return null;
         }
+        private Point Spiral(Point origin, double theta) => 
+            origin + new PolarCoordinate(theta / 3, theta).ToCartesian();
     }
 }

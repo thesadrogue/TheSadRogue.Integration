@@ -5,7 +5,6 @@ using SadRogue.Primitives.GridViews;
 using GoRogue.SpatialMaps;
 using SadConsole;
 using SadRogue.Primitives;
-// using TheSadRogue.Integration.Extensions;
 
 namespace TheSadRogue.Integration
 {
@@ -15,23 +14,24 @@ namespace TheSadRogue.Integration
     public class RogueLikeMap : Map
     {
         /// <summary>
-        /// An IMapView of the ColoredGlyphs on the Terrain layer (0)
+        /// An IGridView of the ColoredGlyphs on the Terrain layer (0)
         /// </summary>
         public IGridView<ColoredGlyph> TerrainView
             => new LambdaTranslationGridView<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeEntity)val).Appearance);
 
         /// <summary>
-        /// An IMapView of the ColoredGlyphs on the Terrain layer (0)
+        /// An IEnumerable of the ColoredGlyphs on the Terrain layer (0)
         /// </summary>
         public IEnumerable<ColoredGlyph> TerrainCells
         {
             get
             {
+                var view = TerrainView;
                 for (int i = 0; i < Width; i++)
                 {
                     for (int j = 0; j < Height; j++)
                     {
-                        yield return TerrainView[i, j];
+                        yield return view[i, j];
                     }
                 }
             }
@@ -41,11 +41,7 @@ namespace TheSadRogue.Integration
         /// A hacky way to render the initial state of entities present. TODO - come up with a better way
         /// </summary>
         // public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
-        
-        //public event EventHandler FieldOfViewRecalculated;
-        //public IFieldOfViewHandler FovHandler;
-        //public LayeredScreenSurface LayeredSurface;
-        
+
         public IScreenSurface? EntitySurface { get; private set; }
 
 
@@ -68,15 +64,25 @@ namespace TheSadRogue.Integration
             Entities.ItemAdded += Entity_Added;
         }
 
-        private void Entity_Added(object? sender, ItemEventArgs<IGameObject> e)
+        /// <summary>
+        /// Invoked when an entity is added via Map.AddEntity
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void Entity_Added(object? sender, ItemEventArgs<IGameObject> eventArgs)
         {
-            if (Entities.Count(entity => entity.Item == e.Item) == 0)
+            if (Entities.Count(entity => entity.Item == eventArgs.Item) == 0)
             {
-                AddEntity(e.Item);
-                EntitySurface!.Children.Add((RogueLikeEntity)e.Item);
+                AddEntity(eventArgs.Item);
+                EntitySurface!.Children.Add((RogueLikeEntity)eventArgs.Item);
             }
         }
         
+        /// <summary>
+        /// Associates an IScreenSurface with this map.
+        /// </summary>
+        /// <param name="surface"></param>
+        /// <remarks>Needed in order to render non-terrain entities</remarks>
         public void SetEntitySurface(IScreenSurface surface)
         {
             EntitySurface = surface;

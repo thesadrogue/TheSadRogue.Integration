@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ExampleGame.MapGeneration.GenerationSteps;
 using GoRogue.MapGeneration;
-// using GoRogue.MapViews;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
@@ -45,33 +44,33 @@ namespace ExampleGame.MapGeneration
 		            {
 			           steps = GetCaveSteps();
 			           floorGlyph = ',';
-			           wallGlyph = '&';
+			           wallGlyph = 'A';
 		            }
 		            else if (chance < 40)
 		            {
 			            steps = GetCryptSteps();
 			            floorGlyph = '.';
-			            wallGlyph = '#';
+			            wallGlyph = 'R';
 		            }
 		            else if (chance < 60)
 		            {
 			            steps = GetBackroomsSteps();
-			            floorGlyph = '+';
-			            wallGlyph = '&';
+			            floorGlyph = '\'';
+			            wallGlyph = 'B';
 		            }
 		            else if (chance < 80)
 		            {
 			           steps = GetHallSteps();
 			           floorGlyph = '`';
-			           wallGlyph = '#';
+			           wallGlyph = 'H';
 		            }
 		            else
 		            {
 			           steps = GetSpiralSteps();
-			           floorGlyph = ',';
-			           wallGlyph = '&';
+			           floorGlyph = '"';
+			           wallGlyph = 'S';
 		            }
-		            
+
 		            _generator = new Generator(region.Width, region.Height);
 		            _generator.AddSteps(steps);
 		            _generator = _generator.Generate();
@@ -103,7 +102,7 @@ namespace ExampleGame.MapGeneration
         private IEnumerable<Region> GenerateRegions()
         {
 	        double rotationAngle = _random.Next(360);
-	        int minimumDimension = _random.Next(4, 16);
+	        int minimumDimension = _random.Next(25, 50);
 
 	        Rectangle wholeMap = new Rectangle(-MapWidth, -MapHeight,MapWidth * 2,MapHeight * 2);
 	        Point center = (MapWidth / 2, MapHeight / 2);

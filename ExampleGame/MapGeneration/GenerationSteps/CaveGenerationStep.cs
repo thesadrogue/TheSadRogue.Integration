@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
-// using GoRogue.MapViews;
 using SadRogue.Primitives.GridViews;
 
 namespace ExampleGame.MapGeneration.GenerationSteps
@@ -16,14 +15,14 @@ namespace ExampleGame.MapGeneration.GenerationSteps
             {
                 for (int j = 0; j < _map.Height; j++)
                 {
-                    proposedMap[i, j] = PlaceWallLogic(i, j);
+                    proposedMap[i, j] = ShouldPlaceWall(i, j);
                 }
             }
             _map.ApplyOverlay(proposedMap);
             yield return null;
         }
         
-        public bool PlaceWallLogic(int x, int y)
+        public bool ShouldPlaceWall(int x, int y)
         {
             int numWalls = GetAdjacentWalls(x, y, 1, 1);
             if (_map[x, y])

@@ -36,7 +36,7 @@ namespace TheSadRogue.Integration
             Layer = layer;
         }
 
-        public RogueLikeEntity(Point position, Color foreground, int glyph) : this(foreground, Color.Black, glyph, 0)
+        public RogueLikeEntity(Point position, Color foreground, int glyph, int layer = 0) : this(foreground, Color.Black, glyph, layer)
         {
             Position = position;
         }
@@ -48,7 +48,7 @@ namespace TheSadRogue.Integration
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
             SadComponents = new RogueLikeComponentCollection();
-            
+            Layer = layer;
             Moved += SadConsole_Moved;
             Moved += GoRogue_Moved;
 
@@ -77,7 +77,7 @@ namespace TheSadRogue.Integration
             CurrentMap = newMap;
         }
 
-        public bool CanMove(Point position) => CurrentMap.GetTerrainAt(position).IsWalkable;
+        public bool CanMove(Point position) => CurrentMap!.GetTerrainAt(position)!.IsWalkable;
         public bool CanMoveIn(Direction direction) => CanMove(Position + direction);
 
         #endregion
