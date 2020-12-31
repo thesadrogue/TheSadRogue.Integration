@@ -43,29 +43,5 @@ namespace TheSadRogue.Integration.Tests.Components
 
             Assert.True(_collection.Contains<PlayerControlsComponent>());
         }
-        // [Fact]
-        // public void HasComponentsTest()
-        // {
-        //     entity = new TheSadRogue.Integration.RogueLikeEntity((0,0), 1);
-        //     
-        //     Assert.Empty(entity.GetComponents());
-        //     
-        //     var component = new PlayerControlsComponent();
-        //     
-        //     entity.AddComponent(component);
-        //     Assert.Single(entity.GetComponents());
-        // }
-        // [Fact]
-        // public void RemoveComponentsTest()
-        // {
-        //     entity = new TheSadRogue.Integration.RogueLikeEntity((0,0), 1);
-        //     
-        //     Assert.Empty(entity.GetComponents());
-        //     
-        //     var component = new PlayerControlsComponent();
-        //     
-        //     entity.AddComponent(component);
-        //     Assert.Single(entity.GetComponents());
-        // }
     }
 }

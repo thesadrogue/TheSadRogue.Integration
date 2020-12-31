@@ -1,5 +1,4 @@
 using System.Linq;
-using ExampleGame.MapGeneration;
 using GoRogue.MapGeneration;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;

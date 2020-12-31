@@ -4,7 +4,6 @@ using System.Linq;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using GoRogue.GameFramework.Components;
-using GoRogue.SpatialMaps;
 using SadConsole;
 using SadConsole.Entities;
 using SadRogue.Primitives;
@@ -54,6 +53,7 @@ namespace TheSadRogue.Integration
 
             Components.ComponentAdded += Component_Added;
             Components.ComponentRemoved += Component_Removed;
+
         }
         #endregion
         
@@ -87,6 +87,7 @@ namespace TheSadRogue.Integration
         public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;
         public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
         public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
+
         private void GoRogue_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
             if (Position != change.NewValue)
@@ -106,6 +107,7 @@ namespace TheSadRogue.Integration
             }
         }
         private void Component_Added(object? s, ComponentChangedEventArgs e)
+
         {
             if (!(e.Component is IGameObjectComponent c))
                 return;
@@ -122,6 +124,7 @@ namespace TheSadRogue.Integration
             if (e.Component is IGameObjectComponent c)
                 c.Parent = null;
         }
+
         #endregion
         
         #region components
