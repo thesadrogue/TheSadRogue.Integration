@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
-// using GoRogue.MapViews;
 using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
+    /// <summary>
+    /// Seeds a map GenerationContext for carving caves
+    /// </summary>
     public class CaveSeedingStep : GenerationStep
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)

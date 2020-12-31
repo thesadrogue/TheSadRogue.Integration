@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using GoRogue.MapGeneration;
 using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
+    /// <summary>
+    /// A very simple cellular automaton capable of generating cave systems
+    /// </summary>
     public class CaveGenerationStep : GenerationStep
     {
         private ISettableGridView<bool> _map = new ArrayView<bool>(4,4);

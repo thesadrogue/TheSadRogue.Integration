@@ -4,7 +4,7 @@ using GoRogue.MapGeneration;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
     public class CryptGenerationStep : GenerationStep
     {

@@ -1,7 +1,11 @@
 using System.Linq;
 using ExampleGame.MapGeneration;
+using GoRogue.MapGeneration;
+using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
+using TheSadRogue.Integration.MapGenerationSteps;
 using ScreenObject = SadConsole.ScreenObject; 
 using ScreenSurface = SadConsole.ScreenSurface; 
 using Console = SadConsole.Console;
@@ -41,8 +45,26 @@ namespace ExampleGame
 
         private RogueLikeMap GenerateMap()
         {
-            var generator = new MapGenerator(_mapWidth, _mapHeight);
-            return generator.GenerateMap();
+            var generator = new Generator(_mapWidth, _mapHeight);
+            generator.AddStep(new CompositeGenerationStep(_mapWidth, _mapHeight));
+            generator = generator.Generate();
+            var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
+
+            RogueLikeMap map = new RogueLikeMap(_mapWidth, _mapHeight, 4, Distance.Euclidean);
+            int floorGlyph = '_';
+            int wallGlyph = '#';
+            
+            for (int i = 0; i < map.Width; i++)
+            {
+                for (int j = 0; j < map.Height; j++)
+                {
+                    var here = (i, j);
+                    int glyph = generatedMap[here] ? floorGlyph : wallGlyph;
+                    map.SetTerrain(new RogueLikeEntity(here, glyph));
+                }
+            }
+
+            return map;
         }
 
         private RogueLikeEntity GeneratePlayerCharacter()

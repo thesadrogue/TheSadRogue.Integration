@@ -4,8 +4,11 @@ using GoRogue.MapGeneration;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.GenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
+    /// <summary>
+    /// Carves a walkable spiral tunnel through unwalkable space
+    /// </summary>
     public class SpiralGenerationStep : GenerationStep
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
@@ -29,6 +32,13 @@ namespace ExampleGame.MapGeneration.GenerationSteps
 
             yield return null;
         }
+        
+        /// <summary>
+        /// How to calculate the current position of the spiral
+        /// </summary>
+        /// <param name="origin">the starting point for the spiral</param>
+        /// <param name="theta">the current degree of rotation (in radians) around the origin.</param>
+        /// <returns>the cartesian point along the spiral given the current theta</returns>
         private Point Spiral(Point origin, double theta) => 
             origin + new PolarCoordinate(theta / 3, theta).ToCartesian();
     }
