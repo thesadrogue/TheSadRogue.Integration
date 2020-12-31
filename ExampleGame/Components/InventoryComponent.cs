@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using ExampleGame.Items;
-using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
 
 namespace ExampleGame.Components
@@ -13,19 +10,47 @@ namespace ExampleGame.Components
     {
         public ItemComponent? Wielded;
         public ItemComponent? Worn;
-        public ItemComponent? Pack;
         
         // quest items - needs 100 in each in order to summon the boss
-        public int HasSnow { get; private set; }
-        public int HasBlood  { get; private set; }
-        public int HasBone { get; private set; }
-        public int HasSlime { get; private set; }
+        public int Snow { get; private set; }
+        public int Bone { get; private set; }
+        public int Slime { get; private set; }
         
-        public InventoryComponent(ItemComponent wielded = null, ItemComponent worn = null, ItemComponent pack = null) : base(false, false, false, false, 2)
+        public InventoryComponent() : base(false, false, false, false, 2)
         {
-            Wielded = wielded;
-            Worn = worn;
-            Pack = pack;
+            Wielded = null;
+            Worn = null;
+            Snow = 0;
+            Bone = 0;
+            Slime = 0;
+        }
+
+        public void CollectSlime(int amount) => Slime += amount;
+        public void CollectBone(int amount) => Bone += amount;
+        public void CollectSnow(int amount) => Snow += amount;
+
+        public void EquipItem(ItemComponent item)
+        {
+            if (item.Slot == InventorySlot.Wielded)
+            {
+                RemoveCurrentlyWieldedItem();
+                Wielded = item;
+            }
+            
+            if (item.Slot == InventorySlot.Worn)
+            {
+                RemoveCurrentlyWornItem();
+                Worn = item;
+            }
+        }
+
+        private void RemoveCurrentlyWieldedItem()
+        {
+            //todo - drop item
+        }
+        private void RemoveCurrentlyWornItem()
+        {
+            //todo - drop item
         }
     }
 }

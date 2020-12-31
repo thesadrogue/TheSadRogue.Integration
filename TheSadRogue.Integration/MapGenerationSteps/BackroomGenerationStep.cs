@@ -2,17 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews; 
 
-namespace ExampleGame.MapGeneration.TerrainGenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
+    /// <summary>
+    /// Creates rectangles of walkable space in a brick-work pattern.
+    /// </summary>
     public class BackroomGenerationStep : GenerationStep
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
-            var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
+            var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
             var rooms = new List<Rectangle>();
             var largeRooms = new List<Rectangle>();
             

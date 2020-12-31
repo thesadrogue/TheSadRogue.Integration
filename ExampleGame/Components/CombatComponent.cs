@@ -1,4 +1,3 @@
-
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
 
@@ -13,8 +12,9 @@ namespace ExampleGame.Components
         public int WeaponDamage { get; private set; }
         public int HitPoints { get; private set; }
         public int BaseDamageResistance { get; }
-        public int ItemDamageResistance { get; private set; }
-        public int DamageResistance => BaseDamageResistance + ItemDamageResistance;
+        public int DamageResistanceFromItem { get; private set; }
+        public int DamageResistance => BaseDamageResistance + DamageResistanceFromItem;
+
         public int Damage => BaseDamage + WeaponDamage;
         
         public CombatComponent(int hp, int dr, int baseDamage) : base(false, false, false, false, 1)

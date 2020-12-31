@@ -3,7 +3,15 @@
 
 Plot: You come to awareness at the shrine in the center of the map. The only things nearby are an alter, a dagger, a tome, and an hourglass.
  
+<<<<<<< HEAD
+The tome contains the instructions to create a _Simulacrum_, sentient clone, out of Snow, Slime, and Bones. 
+You need to collect 100 units of each on the alter and place a weapon into its hand to bring it to life. 
+Get Snow from Frost Giants, get Slime from Cyborgs, and get Bones from Death-Worshippers.
+You have one turn of the hourglass, or 100 turns, to complete the Simularcum. 
+There is no mention of reward or punishment.
+=======
 The tome contains the instructions to create a _Simulacrum_, sentient clone, out of Snow, Slime, Blood, and Bones. You need to collect 100 units of each on the alter and place a weapon into its hand to bring it to life. You have one turn of the hourglass, or 500 turns, to complete the Simularcum. There is no mention of reward or punishment.
+>>>>>>> main
 
 As your attention returns to the room, the hourglass turns by it's own volition!
 
@@ -18,6 +26,20 @@ As your attention returns to the room, the hourglass turns by it's own volition!
 
 ## How to play
 
+<<<<<<< HEAD
+Characters have health (the player starts with 3), and they can gain additional hit points by finding Fountains littered throughout the dungeon. 
+All characters have 1 base damage, and all weapons (except the dagger) grant an additional 1 damage. 
+Characters can only possess three items: a wielded item, a worn item, and a stored item.
+
+Combat is turn based. 
+To __Attack__, Characters walk into an enemy.
+
+Characters who feel defensive may choose to __Block__. 
+Blocking characters take no damage for a round, and stun their attacker for a round. 
+
+Many enemies have special abilities which make them very difficult to fight. 
+There are two bosses which hold magic items that may make your quest easier or harder.
+=======
 Characters have health (the player starts with 2), and they can gain additional hit points by finding Fountains littered throughout the dungeon. All characters have 1 base damage, and all weapons (except the dagger) grant an additional 1 damage. Characters can only possess three items: a wielded item, a worn item, and a stored item.
 
 Combat is turn based. To __Attack__, Characters `Telegraph` their attack and choose the square(s) they wish to damage. Damage is dealt on the next round, after movement. Therefore, selecting to attack will automatically decide and resolve your next two turns.
@@ -89,3 +111,4 @@ There are several other factions which aren't related to the quest and only exis
 | Cursed | Lose every 10th round | 
 | Hexxed | Lose every 20th round | 
 | Charmed | Unable to attack the faction of a person who charmed you |
+>>>>>>> main

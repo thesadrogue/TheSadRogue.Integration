@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
 using SadRogue.Primitives;
+using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.TerrainGenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
     public class CryptGenerationStep : GenerationStep
     {
@@ -12,7 +12,7 @@ namespace ExampleGame.MapGeneration.TerrainGenerationSteps
         {
             int roomWidth = 13;
             int roomHeight = 6;
-            var map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
+            var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
             var rooms = new List<Rectangle>();
 
             for (int i = 0; i < map.Width; i += roomWidth)

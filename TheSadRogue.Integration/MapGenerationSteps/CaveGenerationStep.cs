@@ -1,28 +1,31 @@
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
-using GoRogue.MapViews;
+using SadRogue.Primitives.GridViews;
 
-namespace ExampleGame.MapGeneration.TerrainGenerationSteps
+namespace TheSadRogue.Integration.MapGenerationSteps
 {
+    /// <summary>
+    /// A very simple cellular automaton capable of generating cave systems
+    /// </summary>
     public class CaveGenerationStep : GenerationStep
     {
-        private ISettableMapView<bool> _map = new ArrayMap<bool>(4,4);
+        private ISettableGridView<bool> _map = new ArrayView<bool>(4,4);
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
-            _map = context.GetFirstOrNew<ISettableMapView<bool>>(()=> new ArrayMap<bool>(context.Width, context.Height));
-            var proposedMap = new ArrayMap<bool>(context.Width, context.Height);
+            _map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
+            var proposedMap = new ArrayView<bool>(context.Width, context.Height);
             for (int i = 0; i < _map.Width; i++)
             {
                 for (int j = 0; j < _map.Height; j++)
                 {
-                    proposedMap[i, j] = PlaceWallLogic(i, j);
+                    proposedMap[i, j] = ShouldPlaceWall(i, j);
                 }
             }
             _map.ApplyOverlay(proposedMap);
             yield return null;
         }
         
-        public bool PlaceWallLogic(int x, int y)
+        public bool ShouldPlaceWall(int x, int y)
         {
             int numWalls = GetAdjacentWalls(x, y, 1, 1);
             if (_map[x, y])
