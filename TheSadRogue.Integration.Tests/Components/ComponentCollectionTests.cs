@@ -43,5 +43,17 @@ namespace TheSadRogue.Integration.Tests.Components
 
             Assert.True(_collection.Contains<PlayerControlsComponent>());
         }
+        [Fact]
+        public void GetTest()
+        {
+            var component = new PlayerControlsComponent();
+            _collection.Add(component);
+
+            Assert.Single(_collection);
+
+            var newComponent = _collection.GetFirst<PlayerControlsComponent>();
+            Assert.NotNull(newComponent);
+            Assert.Equal(component, newComponent);
+        }
     }
 }
