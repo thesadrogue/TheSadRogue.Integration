@@ -24,11 +24,11 @@ namespace TheSadRogue.Integration.MapGenerationSteps
             _height = height;
             _stepSets = new List<GenerationStep[]>()
             {
-                //DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0).ToArray(),
+                DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0).ToArray(),
                 // new GenerationStep[] { new BackroomGenerationStep() },
                 // new GenerationStep[] { new ParallelogramGenerationStep() },
                 // new GenerationStep[] { new CryptGenerationStep() },
-                new GenerationStep[] { new SpiralGenerationStep() },
+                // new GenerationStep[] { new SpiralGenerationStep() },
 
                 // new GenerationStep[]
                 // {
@@ -75,8 +75,8 @@ namespace TheSadRogue.Integration.MapGenerationSteps
         /// <returns></returns>
         private IEnumerable<Region> GenerateRegions()
         {
-            double rotationAngle = 00;//_random.Next(360);
-            int minimumDimension = 75;//_random.Next(25, 50);
+            double rotationAngle = 45;//_random.Next(360);
+            int minimumDimension = 100;//_random.Next(25, 50);
 
             var wholeMap = new Rectangle(-_width, -_height,_width * 2,_height * 2);
             var center = (_width / 2, _height / 2);

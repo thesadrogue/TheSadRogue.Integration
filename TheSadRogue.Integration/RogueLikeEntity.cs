@@ -42,7 +42,7 @@ namespace TheSadRogue.Integration
         public RogueLikeEntity(Color foreground, Color background, int glyph, int layer) : base(foreground, background, glyph, layer)
         {
             IsWalkable = true;
-            IsTransparent = true;
+            IsTransparent = false;
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
@@ -109,7 +109,7 @@ namespace TheSadRogue.Integration
         private void Component_Added(object? s, ComponentChangedEventArgs e)
 
         {
-            if (!(e.Component is IGameObjectComponent c))
+            if (!(e.Component is IRogueLikeComponent c))
                 return;
 
             if (c.Parent != null)
@@ -117,6 +117,17 @@ namespace TheSadRogue.Integration
                     $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
 
             c.Parent = this;
+            if(c.IsKeyboard)
+                ComponentsKeyboard.Add(c);
+            if(c.IsMouse)
+                ComponentsMouse.Add(c);
+            if(c.IsUpdate)
+                ComponentsUpdate.Add(c);
+            if(c.IsRender)
+                ComponentsRender.Add(c);
+            
+            if(!c.IsKeyboard && !c.IsMouse && ! c.IsRender && !c.IsUpdate) 
+                ComponentsEmpty.Add(c);
         }
         
         private void Component_Removed(object? s, ComponentChangedEventArgs e)
@@ -130,15 +141,15 @@ namespace TheSadRogue.Integration
         #region components
         public void AddComponent(IRogueLikeComponent component)
         {
-            Components.Add(component);
-            // SadComponents.Add(component);
+            // Components.Add(component);
+            SadComponents.Add(component);
             // GoRogueComponents.Add(component);
         }
         public void AddComponents(IEnumerable<IRogueLikeComponent> components)
         {
-            Components.Add(components);
-            // foreach (var component in components)
-            //     SadComponents.Add(component);
+            // Components.Add(components);
+            foreach (var component in components)
+                SadComponents.Add(component);
             //
             // GoRogueComponents.Add(components);
         }
@@ -180,60 +191,6 @@ namespace TheSadRogue.Integration
 
         //todo - RemoveComponent<T>()
         //todo - RemoveComponents(???)
-        //
-        // public IEnumerable<TComponent> GetSadComponents<TComponent>() where TComponent : class, IComponent
-        // {
-        //     foreach (IComponent component in SadComponents)
-        //     {
-        //         if (component is TComponent tComponent)
-        //         {
-        //             yield return tComponent;
-        //         }
-        //     }
-        // }
-        //
-        // public TComponent GetSadComponent<TComponent>() where TComponent : class, IComponent
-        // {
-        //     foreach (IComponent component in SadComponents)
-        //     {
-        //         if (component is TComponent)
-        //             return (TComponent)component;
-        //     }
-        //
-        //     return null;
-        // }
-        //
-        // public bool HasSadComponent<TComponent>(out TComponent component)
-        //     where TComponent: class, IComponent
-        // {
-        //     foreach (IComponent comp in SadComponents)
-        //     {
-        //         if (comp is TComponent)
-        //         {
-        //             component = (TComponent)comp;
-        //             return true;
-        //         }
-        //     }
-        //
-        //     component = null;
-        //     return false;
-        // }
-        // public void SortComponents()
-        // {
-        //     
-        // }
-
-        // static int CompareComponent(IComponent left, IComponent right)
-        // {
-        //     if (left.SortOrder > right.SortOrder)
-        //         return 1;
-        //
-        //     if (left.SortOrder < right.SortOrder)
-        //         return -1;
-        //
-        //     return 0;
-        // }
-
         #endregion
     }
 }
