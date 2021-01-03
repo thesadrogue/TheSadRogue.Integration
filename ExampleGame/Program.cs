@@ -6,6 +6,8 @@ using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
+using TheSadRogue.Integration.MapGenerationSteps;
+#pragma warning disable 8618
 
 namespace ExampleGame
 {
@@ -16,8 +18,8 @@ namespace ExampleGame
     {
         public const int Width = 80;
         public const int Height = 25;
-        private const int MapWidth = 200;
-        private const int MapHeight = 125;
+        private const int MapWidth = 80;
+        private const int MapHeight = 25;
         public static RogueLikeMap Map;
         public static RogueLikeEntity PlayerCharacter;
         public static ScreenSurface MapWindow;
@@ -46,8 +48,8 @@ namespace ExampleGame
         private static RogueLikeMap GenerateMap()
         {
             var generator = new Generator(MapWidth, MapHeight)
+                .AddStep(new SpiralGenerationStep())
                 // .AddStep(new CompositeGenerationStep(MapWidth, MapHeight))
-                .AddSteps(new RandomViewFill())
                 .Generate();
             
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
@@ -61,7 +63,7 @@ namespace ExampleGame
                 for (int j = 0; j < map.Height; j++)
                 {
                     int glyph = generatedMap[(i, j)] ? floorGlyph : wallGlyph;
-                    bool walkable = !generatedMap[(i, j)];
+                    bool walkable = generatedMap[(i, j)];
                     map.SetTerrain(new RogueLikeEntity((i, j), glyph, walkable, walkable, 0));
                 }
             }

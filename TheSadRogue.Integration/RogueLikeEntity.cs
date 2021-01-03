@@ -65,8 +65,8 @@ namespace TheSadRogue.Integration
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
-            Moved += SadConsole_Moved;
-            Moved += GoRogue_Moved;
+            // Moved += SadConsole_Moved;
+            // Moved += GoRogue_Moved;
             PositionChanged += Position_Changed;
             GoRogueComponents = new ComponentCollection();
         }
