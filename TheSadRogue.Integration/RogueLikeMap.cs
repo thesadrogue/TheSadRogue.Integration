@@ -57,7 +57,15 @@ namespace TheSadRogue.Integration
             entityLayersSupportingMultipleItems)
         {
             Entities.ItemAdded += Entity_Added;
+            Entities.ItemMoved += Entity_Moved;
             EntityRenderer = new Renderer();
+            EntityRenderer.DoEntityUpdate = true;
+        }
+
+        private void Entity_Moved(object? sender, ItemMovedEventArgs<IGameObject> e)
+        {
+            e.Item.Position = e.NewPosition;
+            EntityRenderer.IsDirty = true;
         }
 
         /// <summary>

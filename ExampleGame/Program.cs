@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.Steps;
 using SadConsole;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -40,14 +41,13 @@ namespace ExampleGame
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
             GameHost.Instance.Screen.Children.Add(MapWindow);
-            // GameHost.Instance.Screen.Children.Add(Map.EntityRenderer);
         }
         
         private static RogueLikeMap GenerateMap()
         {
             var generator = new Generator(MapWidth, MapHeight)
                 // .AddStep(new CompositeGenerationStep(MapWidth, MapHeight))
-                .AddSteps(DefaultAlgorithms.DungeonMazeMapSteps(null, 1, 10, 3, 10))
+                .AddSteps(new RandomViewFill())
                 .Generate();
             
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
@@ -62,7 +62,7 @@ namespace ExampleGame
                 {
                     int glyph = generatedMap[(i, j)] ? floorGlyph : wallGlyph;
                     bool walkable = !generatedMap[(i, j)];
-                    map.SetTerrain(new RogueLikeEntity((i, j), glyph, walkable));
+                    map.SetTerrain(new RogueLikeEntity((i, j), glyph, walkable, walkable, 0));
                 }
             }
 

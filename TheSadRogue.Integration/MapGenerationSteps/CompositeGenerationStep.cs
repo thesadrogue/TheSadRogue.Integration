@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.Steps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
@@ -25,7 +26,9 @@ namespace TheSadRogue.Integration.MapGenerationSteps
             _stepSets = new List<GenerationStep[]>()
             {
                 DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0).ToArray(),
+                
                 // new GenerationStep[] { new BackroomGenerationStep() },
+                // new GenerationStep[] { new RandomViewFill(), },
                 // new GenerationStep[] { new ParallelogramGenerationStep() },
                 // new GenerationStep[] { new CryptGenerationStep() },
                 // new GenerationStep[] { new SpiralGenerationStep() },

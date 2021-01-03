@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GoRogue.Components;
 using GoRogue.GameFramework;
-using GoRogue.GameFramework.Components;
 using SadConsole;
 using SadConsole.Entities;
 using SadRogue.Primitives;
@@ -16,15 +15,33 @@ namespace TheSadRogue.Integration
     /// </summary>
     public class RogueLikeEntity : Entity, IGameObject
     {
-        public bool IsTransparent { get; set; }
-        public bool IsWalkable { get; set; }
-        
+        private bool _isTransparent;
+        private bool _isWalkable;
+
         public uint ID { get; }
         public int Layer { get; }
         public Map? CurrentMap { get; private set; }
+        public ITaggableComponentCollection GoRogueComponents { get; private set; }
 
-        public RogueLikeComponentCollection Components => SadComponents as RogueLikeComponentCollection;
-        public ITaggableComponentCollection GoRogueComponents => Components;
+        Point IGameObject.Position
+        {
+            get => base.Position;
+            set => base.Position = value;
+        }
+
+        /// <inheritdoc />
+        public bool IsTransparent
+        {
+            get => _isTransparent;
+            set => this.SafelySetProperty(ref _isTransparent, value, TransparencyChanged);
+        }        
+        
+        /// <inheritdoc />
+        public bool IsWalkable
+        {
+            get => _isWalkable;
+            set => this.SafelySetProperty(ref _isWalkable, value, WalkabilityChanged);
+        }
 
         #region initialization
         public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 0) : this(Color.White, Color.Black, glyph, layer)
@@ -43,44 +60,20 @@ namespace TheSadRogue.Integration
         {
             IsWalkable = true;
             IsTransparent = false;
+            Layer = layer;
+            
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
-            SadComponents = new RogueLikeComponentCollection();
-            Layer = layer;
             Moved += SadConsole_Moved;
             Moved += GoRogue_Moved;
-
-            Components.ComponentAdded += Component_Added;
-            Components.ComponentRemoved += Component_Removed;
-
+            PositionChanged += Position_Changed;
+            GoRogueComponents = new ComponentCollection();
         }
         #endregion
         
-        #region motion
         public void OnMapChanged(Map? newMap)
-        {
-            if (newMap != null)
-            {
-                if (Layer == 0)
-                {
-                    if (newMap.Terrain[Position] != this)
-                    {
-                        return; //do nothing
-                    }
-                }
-                else if (!newMap.Entities.Contains(this)) // It's an entity
-                {
-                    return;//do nothing
-                }
-            }
-            CurrentMap = newMap;
-        }
-
-        public bool CanMove(Point position) => CurrentMap!.GetTerrainAt(position)!.IsWalkable;
-        public bool CanMoveIn(Direction direction) => CanMove(Position + direction);
-
-        #endregion
+            => CurrentMap = newMap;
         
         #region event handlers
         
@@ -90,7 +83,7 @@ namespace TheSadRogue.Integration
 
         private void GoRogue_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
-            if (Position != change.NewValue)
+            if (Position != change.NewValue && this.CanMove(change.NewValue))
             {
                 Position = change.NewValue;
                 if (((IScreenObject)this).Position != change.NewValue)
@@ -99,42 +92,46 @@ namespace TheSadRogue.Integration
         }
         private void SadConsole_Moved(object? sender, GameObjectPropertyChanged<Point> change)
         {
-            if (Position != change.NewValue)
+            if (Position != change.NewValue && this.CanMove(change.NewValue))
             {
                 Position = change.NewValue;
                 if (((IGameObject)this).Position != change.NewValue)
                     Position = change.OldValue;
             }
         }
-        private void Component_Added(object? s, ComponentChangedEventArgs e)
 
-        {
-            if (!(e.Component is IRogueLikeComponent c))
-                return;
-
-            if (c.Parent != null)
-                throw new ArgumentException(
-                    $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
-
-            c.Parent = this;
-            if(c.IsKeyboard)
-                ComponentsKeyboard.Add(c);
-            if(c.IsMouse)
-                ComponentsMouse.Add(c);
-            if(c.IsUpdate)
-                ComponentsUpdate.Add(c);
-            if(c.IsRender)
-                ComponentsRender.Add(c);
-            
-            if(!c.IsKeyboard && !c.IsMouse && ! c.IsRender && !c.IsUpdate) 
-                ComponentsEmpty.Add(c);
-        }
+        private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
+            => Moved?.Invoke(sender, e.ToGameObjectPropertyChanged(this));
         
-        private void Component_Removed(object? s, ComponentChangedEventArgs e)
-        {
-            if (e.Component is IGameObjectComponent c)
-                c.Parent = null;
-        }
+        
+        // private void Component_Added(object? s, ComponentChangedEventArgs e)
+        // {
+        //     if (!(e.Component is IRogueLikeComponent c))
+        //         return;
+        //
+        //     if (c.Parent != null)
+        //         throw new ArgumentException(
+        //             $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
+        //
+        //     c.Parent = this;
+        //     if(c.IsKeyboard)
+        //         ComponentsKeyboard.Add(c);
+        //     if(c.IsMouse)
+        //         ComponentsMouse.Add(c);
+        //     if(c.IsUpdate)
+        //         ComponentsUpdate.Add(c);
+        //     if(c.IsRender)
+        //         ComponentsRender.Add(c);
+        //     
+        //     if(!c.IsKeyboard && !c.IsMouse && ! c.IsRender && !c.IsUpdate) 
+        //         ComponentsEmpty.Add(c);
+        // }
+        //
+        // private void Component_Removed(object? s, ComponentChangedEventArgs e)
+        // {
+        //     if (e.Component is IGameObjectComponent c)
+        //         c.Parent = null;
+        // }
 
         #endregion
         
@@ -142,36 +139,34 @@ namespace TheSadRogue.Integration
         public void AddComponent(IRogueLikeComponent component)
         {
             // Components.Add(component);
+            component.Parent = this;
             SadComponents.Add(component);
-            // GoRogueComponents.Add(component);
+            GoRogueComponents.Add(component);
         }
         public void AddComponents(IEnumerable<IRogueLikeComponent> components)
         {
-            // Components.Add(components);
             foreach (var component in components)
-                SadComponents.Add(component);
-            //
-            // GoRogueComponents.Add(components);
+                AddComponent(component);
         }
 
         public T GetComponent<T>(string tag = "")
         {
-            if (tag is "")
-            {
-                return GetComponents<T>().Distinct().FirstOrDefault();
-            }
-            else
-            {
-                //temporary
-                return GetComponents<T>().Distinct().FirstOrDefault();
-            }
+            //temporary
+            // if (tag is "")
+            // {
+            return GetComponents<T>().Distinct().FirstOrDefault();
+            // }
+            // else
+            // {
+            //     return GetComponents<T>().Distinct().FirstOrDefault();
+            // }
         }
         public IEnumerable<IRogueLikeComponent> GetComponents()
-            => GetGoRogueComponents().Concat(GetSadComponents<IRogueLikeComponent>());
+            => GoRogueComponents.GetAll<IRogueLikeComponent>().Concat(GetSadComponents<IRogueLikeComponent>());
 
         public IEnumerable<T> GetComponents<T>()
         {
-            foreach (var component in Components)
+            foreach (var component in GetComponents())
             {
                 if (component is T rlComponent)
                 {
@@ -179,15 +174,7 @@ namespace TheSadRogue.Integration
                 }
             }
         }
-        private IEnumerable<IRogueLikeComponent> GetGoRogueComponents()
-        {
-            foreach (var pair in GoRogueComponents)
-            {
-                yield return (IRogueLikeComponent)pair.Component;
-            }
-        }
 
-        public bool HasComponent<T>() => Components.Contains(typeof(T));
 
         //todo - RemoveComponent<T>()
         //todo - RemoveComponents(???)

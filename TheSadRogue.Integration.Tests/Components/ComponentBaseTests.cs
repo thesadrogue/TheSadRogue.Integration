@@ -14,10 +14,12 @@ namespace TheSadRogue.Integration.Tests.Components
             var component = new TestComponent(false, false, false, false);
             var entity = new Integration.RogueLikeEntity((0, 0), 1);
             
-            Assert.Empty(entity.Components);
+            Assert.Empty(entity.SadComponents);
+            Assert.Empty(entity.GoRogueComponents);
             
             entity.AddComponent(component);
-            Assert.Single(entity.Components);
+            Assert.Single(entity.SadComponents);
+            Assert.Single(entity.GoRogueComponents);
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GoRogue;
+using GoRogue.GameFramework;
 using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;
@@ -87,7 +88,8 @@ namespace TheSadRogue.Integration.Components
         {
             foreach (var motion in Motions)
                 if (keyboard.IsKeyPressed(motion.Key))
-                    Parent!.Position += motion.Value;
+                    if(Parent!.CanMoveIn(motion.Value))
+                        Parent!.Position += motion.Value;
 
             foreach (KeyValuePair<Keys,Action> action in Actions)
                 if (keyboard.IsKeyPressed(action.Key))
