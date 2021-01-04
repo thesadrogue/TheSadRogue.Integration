@@ -82,6 +82,7 @@ namespace ExampleGame
                 .First();
                 
             var player = new RogueLikeEntity(position,1, false, layer: 1);
+
             var motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
             player.IsFocused = true;

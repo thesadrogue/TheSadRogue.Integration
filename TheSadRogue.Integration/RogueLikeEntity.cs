@@ -61,7 +61,6 @@ namespace TheSadRogue.Integration
             IsWalkable = true;
             IsTransparent = false;
             Layer = layer;
-            
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
@@ -102,36 +101,6 @@ namespace TheSadRogue.Integration
 
         private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
             => Moved?.Invoke(sender, e.ToGameObjectPropertyChanged(this));
-        
-        
-        // private void Component_Added(object? s, ComponentChangedEventArgs e)
-        // {
-        //     if (!(e.Component is IRogueLikeComponent c))
-        //         return;
-        //
-        //     if (c.Parent != null)
-        //         throw new ArgumentException(
-        //             $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
-        //
-        //     c.Parent = this;
-        //     if(c.IsKeyboard)
-        //         ComponentsKeyboard.Add(c);
-        //     if(c.IsMouse)
-        //         ComponentsMouse.Add(c);
-        //     if(c.IsUpdate)
-        //         ComponentsUpdate.Add(c);
-        //     if(c.IsRender)
-        //         ComponentsRender.Add(c);
-        //     
-        //     if(!c.IsKeyboard && !c.IsMouse && ! c.IsRender && !c.IsUpdate) 
-        //         ComponentsEmpty.Add(c);
-        // }
-        //
-        // private void Component_Removed(object? s, ComponentChangedEventArgs e)
-        // {
-        //     if (e.Component is IGameObjectComponent c)
-        //         c.Parent = null;
-        // }
 
         #endregion
         
@@ -147,6 +116,7 @@ namespace TheSadRogue.Integration
         {
             foreach (var component in components)
                 AddComponent(component);
+
         }
 
         public T GetComponent<T>(string tag = "")
