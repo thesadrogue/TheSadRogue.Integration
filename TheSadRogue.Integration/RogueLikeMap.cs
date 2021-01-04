@@ -4,6 +4,7 @@ using GoRogue.GameFramework;
 using SadRogue.Primitives.GridViews;
 using GoRogue.SpatialMaps;
 using SadConsole;
+using SadConsole.Entities;
 using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration
@@ -37,13 +38,7 @@ namespace TheSadRogue.Integration
             }
         }
         
-        /// <summary>
-        /// A hacky way to render the initial state of entities present. TODO - come up with a better way
-        /// </summary>
-        // public IEnumerable<ICellSurface> Renderers => Entities.ToCellSurfaces(Width, Height);
-
-        public IScreenSurface? EntitySurface { get; private set; }
-
+        public Renderer EntityRenderer { get; }
 
         /// <summary>
         /// Creates a new RogueLikeMap
@@ -62,6 +57,15 @@ namespace TheSadRogue.Integration
             entityLayersSupportingMultipleItems)
         {
             Entities.ItemAdded += Entity_Added;
+            Entities.ItemMoved += Entity_Moved;
+            EntityRenderer = new Renderer();
+            EntityRenderer.DoEntityUpdate = true;
+        }
+
+        private void Entity_Moved(object? sender, ItemMovedEventArgs<IGameObject> e)
+        {
+            e.Item.Position = e.NewPosition;
+            EntityRenderer.IsDirty = true;
         }
 
         /// <summary>
@@ -74,18 +78,8 @@ namespace TheSadRogue.Integration
             if (Entities.Count(entity => entity.Item == eventArgs.Item) == 0)
             {
                 AddEntity(eventArgs.Item);
-                EntitySurface!.Children.Add((RogueLikeEntity)eventArgs.Item);
             }
-        }
-        
-        /// <summary>
-        /// Associates an IScreenSurface with this map.
-        /// </summary>
-        /// <param name="surface"></param>
-        /// <remarks>Needed in order to render non-terrain entities</remarks>
-        public void SetEntitySurface(IScreenSurface surface)
-        {
-            EntitySurface = surface;
+            EntityRenderer.Add((RogueLikeEntity)eventArgs.Item);
         }
     }
 }

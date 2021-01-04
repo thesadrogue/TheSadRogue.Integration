@@ -13,16 +13,20 @@ namespace TheSadRogue.Integration.MapGenerationSteps
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
-            Random random = new Random();
             var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
-            int originX = random.Next(0, map.Width);
-            int originY = random.Next(0, map.Height);
+            int originX = map.Width / 2;//random.Next(0, map.Width);
+            int originY = map.Height / 2; //random.Next(0, map.Height);
             Point origin = (originX, originY);
 
-            
 
-            for (double i = 0; i < 100; i += 0.01)
+            double increment = 0.001;
+            for (double i = 0; i < 125; i += increment)
             {
+                // if ((int) i % 10 == 0)
+                // {
+                //     i++;
+                //     increment /= 3;
+                // }
                 Point here = Spiral((originX, originY), i);
                 if (map.Contains(here))
                 {
@@ -40,6 +44,6 @@ namespace TheSadRogue.Integration.MapGenerationSteps
         /// <param name="theta">the current degree of rotation (in radians) around the origin.</param>
         /// <returns>the cartesian point along the spiral given the current theta</returns>
         private Point Spiral(Point origin, double theta) => 
-            origin + new PolarCoordinate(theta / 3, theta).ToCartesian();
+            origin + new PolarCoordinate(theta / 3, theta);
     }
 }
