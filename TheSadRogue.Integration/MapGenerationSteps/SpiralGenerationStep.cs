@@ -19,8 +19,8 @@ namespace TheSadRogue.Integration.MapGenerationSteps
             Point origin = (originX, originY);
 
 
-            double increment = 0.00001;
-            for (double i = 0; i < 50; i += increment)
+            double increment = 0.001;
+            for (double i = 0; i < 125; i += increment)
             {
                 // if ((int) i % 10 == 0)
                 // {
@@ -44,6 +44,6 @@ namespace TheSadRogue.Integration.MapGenerationSteps
         /// <param name="theta">the current degree of rotation (in radians) around the origin.</param>
         /// <returns>the cartesian point along the spiral given the current theta</returns>
         private Point Spiral(Point origin, double theta) => 
-            origin + new PolarCoordinate(8, theta / 19);
+            origin + new PolarCoordinate(theta / 3, theta);
     }
 }

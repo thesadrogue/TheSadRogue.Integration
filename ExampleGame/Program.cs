@@ -37,7 +37,10 @@ namespace ExampleGame
         private static void Init()
         {
             Map = GenerateMap();
-            MapWindow = new ScreenSurface(MapWidth, MapHeight, Map.TerrainCells.ToArray());
+            var cells = new ArrayView<ColoredGlyph>(MapWidth, MapHeight);
+            cells.ApplyOverlay(Map.TerrainView);
+
+            MapWindow = new ScreenSurface(MapWidth, MapHeight, cells);
             MapWindow.SadComponents.Add(Map.EntityRenderer);
             
             PlayerCharacter = GeneratePlayerCharacter();
@@ -48,8 +51,7 @@ namespace ExampleGame
         private static RogueLikeMap GenerateMap()
         {
             var generator = new Generator(MapWidth, MapHeight)
-                .AddStep(new SpiralGenerationStep())
-                // .AddStep(new CompositeGenerationStep(MapWidth, MapHeight))
+                .AddStep(new CompositeGenerationStep(MapWidth, MapHeight))
                 .Generate();
             
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
@@ -79,7 +81,7 @@ namespace ExampleGame
                 .ThenBy(p => p.Y)
                 .First();
                 
-            var player = new RogueLikeEntity(position,1, layer: 1);
+            var player = new RogueLikeEntity(position,1, false, layer: 1);
             var motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
             player.IsFocused = true;

@@ -25,21 +25,18 @@ namespace TheSadRogue.Integration.MapGenerationSteps
             _height = height;
             _stepSets = new List<GenerationStep[]>()
             {
-                // DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0).ToArray(),
-                
-                // new GenerationStep[] { new BackroomGenerationStep() },
-                // new GenerationStep[] { new RandomViewFill(), },
-                // new GenerationStep[] { new ParallelogramGenerationStep() },
-                // new GenerationStep[] { new CryptGenerationStep() },
+                DefaultAlgorithms.DungeonMazeMapSteps(null, 0, 0).ToArray(),
+                new GenerationStep[] { new BackroomGenerationStep() },
+                new GenerationStep[] { new ParallelogramGenerationStep() },
                 new GenerationStep[] { new SpiralGenerationStep() },
 
-                // new GenerationStep[]
-                // {
-                //     new CaveSeedingStep(),
-                //     new CaveGenerationStep(),
-                //     new CaveGenerationStep(),
-                //     new CaveGenerationStep(),
-                // },
+                new GenerationStep[]
+                {
+                    new RandomViewFill(),
+                    new CaveGenerationStep(),
+                    new CaveGenerationStep(),
+                    new CaveGenerationStep(),
+                },
             };
             _random = new Random();
             _regions = GenerateRegions();
@@ -79,13 +76,11 @@ namespace TheSadRogue.Integration.MapGenerationSteps
         private IEnumerable<Region> GenerateRegions()
         {
             double rotationAngle = 45;//_random.Next(360);
-            int minimumDimension = 100;//_random.Next(25, 50);
+            int minimumDimension = 14;//_random.Next(25, 50);
 
             var wholeMap = new Rectangle(-_width, -_height,_width * 2,_height * 2);
-            var center = (_width / 2, _height / 2);
-            
             foreach (var room in wholeMap.BisectRecursive(minimumDimension))
-                yield return Region.FromRectangle("room", room).Rotate(rotationAngle, center);
+                yield return Region.FromRectangle("room", room).Rotate(rotationAngle);
         }
     }
 }
