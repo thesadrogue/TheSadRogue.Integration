@@ -28,13 +28,8 @@ namespace TheSadRogue.Integration
             get
             {
                 var view = TerrainView;
-                for (int i = 0; i < Width; i++)
-                {
-                    for (int j = 0; j < Height; j++)
-                    {
-                        yield return view[i, j];
-                    }
-                }
+                foreach(var position in view.Positions())
+                    yield return view[position];
             }
         }
         
@@ -57,15 +52,8 @@ namespace TheSadRogue.Integration
             entityLayersSupportingMultipleItems)
         {
             Entities.ItemAdded += Entity_Added;
-            Entities.ItemMoved += Entity_Moved;
             EntityRenderer = new Renderer();
             EntityRenderer.DoEntityUpdate = true;
-        }
-
-        private void Entity_Moved(object? sender, ItemMovedEventArgs<IGameObject> e)
-        {
-            e.Item.Position = e.NewPosition;
-            EntityRenderer.IsDirty = true;
         }
 
         /// <summary>
@@ -75,11 +63,8 @@ namespace TheSadRogue.Integration
         /// <param name="eventArgs"></param>
         private void Entity_Added(object? sender, ItemEventArgs<IGameObject> eventArgs)
         {
-            if (Entities.Count(entity => entity.Item == eventArgs.Item) == 0)
-            {
-                AddEntity(eventArgs.Item);
-            }
-            EntityRenderer.Add((RogueLikeEntity)eventArgs.Item);
+            if (eventArgs.Item is Entity entity) 
+                EntityRenderer.Add(entity);
         }
     }
 }

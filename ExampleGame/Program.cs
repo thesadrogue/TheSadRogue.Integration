@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using GoRogue.MapGeneration;
-using GoRogue.MapGeneration.Steps;
 using SadConsole;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -45,7 +44,7 @@ namespace ExampleGame
             
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
-            GameHost.Instance.Screen.Children.Add(MapWindow);
+            GameHost.Instance.Screen = MapWindow;
         }
         
         private static RogueLikeMap GenerateMap()
@@ -57,17 +56,12 @@ namespace ExampleGame
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
 
             RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Euclidean);
-            int floorGlyph = '_';
-            int wallGlyph = '#';
             
-            for (int i = 0; i < map.Width; i++)
+            foreach(var location in map.Positions())
             {
-                for (int j = 0; j < map.Height; j++)
-                {
-                    int glyph = generatedMap[(i, j)] ? floorGlyph : wallGlyph;
-                    bool walkable = generatedMap[(i, j)];
-                    map.SetTerrain(new RogueLikeEntity((i, j), glyph, walkable, walkable, 0));
-                }
+                bool walkable = generatedMap[location];
+                int glyph = walkable ? '.' : '#';
+                map.SetTerrain(new RogueLikeEntity(location, glyph, walkable, walkable, 0));
             }
 
             return map;
@@ -75,12 +69,7 @@ namespace ExampleGame
 
         private static RogueLikeEntity GeneratePlayerCharacter()
         {
-            var position = Map.WalkabilityView.Positions()
-                .Where(p => Map.WalkabilityView[p])
-                .OrderBy(p => p.X)
-                .ThenBy(p => p.Y)
-                .First();
-                
+            var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
             var player = new RogueLikeEntity(position,1, false, layer: 1);
 
             var motionControl = new PlayerControlsComponent();
