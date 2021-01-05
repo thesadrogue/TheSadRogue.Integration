@@ -4,9 +4,9 @@ using System.Linq;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using SadConsole;
+using SadConsole.Components;
 using SadConsole.Entities;
 using SadRogue.Primitives;
-using TheSadRogue.Integration.Components;
 
 namespace TheSadRogue.Integration
 {
@@ -84,21 +84,20 @@ namespace TheSadRogue.Integration
         #endregion
         
         #region components
-        public void AddComponent(IRogueLikeComponent component)
+        public void AddComponent(object component, string tag = null)
         {
-            // Components.Add(component);
-            component.Parent = this;
-            SadComponents.Add(component);
-            GoRogueComponents.Add(component);
+            if(component is IComponent sc)
+                SadComponents.Add(sc);
+            
+            GoRogueComponents.Add(component, tag);
         }
-        public void AddComponents(IEnumerable<IRogueLikeComponent> components)
+        public void AddComponents(IEnumerable<object> components)
         {
             foreach (var component in components)
                 AddComponent(component);
-
         }
 
-        public T GetComponent<T>(string tag = "")
+        public T GetComponent<T>(string tag = null)
         {
             //temporary
             // if (tag is "")
@@ -110,18 +109,14 @@ namespace TheSadRogue.Integration
             //     return GetComponents<T>().Distinct().FirstOrDefault();
             // }
         }
-        public IEnumerable<IRogueLikeComponent> GetComponents()
-            => GoRogueComponents.GetAll<IRogueLikeComponent>().Concat(GetSadComponents<IRogueLikeComponent>());
+        public IEnumerable<object> GetComponents()
+            => GoRogueComponents.GetAll<object>().Concat(GetSadComponents<IComponent>()).Distinct();
 
         public IEnumerable<T> GetComponents<T>()
         {
             foreach (var component in GetComponents())
-            {
                 if (component is T rlComponent)
-                {
                     yield return rlComponent;
-                }
-            }
         }
 
 

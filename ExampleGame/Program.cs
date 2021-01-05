@@ -69,12 +69,7 @@ namespace ExampleGame
 
         private static RogueLikeEntity GeneratePlayerCharacter()
         {
-            var position = Map.WalkabilityView.Positions()
-                .Where(p => Map.WalkabilityView[p])
-                .OrderBy(p => p.X)
-                .ThenBy(p => p.Y)
-                .First();
-                
+            var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
             var player = new RogueLikeEntity(position,1, false, layer: 1);
 
             var motionControl = new PlayerControlsComponent();

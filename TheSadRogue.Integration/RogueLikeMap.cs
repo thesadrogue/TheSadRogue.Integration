@@ -63,9 +63,8 @@ namespace TheSadRogue.Integration
         /// <param name="eventArgs"></param>
         private void Entity_Added(object? sender, ItemEventArgs<IGameObject> eventArgs)
         {
-            if (eventArgs.Item is RogueLikeEntity entity) 
+            if (eventArgs.Item is Entity entity) 
                 EntityRenderer.Add(entity);
         }
-
     }
 }

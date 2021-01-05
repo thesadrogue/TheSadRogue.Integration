@@ -1,6 +1,8 @@
 using System;
 using GoRogue.GameFramework;
+using GoRogue.GameFramework.Components;
 using SadConsole;
+using SadConsole.Components;
 using SadConsole.Input;
 
 namespace TheSadRogue.Integration.Components
@@ -14,7 +16,7 @@ namespace TheSadRogue.Integration.Components
     /// fore has declared empty implementations so that no undo
     /// processing or errors occur.
     /// </remarks>
-    public abstract class RogueLikeComponentBase : IRogueLikeComponent
+    public abstract class RogueLikeComponentBase : IGameObjectComponent, IComponent
     {
         /// <summary>
         /// The Order in which the components are processed. Lower is earlier.
