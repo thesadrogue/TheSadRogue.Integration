@@ -18,21 +18,16 @@ namespace TheSadRogue.Integration.MapGenerationSteps
 
             int width = 10;
             int height = 5;
-            for (int i = 0; i < map.Width; i += width)
+            for (int i = -5; i < map.Width; i += width)
             {
                 for (int j = 0; j < map.Height; j += height)
                 {
-
                     var origin = new Point(i, j);
-                    var region = Region.RegularParallelogram(origin.ToString(), origin, width, height, 0);
-
+                    var region = Region.RegularParallelogram("parallelogram", origin, width, height, 0);
                     
                     foreach (var point in region.InnerPoints.Positions.Where(p=> map.Contains(p)))
                         map[point] = true;
                     
-                    foreach (var point in region.OuterPoints.Positions.Where(p=> map.Contains(p)))
-                        map[point] = false;
-
                     yield return null;
                 }
             }

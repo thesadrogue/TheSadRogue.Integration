@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GoRogue.MapGeneration;
 using SadRogue.Primitives;
@@ -7,30 +6,25 @@ using SadRogue.Primitives.GridViews;
 namespace TheSadRogue.Integration.MapGenerationSteps
 {
     /// <summary>
-    /// Carves a walkable spiral tunnel through unwalkable space
+    /// Carves a walkable spiral tunnel through non-walkable space
     /// </summary>
     public class SpiralGenerationStep : GenerationStep
     {
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
-            var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
-            int originX = map.Width / 2;//random.Next(0, map.Width);
-            int originY = map.Height / 2; //random.Next(0, map.Height);
-            Point origin = (originX, originY);
+            var map = context.GetFirstOrNew<ISettableGridView<bool>>
+                (()=> new ArrayView<bool>(context.Width, context.Height));
+
+            Point origin = (map.Width / 2, map.Height / 2);
 
 
             double increment = 0.001;
             for (double i = 0; i < 125; i += increment)
             {
-                // if ((int) i % 10 == 0)
-                // {
-                //     i++;
-                //     increment /= 3;
-                // }
-                Point here = Spiral((originX, originY), i);
+                Point here = Spiral(origin, i);
                 if (map.Contains(here))
                 {
-                    map[Spiral(origin, i)] = true;
+                    map[here] = true;
                 }
             }
 

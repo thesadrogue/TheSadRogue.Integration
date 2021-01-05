@@ -33,9 +33,8 @@ namespace TheSadRogue.Integration.MapGenerationSteps
                 new GenerationStep[]
                 {
                     new RandomViewFill(),
-                    new CaveGenerationStep(),
-                    new CaveGenerationStep(),
-                    new CaveGenerationStep(),
+                    new CellularAutomataAreaGeneration(),
+                    new CellularAutomataAreaGeneration(),
                 },
             };
             _random = new Random();

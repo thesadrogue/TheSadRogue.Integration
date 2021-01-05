@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GoRogue.MapGeneration;
+using GoRogue.MapGeneration.ContextComponents;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews; 
 
@@ -12,11 +13,13 @@ namespace TheSadRogue.Integration.MapGenerationSteps
     /// </summary>
     public class BackroomGenerationStep : GenerationStep
     {
+        public ItemList<Rectangle> Rooms = new ItemList<Rectangle>();
+        
         protected override IEnumerator<object?> OnPerform(GenerationContext context)
         {
             Random random = new Random();
             var map = context.GetFirstOrNew<ISettableGridView<bool>>(()=> new ArrayView<bool>(context.Width, context.Height));
-            var rooms = new List<Rectangle>();
+            Rooms = new ItemList<Rectangle>();
             var largeRooms = new List<Rectangle>();
             
             int thirdWidth = map.Width / 3;
@@ -60,17 +63,19 @@ namespace TheSadRogue.Integration.MapGenerationSteps
             }
 
             foreach(var rectangle in largeRooms)
-                rooms.AddRange(rectangle.BisectRecursive(random.Next(3,9)));
+                Rooms.AddRange(rectangle.BisectRecursive(random.Next(3,9)), "backroom");
 
-            foreach (var room in rooms)
+            foreach (var room in Rooms)
             {
-                foreach (var point in room.Positions())
+                foreach (var point in room.Item.Positions())
                 {
-                    if (room.PerimeterPositions().Contains(point))
+                    if (room.Item.PerimeterPositions().Contains(point))
                         map[point] = false;
                     else
                         map[point] = true;
                 }
+
+                yield return null;
             }
             
             yield return null;

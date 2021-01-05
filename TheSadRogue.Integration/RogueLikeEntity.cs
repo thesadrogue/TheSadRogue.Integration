@@ -64,8 +64,6 @@ namespace TheSadRogue.Integration
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
             Appearance = new ColoredGlyph(foreground, background, glyph);
-            // Moved += SadConsole_Moved;
-            // Moved += GoRogue_Moved;
             PositionChanged += Position_Changed;
             GoRogueComponents = new ComponentCollection();
         }
@@ -79,25 +77,6 @@ namespace TheSadRogue.Integration
         public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;
         public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
         public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
-
-        private void GoRogue_Moved(object? sender, GameObjectPropertyChanged<Point> change)
-        {
-            if (Position != change.NewValue && this.CanMove(change.NewValue))
-            {
-                Position = change.NewValue;
-                if (((IScreenObject)this).Position != change.NewValue)
-                    Position = change.OldValue;
-            }
-        }
-        private void SadConsole_Moved(object? sender, GameObjectPropertyChanged<Point> change)
-        {
-            if (Position != change.NewValue && this.CanMove(change.NewValue))
-            {
-                Position = change.NewValue;
-                if (((IGameObject)this).Position != change.NewValue)
-                    Position = change.OldValue;
-            }
-        }
 
         private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
             => Moved?.Invoke(sender, e.ToGameObjectPropertyChanged(this));
