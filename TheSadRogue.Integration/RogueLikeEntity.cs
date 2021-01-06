@@ -109,17 +109,16 @@ namespace TheSadRogue.Integration
             //     return GetComponents<T>().Distinct().FirstOrDefault();
             // }
         }
-        public IEnumerable<object> GetComponents()
-            => GoRogueComponents.GetAll<object>().Concat(GetSadComponents<IComponent>()).Distinct();
-
+        
+        //public T GetComponent<T>() => GoRogueComponents.GetFirst<T>();
+        
         public IEnumerable<T> GetComponents<T>()
         {
-            foreach (var component in GetComponents())
-                if (component is T rlComponent)
+            foreach (var component in GoRogueComponents)
+                if (component.Component is T rlComponent)
                     yield return rlComponent;
         }
-
-
+        
         //todo - RemoveComponent<T>()
         //todo - RemoveComponents(???)
         #endregion
