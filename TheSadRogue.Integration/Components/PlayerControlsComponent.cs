@@ -56,6 +56,11 @@ namespace TheSadRogue.Integration.Components
         {
             _motions = motions;
         }    
+        /// <summary>
+        /// Create a PlayerControlsComponent with the provided dictionary of keys to movement directions and keys to actions
+        /// </summary>
+        /// <param name="motions"></param>
+        /// <param name="actions"></param>
         public PlayerControlsComponent(Dictionary<Keys, Direction> motions, Dictionary<Keys, Action> actions) : this()
         {
             _motions = motions;

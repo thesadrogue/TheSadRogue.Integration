@@ -1,6 +1,7 @@
 using System;
 using SadConsole;
 using SadConsole.Input;
+using SadRogue.Primitives;
 using TheSadRogue.Integration.Components;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace TheSadRogue.Integration.Tests.Components
         public void AddTest()
         {
             var component = new TestComponent();
-            var entity = new Integration.RogueLikeEntity((0, 0), 1);
+            var entity = new RogueLikeEntity((0,0), Color.White,1);
             
             Assert.Empty(entity.SadComponents);
             Assert.Empty(entity.GoRogueComponents);

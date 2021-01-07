@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GoRogue.Components;
 using GoRogue.GameFramework;
+using GoRogue.GameFramework.Components;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;
@@ -10,9 +11,6 @@ using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration
 {
-    /// <summary>
-    /// Everything that will be rendered to the screen, except for written text
-    /// </summary>
     public class RogueLikeEntity : Entity, IGameObject
     {
         private bool _isTransparent;
@@ -44,22 +42,21 @@ namespace TheSadRogue.Integration
         }
 
         #region initialization
-        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 0) : this(Color.White, Color.Black, glyph, layer)
+        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
+            : this(position, Color.White, Color.Black, glyph, walkable, transparent, layer)
         {
+        }
+
+        public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
+            : this(position, foreground, Color.Black, glyph, walkable, transparent, layer)
+        {
+        }
+        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
+            : base(foreground, background, glyph, layer)
+        {            
             Position = position;
             IsWalkable = walkable;
             IsTransparent = transparent;
-            Layer = layer;
-        }
-
-        public RogueLikeEntity(Point position, Color foreground, int glyph, int layer = 0) : this(foreground, Color.Black, glyph, layer)
-        {
-            Position = position;
-        }
-        public RogueLikeEntity(Color foreground, Color background, int glyph, int layer) : base(foreground, background, glyph, layer)
-        {
-            IsWalkable = true;
-            IsTransparent = false;
             Layer = layer;
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
@@ -88,6 +85,9 @@ namespace TheSadRogue.Integration
         {
             if(component is IComponent sc)
                 SadComponents.Add(sc);
+
+            if (component is IGameObjectComponent goc)
+                goc.Parent = this;
             
             GoRogueComponents.Add(component, tag);
         }

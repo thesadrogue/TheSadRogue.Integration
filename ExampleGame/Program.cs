@@ -21,7 +21,7 @@ namespace ExampleGame
         private const int MapHeight = 25;
         public static RogueLikeMap Map;
         public static RogueLikeEntity PlayerCharacter;
-        public static ScreenSurface MapWindow;
+        public static SettableCellSurface MapWindow;
         static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
@@ -39,12 +39,12 @@ namespace ExampleGame
             var cells = new ArrayView<ColoredGlyph>(MapWidth, MapHeight);
             cells.ApplyOverlay(Map.TerrainView);
 
-            MapWindow = new ScreenSurface(MapWidth, MapHeight, cells);
-            MapWindow.SadComponents.Add(Map.EntityRenderer);
+            MapWindow = new SettableCellSurface(Map, Width, Height);
+            // MapWindow.SadComponents.Add(Map.EntityRenderer);
             
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
-            GameHost.Instance.Screen = MapWindow;
+            GameHost.Instance.Screen = Map.CreateRenderer();
         }
         
         private static RogueLikeMap GenerateMap()
@@ -61,7 +61,7 @@ namespace ExampleGame
             {
                 bool walkable = generatedMap[location];
                 int glyph = walkable ? '.' : '#';
-                map.SetTerrain(new RogueLikeEntity(location, glyph, walkable, walkable, 0));
+                map.SetTerrain(new RogueLikeCell(location, Color.White, Color.Black, glyph, 0, walkable, walkable));
             }
 
             return map;
@@ -70,7 +70,7 @@ namespace ExampleGame
         private static RogueLikeEntity GeneratePlayerCharacter()
         {
             var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
-            var player = new RogueLikeEntity(position,1, false, layer: 1);
+            var player = new RogueLikeEntity(position, 1, false, true, 1);
 
             var motionControl = new PlayerControlsComponent();
             player.AddComponent(motionControl);
