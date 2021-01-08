@@ -4,6 +4,7 @@
         <Nullable>enable</Nullable>
         <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
         <LangVersion>9</LangVersion>
+        <PackageVersion>0.0.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>

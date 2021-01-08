@@ -17,7 +17,7 @@ namespace TheSadRogue.Integration.Tests
             Assert.Equal('1', entity.Appearance.Glyph);
             Assert.Equal(new Point(0,0), entity.Position);
             Assert.True(entity.IsWalkable); //the default
-            Assert.False(entity.IsTransparent); //the default
+            Assert.True(entity.IsTransparent); //the default
         }
         
         [Fact]
