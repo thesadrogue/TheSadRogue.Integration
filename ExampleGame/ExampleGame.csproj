@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="GoRogue" Version="3.0.0-alpha01" />
+      <PackageReference Include="SadConsole.Host.SFML" Version="9.0.0-beta3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TheSadRogue.Integration\TheSadRogue.Integration.csproj" />
+    </ItemGroup>
+
+</Project>
