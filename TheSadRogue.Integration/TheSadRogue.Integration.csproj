@@ -5,6 +5,31 @@
         <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
         <LangVersion>9</LangVersion>
         <PackageVersion>0.0.0</PackageVersion>
+		
+		<!--
+        Warnings disabled project-wide:
+          - CA1043: GoRogue explicitly permits non-integral/string values to be used as indexers (Point for IMapView)
+          - CA1303: Exception strings are non-localized to avoid generating an exception within an exception
+          - CA1814: Multi-dimensional array usage in GoRogue is for maps and thus will not waste space
+          - CA1710: Suffix of IEnumerable implementations containing collection does not make sense for GoRogue
+                    structures; example: Region => PointCollection??  What would Area be?  This convention only makes
+                    sense for standard library, generic data structures/additions
+          - CA1305: Format providers are not used in string exception messages (again to avoid potentiall generating an
+                    exception inside an exception).
+          - CA1051: Microsoft guidance on preferring readonly fields to get-only properties to avoid defensive copies
+                    when it comes to structs directly contradicts this warning.  Instance fields are necessary for maximum
+                    performance in many instances with value types.  Further, field exposure is required to allow passing
+                    a parameter via "ref".
+          - CA1307: In typical string comparisons, ordinal behavior is desired, as they are only compared for
+                    equality, not sort-order.
+          - CA2211: GoRogue specifically allows static mutable fields for configuration options like
+                    GlobalRandom.DefaultRNG and Dice parsers.  These fields explicitly document that changing them is not
+                    thread-safe behavior, and that they are meant as configuration to be performed during application
+                    initialization.  This addresses the main concerns with static mutable fields (thread safety), without
+                    costing non-trivial code complexity and performance.
+          - CA1062: Nullability validation is performed by C#8 nullable reference types.
+        -->
+        <NoWarn>CA1043;CA1303;CA1814;CA1710;CA1305;CA1051;CA1307;CA2211;CA1062</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
