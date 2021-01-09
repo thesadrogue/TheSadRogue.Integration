@@ -101,6 +101,15 @@ namespace TheSadRogue.Integration
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Remove(sadComponent);
+
+            if (e.Component is IGameObjectComponent goRogueComponent)
+            {
+                if (goRogueComponent.Parent != null)
+                    throw new ArgumentException(
+                        $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
+                
+                goRogueComponent.Parent = this;
+            }
         }
 
         private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
