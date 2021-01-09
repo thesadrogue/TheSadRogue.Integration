@@ -108,7 +108,7 @@ namespace TheSadRogue.Integration
                     throw new ArgumentException(
                         $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
                 
-                goRogueComponent.Parent = this;
+                goRogueComponent.Parent = null;
             }
         }
 
