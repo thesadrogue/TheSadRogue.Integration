@@ -18,7 +18,7 @@ namespace TheSadRogue.Integration.Tests.Components
             Assert.Empty(entity.SadComponents);
             Assert.Empty(entity.GoRogueComponents);
             
-            entity.AddComponent(component);
+            entity.AllComponents.Add(component);
             Assert.Single(entity.SadComponents);
             Assert.Single(entity.GoRogueComponents);
         }

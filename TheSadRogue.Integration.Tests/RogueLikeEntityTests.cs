@@ -48,7 +48,7 @@ namespace TheSadRogue.Integration.Tests
             Assert.Equal(4, component.Motions.Count);
             Assert.Empty(component.Actions);
             
-            entity.AddComponent(component);
+            entity.AllComponents.Add(component);
             
             Assert.Single(entity.SadComponents);
             Assert.Single(entity.GoRogueComponents);

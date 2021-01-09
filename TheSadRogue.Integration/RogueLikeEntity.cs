@@ -20,6 +20,7 @@ namespace TheSadRogue.Integration
         public int Layer { get; }
         public Map? CurrentMap { get; private set; }
         public ITaggableComponentCollection GoRogueComponents { get; private set; }
+        
         /// <summary>
         /// Each and every component on this entity
         /// </summary>
@@ -73,8 +74,8 @@ namespace TheSadRogue.Integration
             Layer = layer;
             
             GoRogueComponents = new ComponentCollection();
-            GoRogueComponents.ComponentAdded += On_GoRogueComponentAdded;
-            GoRogueComponents.ComponentRemoved += On_GoRogueComponentRemoved;
+            AllComponents.ComponentAdded += On_GoRogueComponentAdded;
+            AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
         }
         #endregion
         
@@ -91,6 +92,9 @@ namespace TheSadRogue.Integration
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Add(sadComponent);
+            if (e.Component is IGameObjectComponent goRogueComponent)
+                goRogueComponent.Parent = this;
+
         }
 
         public void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
@@ -102,46 +106,6 @@ namespace TheSadRogue.Integration
         private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
             => Moved?.Invoke(sender, new GameObjectPropertyChanged<Point>(this, e.OldValue, e.NewValue));
 
-        #endregion
-        
-        #region components
-        public void AddComponent(object component, string tag = null)
-        {
-            if (component is IGameObjectComponent goc)
-                goc.Parent = this;
-            
-            GoRogueComponents.Add(component, tag);
-        }
-        public void AddComponents(IEnumerable<object> components)
-        {
-            foreach (var component in components)
-                AddComponent(component);
-        }
-
-        public T GetComponent<T>(string tag = null)
-        {
-            //temporary
-            // if (tag is "")
-            // {
-            return GetComponents<T>().Distinct().FirstOrDefault();
-            // }
-            // else
-            // {
-            //     return GetComponents<T>().Distinct().FirstOrDefault();
-            // }
-        }
-        
-        //public T GetComponent<T>() => GoRogueComponents.GetFirst<T>();
-        
-        public IEnumerable<T> GetComponents<T>()
-        {
-            foreach (var component in GoRogueComponents)
-                if (component.Component is T rlComponent)
-                    yield return rlComponent;
-        }
-        
-        //todo - RemoveComponent<T>()
-        //todo - RemoveComponents(???)
         #endregion
     }
 }
