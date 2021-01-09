@@ -17,7 +17,7 @@ namespace TheSadRogue.Integration
         private bool _isWalkable;
 
         public uint ID { get; }
-        public int Layer { get; }
+        public int Layer => ZIndex;
         public Map? CurrentMap { get; private set; }
         public ITaggableComponentCollection GoRogueComponents { get; private set; }
         
@@ -52,16 +52,16 @@ namespace TheSadRogue.Integration
         }
 
         #region initialization
-        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
+        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1) 
             : this(position, Color.White, Color.Black, glyph, walkable, transparent, layer)
         { }
 
-        public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
+        public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true, bool transparent = true, int layer = 1) 
             : this(position, foreground, Color.Black, glyph, walkable, transparent, layer)
         { }
         
-        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 0) 
-            : base(foreground, background, glyph, layer)
+        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1) 
+            : base(foreground, background, glyph, layer != 0 ? layer : throw new ArgumentException($"{nameof(RogueLikeEntity)} objects may not reside on the terrain layer.", nameof(layer)))
         {            
             Position = position;
             PositionChanged += Position_Changed;
@@ -70,8 +70,6 @@ namespace TheSadRogue.Integration
             
             IsWalkable = walkable;
             IsTransparent = transparent;
-            
-            Layer = layer;
             
             GoRogueComponents = new ComponentCollection();
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
@@ -93,8 +91,13 @@ namespace TheSadRogue.Integration
             if (e.Component is IComponent sadComponent)
                 SadComponents.Add(sadComponent);
             if (e.Component is IGameObjectComponent goRogueComponent)
-                goRogueComponent.Parent = this;
+            {
+                if (goRogueComponent.Parent != null)
+                    throw new ArgumentException(
+                        $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
 
+                goRogueComponent.Parent = this;
+            }
         }
 
         public void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
@@ -104,10 +107,6 @@ namespace TheSadRogue.Integration
 
             if (e.Component is IGameObjectComponent goRogueComponent)
             {
-                if (goRogueComponent.Parent != null)
-                    throw new ArgumentException(
-                        $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
-                
                 goRogueComponent.Parent = null;
             }
         }
