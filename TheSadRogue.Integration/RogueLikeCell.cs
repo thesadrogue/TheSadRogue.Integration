@@ -18,7 +18,7 @@ namespace TheSadRogue.Integration
         /// <summary>
         /// The ColoredGlyph of this cell
         /// </summary>
-        public ColoredGlyph? Appearance { get; }
+        public ColoredGlyph Appearance { get; }
         
         /// <summary>
         /// Fired when the Appearance is changed.
@@ -54,11 +54,11 @@ namespace TheSadRogue.Integration
         /// <param name="transparent">Whether the Cell is considered in Field-of-View algorithms</param>
         /// <param name="idGenerator">The function which produces the unique ID for this Cell</param>
         /// <param name="customComponentContainer">Accepts a custom collection</param>
-        public RogueLikeCell(Point position, ColoredGlyph glyph, int layer, bool walkable = true, bool transparent = true, 
+        public RogueLikeCell(Point position, ColoredGlyph appearance, int layer, bool walkable = true, bool transparent = true, 
             Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null) 
             : base(position, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
-            Appearance = glyph;
+            Appearance = appearance;
         }
 
         /// <summary>
