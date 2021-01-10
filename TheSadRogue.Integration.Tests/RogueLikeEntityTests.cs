@@ -1,4 +1,3 @@
-using SadConsole;
 using SadRogue.Primitives;
 using TheSadRogue.Integration.Components;
 using Xunit;

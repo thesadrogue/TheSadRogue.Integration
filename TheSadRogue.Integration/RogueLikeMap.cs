@@ -16,17 +16,20 @@ namespace TheSadRogue.Integration
     public class RogueLikeMap : Map
     {
         private readonly List<ScreenSurface> _renderers;
-        
+
         /// <summary>
         /// List of renderers (ScreenSurfaces) that currently render the map.
         /// </summary>
         public IReadOnlyList<ScreenSurface> Renderers => _renderers.AsReadOnly();
 
         /// <summary>
-        /// An IGridView of the ColoredGlyphs on the Terrain layer (0)
+        /// An IGridView of the ColoredGlyphs on the Terrain layer (0) that will produce a fully
+        /// transparent appearance if there is no terrain object at the requested location.
         /// </summary>
-        public IGridView<ColoredGlyph> TerrainView
-            => new LambdaTranslationGridView<IGameObject, ColoredGlyph>(Terrain, val => ((RogueLikeCell)val).Appearance);
+        public readonly IGridView<ColoredGlyph> TerrainView;
+
+        private static readonly ColoredGlyph _transparentAppearance =
+            new ColoredGlyph(Color.Transparent, Color.Transparent, 0, Mirror.None);
 
 
         /// <summary>
@@ -48,9 +51,8 @@ namespace TheSadRogue.Integration
             Entities.ItemAdded += Entity_Added;
             Entities.ItemMoved += Entity_Moved;
             _renderers = new List<ScreenSurface>();
-            
-            // EntityRenderer = new Renderer();
-            // EntityRenderer.DoEntityUpdate = true;
+
+            TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
         }
 
         /// <summary>
@@ -68,11 +70,11 @@ namespace TheSadRogue.Integration
 
             // Create surface representing the terrain layer of the map
             var cellSurface = new SettableCellSurface(this, viewWidth, viewHeight);
-            
+
             // Create screen surface that renders that cell surface and keep track of it
             var renderer = new ScreenSurface(cellSurface, font, fontSize);
             _renderers.Add(renderer);
-            
+
             // Create an EntityRenderer and configure it with all the appropriate entities,
             // then add it to the main surface
             var entityRenderer = new Renderer();
@@ -90,7 +92,7 @@ namespace TheSadRogue.Integration
         /// </summary>
         /// <param name="renderer">The renderer to unlink.</param>
         public void DisposeOfRenderer(ScreenSurface renderer) => _renderers.Remove(renderer);
-        
+
         /// <summary>
         /// Invoked when an entity is added via Map.AddEntity
         /// </summary>
@@ -105,14 +107,14 @@ namespace TheSadRogue.Integration
                     terrain.AppearanceChanged += Terrain_AppearanceChanged;
                     Terrain_AppearanceChanged(terrain, EventArgs.Empty);
                     break;
-                
+
                 case RogueLikeEntity entity:
                     // Add to any entity renderers we have
                     foreach (var renderer in _renderers)
                         renderer.GetSadComponent<Renderer>()?.Add(entity);
-                    
+
                     break;
-                
+
                 default:
                     throw new InvalidOperationException(
                         $"Objects added to a {nameof(RogueLikeMap)} must be of type {nameof(RogueLikeCell)} for terrain, or {nameof(RogueLikeEntity)} for non-terrain");
@@ -134,12 +136,15 @@ namespace TheSadRogue.Integration
                     surface.IsDirty = true;
             }
         }
-        
+
         private void Terrain_AppearanceChanged(object? sender, EventArgs e)
         {
             foreach (var surface in _renderers)
                 surface.IsDirty = true;
-            
+
         }
+
+        private static ColoredGlyph GetTerrainAppearance(IGameObject? gameObject)
+            => ((RogueLikeCell?) gameObject)?.Appearance ?? _transparentAppearance;
     }
 }
