@@ -31,7 +31,6 @@ namespace TheSadRogue.Integration
         private static readonly ColoredGlyph _transparentAppearance =
             new ColoredGlyph(Color.Transparent, Color.Transparent, 0, Mirror.None);
 
-
         /// <summary>
         /// Creates a new RogueLikeMap
         /// </summary>
@@ -43,15 +42,15 @@ namespace TheSadRogue.Integration
         /// <param name="layersBlockingTransparency">Layers which should factor into transparency</param>
         /// <param name="entityLayersSupportingMultipleItems">How many entity layers support multiple entities per layer</param>
         public RogueLikeMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
-            uint layersBlockingWalkability = 4294967295, uint layersBlockingTransparency = 4294967295,
-            uint entityLayersSupportingMultipleItems = 0) : base(width, height, numberOfEntityLayers,
+            uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
+            uint entityLayersSupportingMultipleItems = uint.MaxValue) : base(width, height, numberOfEntityLayers,
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
             entityLayersSupportingMultipleItems)
         {
-            Entities.ItemAdded += Entity_Added;
-            Entities.ItemMoved += Entity_Moved;
-            _renderers = new List<ScreenSurface>();
+            ObjectAdded += Object_Added;
+            ObjectRemoved += Object_Removed;
 
+            _renderers = new List<ScreenSurface>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
         }
 
@@ -93,14 +92,9 @@ namespace TheSadRogue.Integration
         /// <param name="renderer">The renderer to unlink.</param>
         public void DisposeOfRenderer(ScreenSurface renderer) => _renderers.Remove(renderer);
 
-        /// <summary>
-        /// Invoked when an entity is added via Map.AddEntity
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        private void Entity_Added(object? sender, ItemEventArgs<IGameObject> eventArgs)
+        private void Object_Added(object? sender, ItemEventArgs<IGameObject> e)
         {
-            switch (eventArgs.Item)
+            switch (e.Item)
             {
                 case RogueLikeCell terrain:
                     // Ensure we flag the surfaces of renderers as dirty on the add and on subsequent appearance changed events
@@ -121,19 +115,24 @@ namespace TheSadRogue.Integration
             }
         }
 
-        /// <summary>
-        /// Invoked when an entity is added via Map.AddEntity
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        private void Entity_Moved(object? sender, ItemMovedEventArgs<IGameObject> eventArgs)
+        private void Object_Removed(object? sender, ItemEventArgs<IGameObject> e)
         {
-            if(eventArgs.Item is RogueLikeEntity rlEntity)
+            switch (e.Item)
             {
-                rlEntity.Position = eventArgs.NewPosition;
-                // rlEntity.Cell.Position = eventArgs.NewPosition;
-                foreach (var surface in _renderers)
-                    surface.IsDirty = true;
+                case RogueLikeCell terrain:
+                    // Ensure we flag the surfaces of renderers as dirty on the remove and unlike our changed handler
+                    terrain.AppearanceChanged -= Terrain_AppearanceChanged;
+                    Terrain_AppearanceChanged(terrain, EventArgs.Empty);
+                    break;
+
+                case RogueLikeEntity entity:
+                    // Remove from any entity renderers we have
+                    foreach (var renderer in _renderers)
+                    {
+                        var entityRenderer = renderer.GetSadComponent<Renderer>();
+                        entityRenderer?.Remove(entity);
+                    }
+                    break;
             }
         }
 
@@ -141,7 +140,6 @@ namespace TheSadRogue.Integration
         {
             foreach (var surface in _renderers)
                 surface.IsDirty = true;
-
         }
 
         private static ColoredGlyph GetTerrainAppearance(IGameObject? gameObject)
