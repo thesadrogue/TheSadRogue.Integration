@@ -20,6 +20,7 @@ namespace TheSadRogue.Integration.Maps
     public abstract class RogueLikeMapBase : Map, IScreenObject
     {
         private readonly List<ScreenSurface> _renderers;
+        private readonly Dictionary<ScreenSurface, Renderer> _surfaceEntityRenderers;
 
         /// <summary>
         /// List of renderers (ScreenSurfaces) that currently render the map.
@@ -72,6 +73,7 @@ namespace TheSadRogue.Integration.Maps
             ObjectRemoved += Object_Removed;
 
             _renderers = new List<ScreenSurface>();
+            _surfaceEntityRenderers = new Dictionary<ScreenSurface, Renderer>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
 
             if (AllComponents != null) // TODO: Workaround for GoRogue bug https://github.com/Chris3606/GoRogue/issues/219
@@ -104,6 +106,7 @@ namespace TheSadRogue.Integration.Maps
             // Create an EntityRenderer and configure it with all the appropriate entities,
             // then add it to the main surface
             var entityRenderer = new Renderer { DoEntityUpdate = false };
+            _surfaceEntityRenderers[renderer] = entityRenderer;
             // TODO: Reverse this order when it won't cause NullReferenceException
             renderer.SadComponents.Add(entityRenderer);
             entityRenderer.AddRange(Entities.Items.Cast<Entity>());
@@ -117,7 +120,11 @@ namespace TheSadRogue.Integration.Maps
         /// longer used, in order to ensure that the renderer resources are freed
         /// </summary>
         /// <param name="renderer">The renderer to unlink.</param>
-        protected void DisposeOfRenderer(ScreenSurface renderer) => _renderers.Remove(renderer);
+        protected void DisposeOfRenderer(ScreenSurface renderer)
+        {
+            _renderers.Remove(renderer);
+            _surfaceEntityRenderers.Remove(renderer);
+        }
 
         private void Object_Added(object? sender, ItemEventArgs<IGameObject> e)
         {
@@ -131,8 +138,8 @@ namespace TheSadRogue.Integration.Maps
 
                 case RogueLikeEntity entity:
                     // Add to any entity renderers we have
-                    foreach (var renderer in _renderers)
-                        renderer.GetSadComponent<Renderer>()?.Add(entity);
+                    foreach (var renderers in _surfaceEntityRenderers.Values)
+                        renderers.Add(entity);
 
                     break;
 
@@ -154,11 +161,8 @@ namespace TheSadRogue.Integration.Maps
 
                 case RogueLikeEntity entity:
                     // Remove from any entity renderers we have
-                    foreach (var renderer in _renderers)
-                    {
-                        var entityRenderer = renderer.GetSadComponent<Renderer>();
-                        entityRenderer?.Remove(entity);
-                    }
+                    foreach (var renderers in _surfaceEntityRenderers.Values)
+                        renderers.Remove(entity);
                     break;
             }
         }
