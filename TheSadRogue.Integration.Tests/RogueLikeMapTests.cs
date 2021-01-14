@@ -1,4 +1,5 @@
 using SadRogue.Primitives;
+using TheSadRogue.Integration.Maps;
 using Xunit;
 
 namespace TheSadRogue.Integration.Tests
@@ -22,7 +23,7 @@ namespace TheSadRogue.Integration.Tests
         //     var map = new RogueLikeMap(24, 12, 3, Distance.Chebyshev);
         //     var surface = new ScreenSurface(10, 10);
         //     map.SetEntitySurface(surface);
-        //     
+        //
         //     Assert.Empty(surface.Children);
         // }
     }

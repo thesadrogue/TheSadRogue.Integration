@@ -5,6 +5,7 @@ using SadConsole;
 using SadConsole.Effects;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+using TheSadRogue.Integration.Maps;
 
 namespace TheSadRogue.Integration
 {
@@ -17,7 +18,7 @@ namespace TheSadRogue.Integration
         private readonly BoundedRectangle _viewArea;
         private Color _defaultBackground;
         private Color _defaultForeground;
-        private RogueLikeMap _map;
+        private readonly RogueLikeMapBase _map;
 
         #region properties
         /// <inheritdoc />
@@ -129,7 +130,7 @@ namespace TheSadRogue.Integration
         /// <param name="map">The map which we are rendering</param>
         /// <param name="viewWidth">The height of the view (screen size)</param>
         /// <param name="viewHeight">The Width of the view (screen size)</param>
-        public SettableCellSurface(RogueLikeMap map, int viewWidth, int viewHeight)
+        public SettableCellSurface(RogueLikeMapBase map, int viewWidth, int viewHeight)
         {
             _map = map;
             Effects = new EffectsManager(this);
@@ -153,18 +154,18 @@ namespace TheSadRogue.Integration
 
         /// <inheritdoc />
         public void Resize(int width, int height, int bufferWidth, int bufferHeight, bool clear)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMap)} may not be resized.");
+            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} may not be resized.");
 
         /// <inheritdoc />
         public ICellSurface GetSubSurface(Rectangle view)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMap)} cannot have subsurfaces created from them currently.");
+            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} cannot have subsurfaces created from them currently.");
 
         /// <inheritdoc />
         public void SetSurface(in ICellSurface surface, Rectangle view = new Rectangle())
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMap)} do not support SetSurface operations.");
+            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} do not support SetSurface operations.");
 
         /// <inheritdoc />
         public void SetSurface(in ColoredGlyph[] cells, int width, int height, int bufferWidth, int bufferHeight)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMap)} do not support SetSurface operations.");
+            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} do not support SetSurface operations.");
     }
 }
