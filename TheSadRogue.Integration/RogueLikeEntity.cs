@@ -86,7 +86,7 @@ namespace TheSadRogue.Integration
         public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
         public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
 
-        public void On_GoRogueComponentAdded(object? s, ComponentChangedEventArgs e)
+        private void On_GoRogueComponentAdded(object? s, ComponentChangedEventArgs e)
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Add(sadComponent);
@@ -100,7 +100,7 @@ namespace TheSadRogue.Integration
             }
         }
 
-        public void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
+        private void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Remove(sadComponent);

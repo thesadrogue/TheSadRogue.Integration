@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using GoRogue.Components;
 using GoRogue.GameFramework;
 using GoRogue.SpatialMaps;
 using SadConsole;
@@ -13,7 +14,6 @@ using SadRogue.Primitives.GridViews;
 
 namespace TheSadRogue.Integration.Maps
 {
-    // TODO: Unify components
     /// <summary>
     /// Abstract base class for a Map that contains the necessary function to render to one or more ScreenSurfaces.
     /// </summary>
@@ -41,6 +41,15 @@ namespace TheSadRogue.Integration.Maps
         protected IScreenObject BackingObject { get; set; }
 
         /// <summary>
+        /// Each and every component attached to the map.
+        /// </summary>
+        /// <remarks>
+        /// Confused about which collection to add a component to?
+        /// Add it here.
+        /// </remarks>
+        public ITaggableComponentCollection? AllComponents => GoRogueComponents;
+
+        /// <summary>
         /// Creates a new RogueLikeMapBase.
         /// </summary>
         /// <param name="backingObject">The object being used for the map's IScreenObject implementation.</param>
@@ -64,6 +73,12 @@ namespace TheSadRogue.Integration.Maps
 
             _renderers = new List<ScreenSurface>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
+
+            if (AllComponents != null) // TODO: Workaround for GoRogue bug https://github.com/Chris3606/GoRogue/issues/219
+            {
+                AllComponents.ComponentAdded += On_GoRogueComponentAdded;
+                AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
+            }
         }
 
         /// <summary>
@@ -146,6 +161,18 @@ namespace TheSadRogue.Integration.Maps
                     }
                     break;
             }
+        }
+
+        private void On_GoRogueComponentAdded(object? s, ComponentChangedEventArgs e)
+        {
+            if (e.Component is IComponent sadComponent)
+                SadComponents.Add(sadComponent);
+        }
+
+        private void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
+        {
+            if (e.Component is IComponent sadComponent)
+                SadComponents.Remove(sadComponent);
         }
 
         private void Terrain_AppearanceChanged(object? sender, EventArgs e)
