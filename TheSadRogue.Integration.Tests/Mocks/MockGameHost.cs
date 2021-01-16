@@ -53,21 +53,14 @@ namespace TheSadRogue.Integration.Tests.Mocks
         {
             Instance = this;
             base.LoadDefaultFonts("");
-
-            // Set render steps for various components of SadConsole
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.ControlHost, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.Cursor, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.EntityRenderer, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.Output, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.Surface, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.Tint, typeof(MockRenderStep));
-            SetRendererStep(SadConsole.Renderers.Constants.RenderStepNames.Window, typeof(MockRenderStep));
         }
 
         public override IKeyboardState GetKeyboardState()
         {
             throw new NotImplementedException();
         }
+
+        public override IRenderStep GetRendererStep(string name) => new MockRenderStep();
 
         public override IMouseState GetMouseState()
         {

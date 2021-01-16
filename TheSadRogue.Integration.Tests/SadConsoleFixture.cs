@@ -8,7 +8,7 @@ namespace TheSadRogue.Integration.Tests
     /// </summary>
     public class SadConsoleFixture : IDisposable
     {
-        public GameHost MockHost { get; private set; }
+        public GameHost MockHost { get; }
 
         public SadConsoleFixture()
         {
