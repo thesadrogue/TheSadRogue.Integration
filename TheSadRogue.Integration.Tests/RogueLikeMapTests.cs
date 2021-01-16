@@ -4,7 +4,8 @@ using Xunit;
 
 namespace TheSadRogue.Integration.Tests
 {
-    public class RogueLikeMapTests
+    [Collection("SadConsole-Initialized Tests")]
+    public class RogueLikeMapTests : IClassFixture<SadConsoleFixture>
     {
         [Fact]
         public void NewMapTest()
