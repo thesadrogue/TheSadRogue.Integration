@@ -46,7 +46,7 @@ namespace ExampleGame
 
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
-            GameHost.Instance.Screen = Map; // TODO: This doesn't work right now bc SadConsole bug (field is of wrong type)
+            GameHost.Instance.Screen = Map;
         }
 
         private static RogueLikeMap GenerateMap()

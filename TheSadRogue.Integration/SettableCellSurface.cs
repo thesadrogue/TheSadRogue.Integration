@@ -151,21 +151,5 @@ namespace TheSadRogue.Integration
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <inheritdoc />
-        public void Resize(int width, int height, int bufferWidth, int bufferHeight, bool clear)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} may not be resized.");
-
-        /// <inheritdoc />
-        public ICellSurface GetSubSurface(Rectangle view)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} cannot have subsurfaces created from them currently.");
-
-        /// <inheritdoc />
-        public void SetSurface(in ICellSurface surface, Rectangle view = new Rectangle())
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} do not support SetSurface operations.");
-
-        /// <inheritdoc />
-        public void SetSurface(in ColoredGlyph[] cells, int width, int height, int bufferWidth, int bufferHeight)
-            => throw new NotSupportedException($"Surfaces representing a {nameof(RogueLikeMapBase)} do not support SetSurface operations.");
     }
 }
