@@ -1,6 +1,3 @@
-using System;
-using SadConsole;
-using SadConsole.Input;
 using SadRogue.Primitives;
 using TheSadRogue.Integration.Components;
 using Xunit;
@@ -26,7 +23,7 @@ namespace TheSadRogue.Integration.Tests.Components
 
     public class TestComponent : RogueLikeComponentBase
     {
-        public TestComponent() : base(true, true, true, true, 5)
+        public TestComponent() : base(true, true, true, true)
         {
         }
     }
