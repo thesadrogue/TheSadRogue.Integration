@@ -90,7 +90,7 @@ namespace TheSadRogue.Integration.Maps
             var (viewWidth, viewHeight) = viewSize ?? (Width, Height);
 
             // Create surface representing the terrain layer of the map
-            var cellSurface = new SettableCellSurface(this, viewWidth, viewHeight);
+            var cellSurface = new MapTerrainCellSurface(this, viewWidth, viewHeight);
 
             // Create screen surface that renders that cell surface and keep track of it
             var renderer = new ScreenSurface(cellSurface, font, fontSize);

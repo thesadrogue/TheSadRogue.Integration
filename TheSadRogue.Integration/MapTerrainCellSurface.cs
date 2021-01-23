@@ -12,7 +12,7 @@ namespace TheSadRogue.Integration
     /// <summary>
     /// A CellSurface that renders the terrain layer of a map.
     /// </summary>
-    public class SettableCellSurface : GridViewBase<ColoredGlyph>, ICellSurface
+    public class MapTerrainCellSurface : GridViewBase<ColoredGlyph>, ICellSurface
     {
         private bool _isDirty = true;
         private readonly BoundedRectangle _viewArea;
@@ -20,7 +20,7 @@ namespace TheSadRogue.Integration
         private Color _defaultForeground;
         private readonly RogueLikeMapBase _map;
 
-        #region properties
+        #region Properties/Indexers
         /// <inheritdoc />
         public override int Height => _viewArea.BoundingBox.Height;
 
@@ -124,13 +124,14 @@ namespace TheSadRogue.Integration
         public event EventHandler? IsDirtyChanged;
         #endregion
 
+        #region Initialization
         /// <summary>
-        /// Create a new SettableCellSurface
+        /// Create a new MapTerrainCellSurface
         /// </summary>
         /// <param name="map">The map which we are rendering</param>
         /// <param name="viewWidth">The height of the view (screen size)</param>
         /// <param name="viewHeight">The Width of the view (screen size)</param>
-        public SettableCellSurface(RogueLikeMapBase map, int viewWidth, int viewHeight)
+        public MapTerrainCellSurface(RogueLikeMapBase map, int viewWidth, int viewHeight)
         {
             _map = map;
             Effects = new EffectsManager(this);
@@ -138,6 +139,7 @@ namespace TheSadRogue.Integration
             _viewArea = new BoundedRectangle((0, 0, viewWidth, viewHeight),
                 (0, 0, map.Width, map.Height));
         }
+        #endregion
 
         // Disabled nullability check because the issue is due to SadConsole not annotating nullability
         /// <inheritdoc />
