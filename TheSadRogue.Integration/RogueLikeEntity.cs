@@ -9,16 +9,8 @@ using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration
 {
-    public class RogueLikeEntity : Entity, IGameObject
+    public partial class RogueLikeEntity : Entity, IGameObject
     {
-        private bool _isTransparent;
-        private bool _isWalkable;
-
-        public uint ID { get; }
-        public int Layer => ZIndex;
-        public Map? CurrentMap { get; private set; }
-        public ITaggableComponentCollection GoRogueComponents { get; private set; }
-
         /// <summary>
         /// Each and every component on this entity
         /// </summary>
@@ -28,28 +20,7 @@ namespace TheSadRogue.Integration
         /// </remarks>
         public ITaggableComponentCollection AllComponents => GoRogueComponents;
 
-        /// <inheritdoc />
-        Point IGameObject.Position
-        {
-            get => base.Position;
-            set => base.Position = value;
-        }
-
-        /// <inheritdoc />
-        public bool IsTransparent
-        {
-            get => _isTransparent;
-            set => this.SafelySetProperty(ref _isTransparent, value, TransparencyChanged);
-        }
-
-        /// <inheritdoc />
-        public bool IsWalkable
-        {
-            get => _isWalkable;
-            set => this.SafelySetProperty(ref _isWalkable, value, WalkabilityChanged);
-        }
-
-        #region initialization
+        #region Initialization
         public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1)
             : this(position, Color.White, Color.Black, glyph, walkable, transparent, layer)
         { }
@@ -77,14 +48,7 @@ namespace TheSadRogue.Integration
         }
         #endregion
 
-        public void OnMapChanged(Map? newMap)
-            => CurrentMap = newMap;
-
-        #region event handlers
-
-        public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;
-        public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
-        public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
+        #region Synchronization Handlers
 
         private void On_GoRogueComponentAdded(object? s, ComponentChangedEventArgs e)
         {

@@ -30,9 +30,11 @@ namespace TheSadRogue.Integration.Maps
             : base(new ScreenObject(), width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency, entityLayersSupportingMultipleItems)
         { }
 
+        /// <inheritdoc cref="RogueLikeMapBase.CreateRenderer"/>
         public new ScreenSurface CreateRenderer(Point? viewSize = null, Font? font = null, Point? fontSize = null)
             => base.CreateRenderer(viewSize, font, fontSize);
 
-        public new void DisposeOfRenderer(ScreenSurface renderer) => base.DisposeOfRenderer(renderer);
+        /// <inheritdoc cref="RogueLikeMapBase.DestroyRenderer"/>
+        public new void DestroyRenderer(ScreenSurface renderer) => base.DestroyRenderer(renderer);
     }
 }
