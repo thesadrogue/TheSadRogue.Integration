@@ -6,6 +6,8 @@ using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
 using TheSadRogue.Integration.MapGenerationSteps;
+using TheSadRogue.Integration.Maps;
+
 #pragma warning disable 8618
 
 namespace ExampleGame
@@ -44,7 +46,7 @@ namespace ExampleGame
 
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
-            GameHost.Instance.Screen = Map.CreateRenderer();
+            GameHost.Instance.Screen = Map;
         }
 
         private static RogueLikeMap GenerateMap()
