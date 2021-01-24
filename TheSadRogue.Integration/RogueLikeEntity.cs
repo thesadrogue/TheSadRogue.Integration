@@ -2,6 +2,7 @@ using System;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using GoRogue.GameFramework.Components;
+using GoRogue.Random;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;
@@ -21,30 +22,29 @@ namespace TheSadRogue.Integration
         public ITaggableComponentCollection AllComponents => GoRogueComponents;
 
         #region Initialization
-        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1)
-            : this(position, Color.White, Color.Black, glyph, walkable, transparent, layer)
+        public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            : this(position, Color.White, Color.Black, glyph, walkable, transparent, layer, idGenerator, customComponentContainer)
         { }
 
-        public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true, bool transparent = true, int layer = 1)
-            : this(position, foreground, Color.Black, glyph, walkable, transparent, layer)
+        public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            : this(position, foreground, Color.Black, glyph, walkable, transparent, layer, idGenerator, customComponentContainer)
         { }
 
-        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1)
+        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
             : base(foreground, background, glyph, layer != 0 ? layer : throw new ArgumentException($"{nameof(RogueLikeEntity)} objects may not reside on the terrain layer.", nameof(layer)))
         {
+            idGenerator ??= GlobalRandom.DefaultRNG.NextUInt;
+
             Position = position;
             PositionChanged += Position_Changed;
-
-            Appearance = new ColoredGlyph(foreground, background, glyph);
 
             IsWalkable = walkable;
             IsTransparent = transparent;
 
-            GoRogueComponents = new ComponentCollection();
+            ID = idGenerator();
+            GoRogueComponents = customComponentContainer ?? new ComponentCollection();
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
-
-            ID = GoRogue.Random.GlobalRandom.DefaultRNG.NextUInt();
         }
         #endregion
 
