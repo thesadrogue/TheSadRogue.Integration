@@ -18,7 +18,7 @@ namespace TheSadRogue.Integration
         /// <summary>
         /// The ColoredGlyph of this cell
         /// </summary>
-        public ColoredGlyph Appearance { get; }
+        public TerrainAppearance Appearance { get; }
 
         /// <summary>
         /// Creates a new RogueLikeCell
@@ -37,7 +37,7 @@ namespace TheSadRogue.Integration
             ITaggableComponentCollection? customComponentContainer = null)
             : base(position, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
-            Appearance = new ColoredGlyph(foreground, background, glyph);
+            Appearance = new TerrainAppearance(this, foreground, background, glyph);
         }
         /// <summary>
         /// Creates a new RogueLikeCell
@@ -53,7 +53,7 @@ namespace TheSadRogue.Integration
             Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
             : base(position, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
-            Appearance = appearance;
+            Appearance = new TerrainAppearance(this, appearance);
         }
     }
 }
