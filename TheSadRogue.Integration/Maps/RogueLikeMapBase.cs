@@ -126,7 +126,7 @@ namespace TheSadRogue.Integration.Maps
                 case RogueLikeCell terrain:
                     // Ensure we flag the surfaces of renderers as dirty on the add and on subsequent isDirty events
                     terrain.Appearance.IsDirtySet += Terrain_AppearanceIsDirtySet;
-                    Terrain_AppearanceIsDirtySet(terrain, EventArgs.Empty);
+                    Terrain_AppearanceIsDirtySet(terrain.Appearance, EventArgs.Empty);
                     break;
 
                 case RogueLikeEntity entity:
@@ -149,7 +149,7 @@ namespace TheSadRogue.Integration.Maps
                 case RogueLikeCell terrain:
                     // Ensure we flag the surfaces of renderers as dirty on the remove and unlike our changed handler
                     terrain.Appearance.IsDirtySet -= Terrain_AppearanceIsDirtySet;
-                    Terrain_AppearanceIsDirtySet(terrain, EventArgs.Empty);
+                    Terrain_AppearanceIsDirtySet(terrain.Appearance, EventArgs.Empty);
                     break;
 
                 case RogueLikeEntity entity:
