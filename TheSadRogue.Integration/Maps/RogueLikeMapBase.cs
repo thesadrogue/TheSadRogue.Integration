@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoRogue;
 using GoRogue.Components;
 using GoRogue.GameFramework;
+using GoRogue.Pathing;
 using GoRogue.SpatialMaps;
 using SadConsole;
 using SadConsole.Components;
@@ -34,6 +36,7 @@ namespace TheSadRogue.Integration.Maps
         private static readonly ColoredGlyph _transparentAppearance =
             new ColoredGlyph(Color.Transparent, Color.Transparent, 0, Mirror.None);
 
+        // TODO: This should be non-nullable but can't be due to a GoRogue bug
         /// <summary>
         /// Each and every component attached to the map.
         /// </summary>
@@ -47,18 +50,34 @@ namespace TheSadRogue.Integration.Maps
         /// Creates a new RogueLikeMapBase.
         /// </summary>
         /// <param name="backingObject">The object being used for the map's IScreenObject implementation.</param>
-        /// <param name="width">Desired width of map</param>
-        /// <param name="height">Desired Height of Map</param>
-        /// <param name="numberOfEntityLayers">How many entity layers to include</param>
-        /// <param name="distanceMeasurement">How to measure the distance of a single-tile movement</param>
-        /// <param name="layersBlockingWalkability">Layers which should factor into move logic</param>
-        /// <param name="layersBlockingTransparency">Layers which should factor into transparency</param>
-        /// <param name="entityLayersSupportingMultipleItems">How many entity layers support multiple entities per layer</param>
+        /// <param name="width">Width of map.</param>
+        /// <param name="height">Height of the map.</param>
+        /// <param name="numberOfEntityLayers">How many entity (eg. non-terrain) layers to include.</param>
+        /// <param name="distanceMeasurement">How to measure distance for pathing, movement, etc.</param>
+        /// <param name="layersBlockingWalkability">Which layers should participate in collision detection.  Defaults to all layers.</param>
+        /// <param name="layersBlockingTransparency">Which layers should participate in determining transparency of tiles.  Defaults to all layers.</param>
+        /// <param name="entityLayersSupportingMultipleItems">Which entity layers support having multiple objects on the same square.  Defaults to all layers.</param>
+        /// <param name="customPlayerFOV">
+        /// Custom FOV to use for <see cref="Map.PlayerFOV"/>.  Typically you will not need to specify this; it is
+        /// generally only useful if you want this property to NOT use <see cref="Map.TransparencyView"/> for data.
+        /// </param>
+        /// <param name="customPather">
+        /// Custom A* pathfinder for the map.  Typically, you wont' need to specify this; By default, uses
+        /// <see cref="Map.WalkabilityView"/> to determine which locations can be reached, and calculates distance based
+        /// on the <see cref="Distance" /> passed in via the constructor.
+        /// </param>
+        /// <param name="customComponentContainer">
+        /// A custom component container to use for <see cref="Map.GoRogueComponents"/>.  If not specified, a
+        /// <see cref="ComponentCollection"/> is used.  Typically you will not need to specify this, as a
+        /// ComponentCollection is sufficient for nearly all use cases.
+        /// </param>
         protected RogueLikeMapBase(IScreenObject backingObject, int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
-            uint entityLayersSupportingMultipleItems = uint.MaxValue) : base(width, height, numberOfEntityLayers,
+            uint entityLayersSupportingMultipleItems = uint.MaxValue, FOV? customPlayerFOV = null,
+            AStar? customPather = null, ITaggableComponentCollection? customComponentContainer = null)
+            : base(width, height, numberOfEntityLayers,
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
-            entityLayersSupportingMultipleItems)
+            entityLayersSupportingMultipleItems, customPlayerFOV, customPather, customComponentContainer)
         {
             BackingObject = backingObject;
 

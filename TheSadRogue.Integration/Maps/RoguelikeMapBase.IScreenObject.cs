@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GoRogue.GameFramework;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;

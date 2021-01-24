@@ -1,4 +1,8 @@
-﻿using SadConsole;
+﻿using GoRogue;
+using GoRogue.Components;
+using GoRogue.GameFramework;
+using GoRogue.Pathing;
+using SadConsole;
 using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration.Maps
@@ -49,15 +53,29 @@ namespace TheSadRogue.Integration.Maps
         #endregion
 
         /// <summary>
-        /// Creates a new RogueLikeMap.
+        /// Creates a new RogueLikeMapBase.
         /// </summary>
-        /// <param name="width">Desired width of map</param>
-        /// <param name="height">Desired Height of Map</param>
-        /// <param name="numberOfEntityLayers">How many entity layers to include</param>
-        /// <param name="distanceMeasurement">How to measure the distance of a single-tile movement</param>
-        /// <param name="layersBlockingWalkability">Layers which should factor into move logic</param>
-        /// <param name="layersBlockingTransparency">Layers which should factor into transparency</param>
-        /// <param name="entityLayersSupportingMultipleItems">How many entity layers support multiple entities per layer</param>
+        /// <param name="width">Width of map.</param>
+        /// <param name="height">Height of the map.</param>
+        /// <param name="numberOfEntityLayers">How many entity (eg. non-terrain) layers to include.</param>
+        /// <param name="distanceMeasurement">How to measure distance for pathing, movement, etc.</param>
+        /// <param name="layersBlockingWalkability">Which layers should participate in collision detection.  Defaults to all layers.</param>
+        /// <param name="layersBlockingTransparency">Which layers should participate in determining transparency of tiles.  Defaults to all layers.</param>
+        /// <param name="entityLayersSupportingMultipleItems">Which entity layers support having multiple objects on the same square.  Defaults to all layers.</param>
+        /// <param name="customPlayerFOV">
+        /// Custom FOV to use for <see cref="Map.PlayerFOV"/>.  Typically you will not need to specify this; it is
+        /// generally only useful if you want this property to NOT use <see cref="Map.TransparencyView"/> for data.
+        /// </param>
+        /// <param name="customPather">
+        /// Custom A* pathfinder for the map.  Typically, you wont' need to specify this; By default, uses
+        /// <see cref="Map.WalkabilityView"/> to determine which locations can be reached, and calculates distance based
+        /// on the <see cref="Distance" /> passed in via the constructor.
+        /// </param>
+        /// <param name="customComponentContainer">
+        /// A custom component container to use for <see cref="Map.GoRogueComponents"/>.  If not specified, a
+        /// <see cref="ComponentCollection"/> is used.  Typically you will not need to specify this, as a
+        /// ComponentCollection is sufficient for nearly all use cases.
+        /// </param>
         /// <param name="viewSize">Size of map's viewport.</param>
         /// <param name="font">Font to use to render the map.</param>
         /// <param name="fontSize">Size of font to use to render the map.</param>
@@ -65,14 +83,17 @@ namespace TheSadRogue.Integration.Maps
                             uint layersBlockingWalkability = uint.MaxValue,
                             uint layersBlockingTransparency = uint.MaxValue,
                             uint entityLayersSupportingMultipleItems = uint.MaxValue,
+                            FOV? customPlayerFOV = null, AStar? customPather = null,
+                            ITaggableComponentCollection? customComponentContainer = null,
                             Point? viewSize = null,
                             Font? font = null,
                             Point? fontSize = null)
             // Nullability override is safe because value is not used in base constructor and we set it below
             : base(null!, width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability,
-                layersBlockingTransparency, entityLayersSupportingMultipleItems)
+                layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather, customComponentContainer)
         {
-            // It is safe to never call dispose, because the only reference to the object is in this class.
+            // It is safe to never call DestroyRenderer, because the only reference to the object is in this class, so
+            // they must be deallocated at the same time anyway.
             BackingObject = CreateRenderer(viewSize, font, fontSize);
         }
     }
