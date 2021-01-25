@@ -5,7 +5,6 @@ using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
-using TheSadRogue.Integration.MapGenerationSteps;
 using TheSadRogue.Integration.Maps;
 
 #pragma warning disable 8618
@@ -51,8 +50,9 @@ namespace ExampleGame
 
         private static RogueLikeMap GenerateMap()
         {
+            // Generate a rectangular map for the sake of testing.
             var generator = new Generator(MapWidth, MapHeight)
-                .AddStep(new CompositeGenerationStep(MapWidth, MapHeight))
+                .AddSteps(DefaultAlgorithms.RectangleMapSteps())
                 .Generate();
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
