@@ -90,7 +90,7 @@ namespace TheSadRogue.Integration.Maps
             var (viewWidth, viewHeight) = viewSize ?? (Width, Height);
 
             // Create surface representing the terrain layer of the map
-            var cellSurface = new SettableCellSurface(this, viewWidth, viewHeight);
+            var cellSurface = new MapTerrainCellSurface(this, viewWidth, viewHeight);
 
             // Create screen surface that renders that cell surface and keep track of it
             var renderer = new ScreenSurface(cellSurface, font, fontSize);
@@ -124,9 +124,9 @@ namespace TheSadRogue.Integration.Maps
             switch (e.Item)
             {
                 case RogueLikeCell terrain:
-                    // Ensure we flag the surfaces of renderers as dirty on the add and on subsequent appearance changed events
-                    terrain.AppearanceChanged += Terrain_AppearanceChanged;
-                    Terrain_AppearanceChanged(terrain, EventArgs.Empty);
+                    // Ensure we flag the surfaces of renderers as dirty on the add and on subsequent isDirty events
+                    terrain.Appearance.IsDirtySet += Terrain_AppearanceIsDirtySet;
+                    Terrain_AppearanceIsDirtySet(terrain.Appearance, EventArgs.Empty);
                     break;
 
                 case RogueLikeEntity entity:
@@ -148,8 +148,8 @@ namespace TheSadRogue.Integration.Maps
             {
                 case RogueLikeCell terrain:
                     // Ensure we flag the surfaces of renderers as dirty on the remove and unlike our changed handler
-                    terrain.AppearanceChanged -= Terrain_AppearanceChanged;
-                    Terrain_AppearanceChanged(terrain, EventArgs.Empty);
+                    terrain.Appearance.IsDirtySet -= Terrain_AppearanceIsDirtySet;
+                    Terrain_AppearanceIsDirtySet(terrain.Appearance, EventArgs.Empty);
                     break;
 
                 case RogueLikeEntity entity:
@@ -172,7 +172,7 @@ namespace TheSadRogue.Integration.Maps
                 SadComponents.Remove(sadComponent);
         }
 
-        private void Terrain_AppearanceChanged(object? sender, EventArgs e)
+        private void Terrain_AppearanceIsDirtySet(object? sender, EventArgs e)
         {
             foreach (var surface in _renderers)
                 surface.IsDirty = true;

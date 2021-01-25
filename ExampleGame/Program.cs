@@ -18,11 +18,10 @@ namespace ExampleGame
     {
         public const int Width = 80;
         public const int Height = 25;
-        private const int MapWidth = 80;
-        private const int MapHeight = 25;
+        private const int MapWidth = 100;
+        private const int MapHeight = 60;
         public static RogueLikeMap Map;
         public static RogueLikeEntity PlayerCharacter;
-        //public static SettableCellSurface MapWindow;
         static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
@@ -36,15 +35,17 @@ namespace ExampleGame
         /// </summary>
         private static void Init()
         {
+            // Generate map
             Map = GenerateMap();
-            //var cells = new ArrayView<ColoredGlyph?>(MapWidth, MapHeight);
-            //cells.ApplyOverlay(Map.TerrainView);
 
-            //MapWindow = new SettableCellSurface(Map, Width, Height);
-            // MapWindow.SadComponents.Add(Map.EntityRenderer);
-
+            // Generate player and add to map
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
+
+            // Center view on player
+            // TODO: Null override to work around a GoRogue bug.
+            Map.AllComponents!.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
+
             GameHost.Instance.Screen = Map;
         }
 
@@ -55,9 +56,9 @@ namespace ExampleGame
                 .AddSteps(DefaultAlgorithms.RectangleMapSteps())
                 .Generate();
 
-            var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>();
+            var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
-            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Euclidean);
+            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Euclidean, viewSize: (Width, Height));
 
             foreach(var location in map.Positions())
             {
