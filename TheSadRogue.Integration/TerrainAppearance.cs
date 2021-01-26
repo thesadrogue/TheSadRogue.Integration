@@ -15,7 +15,6 @@ namespace TheSadRogue.Integration
         /// </summary>
         /// <param name="terrain">The terrain object this appearance represents.</param>
         public TerrainAppearance(RogueLikeCell terrain)
-            : base()
         {
             Terrain = terrain;
         }
@@ -107,7 +106,6 @@ namespace TheSadRogue.Integration
         /// <param name="terrain">The terrain object this appearance represents.</param>
         /// <param name="appearance">The appearance to copy from.</param>
         public TerrainAppearance(RogueLikeCell terrain, ColoredGlyph appearance)
-            : base()
         {
             Terrain = terrain;
             CopyAppearanceFrom(appearance);
