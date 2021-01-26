@@ -11,7 +11,7 @@ namespace TheSadRogue.Integration
         private bool _isWalkable;
 
         /// <inheritdoc />
-        public uint ID { get; }
+        public uint ID { get; private set; }
 
         /// <inheritdoc />
         public int Layer => ZIndex;
@@ -19,8 +19,10 @@ namespace TheSadRogue.Integration
         /// <inheritdoc />
         public Map? CurrentMap { get; private set; }
 
+        // Nullable override to suppress warning on constructors; warning is incorrect; the functions that the
+        // constructors call initializes this to a non-null value.
         /// <inheritdoc />
-        public ITaggableComponentCollection GoRogueComponents { get; private set; }
+        public ITaggableComponentCollection GoRogueComponents { get; private set; } = null!;
 
         /// <inheritdoc />
         Point IGameObject.Position
