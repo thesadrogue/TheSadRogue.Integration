@@ -4,7 +4,7 @@ using GoRogue.GameFramework;
 using SadConsole;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration
+namespace SadRogue.Integration
 {
     /// <summary>
     /// A GameObject with a ColoredGlyph.

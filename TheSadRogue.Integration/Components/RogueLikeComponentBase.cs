@@ -6,7 +6,7 @@ using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
 
-namespace TheSadRogue.Integration.Components
+namespace SadRogue.Integration.Components
 {
     /// <summary>
     /// A Component that works with both SadConsole and GoRogue.

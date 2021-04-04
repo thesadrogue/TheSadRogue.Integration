@@ -1,97 +1,33 @@
 # TheSadRogue.Integration
 
-This is the integration library. It works by combining similar concepts from both GoRogue and SadConsole, and creating all the necessary functions to muck with both seemlessly.
+This is an integration library that integrates the components of SadConsole, and GoRogue's `GameFramework` system. It works by combining similar concepts from both GoRogue and SadConsole, and creating all the necessary functions for components to work with both seamlessly.
 
-The Namespaces match the directory structure:
+The namespaces match the directory structure, except the namespaces omit "The":
 
 ```
- TheSadRogue.Integration/ 
+ TheSadRogue.Integration/
   +- Components/
-  |   +- IRogueLikeComponent.cs              # base interface for components
-  |   +- PlayerControlsComponent.cs          # basic movement & actions 
-  |   +- RogueLikeComponent.cs               # an abstract type that takes care of things for you
-  +- Extensions/
-  |   +- ICellSurfaceExtensions.cs
-  |   +- IMapViewExtensions.cs 
-  |   +- IReadOnlySpatialMapExtensions.cs
-  +- FieldOfView/
-  |   +- IFieldOfViewHandler.cs              # interface for FOV components
-  |   +- FieldOfViewHandler.cs               # an implementation of said FOV
-  |   +- FieldOfViewState.cs                 # an enum to help with calculating FOV
-  +- RogueLikeEntity.cs                      # An entity recognized by SadConsole & GoRogue
-  +- RogueLikeMap.cs                         # A Map that contains entites and can be rendered to a screen surgace   
+  |   +- PlayerControlsComponent          # Component for basic movement & actions
+  |   +- RogueLikeComponentBase           # Base classes for creating components that work with SadConsole and GoRogue
+  +- FieldOfView/ (NOT YET IMPLEMENTED)
+  |   +- FieldOfViewHandlerBase           # Abstract base class for interfacing with FOV and changing visibility of map elements
+  |   +- FieldOfViewState                 # Enum whose values represent the state of a FieldOfViewHandler
+  +- Maps/
+  |   +- AdvancedRogueLikeMap             # An advanced map that is recognized by GoRogue and can be rendered independently by many different surfaces
+  |   +- RogueLikeMap                     # A basic map that is recognized by GoRogue and is also an object positionable and renderable in the SadConsole screen heirarchy
+  |   +- RogueLikeMapBase                 # Abstract base class for a map recognizable by GoRogue and able to integrate with SadConsole surfaces.
+  +- RogueLikeCell                        # A terrain object recognizable by both SadConsole and GoRogue
+  +- RogueLikeEntity                      # An entity recognized by SadConsole & GoRogue
 ```
 
 ## Usage
 
-In your game, your `Map` class should inherit from `RogueLikeMap`, your entities should derive from `RogueLikeEntity`, and your components should inherit from `RogueLikeComponent`.
+In your game, your map class should inherit from `RogueLikeMap`, or `AdvancedRogueLikeMap` if you need to render it independently in multiple places.  Your terrain objects should derive from `RogueLikeCell`, your entities should derive from `RogueLikeEntity`, and your components should inherit from `RogueLikeComponentBase` or `RogueLikeComponentBase<T>`.
 
-When you create a new entity, you will get back a class that contains all the necessary functions to manage and use components.
+Entities and terrain objects are added to the map just like you would with GoRogue's `Map`; they will automatically be rendered appropriately with SadConsole.  A `RogueLikeMap` may be set as the screen to render in SadConsole, or used in the screen hierarchy just like any other SadConsole object.  An `AdvancedRogueLikeMap` lets you create independent renderers that can render different portions of the same map to different areas of the screen.
 
-When you add a `RogueLikeComponent` to such an entity via the `AddComponent` method, that component is added to both Sadconsole's and GoRogue's component collection.
+When you add a component of any variety to an entity, you should add it to the `AllComponents` list; it will be added to both GoRogue's and SadConsole's component collections as applicable.  If you wanted, you could add a component to _only_ SadConsole's collection by adding it to `SadComponents`, but generally it is preferable to let them be managed automatically.
 
-If you wanted, you could add a `RogueLikeComponent` to __only__ SadConsole's collection by invoking `AddSadComponent`, or __only__ GoRogue's collection by invoking `AddGoRogueComponent`.
 
-If you invoke `RogueLikeMap.SetTerrain` to add an entity as a piece of terrain then that entity will display when the `Map` is added to a screen surface.
-
-The following example code will create a simple maze (known bug - player doesn't appear despite being created):
-
-```
-using GoRogue.MapGeneration;
-using GoRogue.MapViews;
-using SadConsole;
-using SadRogue.Primitives;
-using TheSadRogue.Integration;
-using TheSadRogue.Integration.Extensions;
-
-namespace ExampleGame
-{
-    class Program
-    {
-        public const int Width = 80;
-        public const int Height = 25;
-        private const int _mapWidth = 80;
-        private const int _mapHeight = 25;
-
-        static void Main(string[] args)
-        {
-            SadConsole.Game.Create(Width, Height);
-            SadConsole.Game.Instance.OnStart = Init;
-            SadConsole.Game.Instance.Run();
-            SadConsole.Game.Instance.Dispose();
-        }
-
-        private static void Init()
-        {
-            var map = new RogueLikeMap(_mapWidth, _mapHeight, 4, Distance.Manhattan);
-            GenerateMap(map);
-            
-            var player = new RogueLikeEntity( (16,16), 1, layer: 1);
-            player.AddComponent(new PlayerControlsComponent());
-            map.AddEntity(player);
-
-            var screen = new ScreenSurface(_mapWidth, _mapHeight, map.TerrainSurface.ToArray());
-            SadConsole.GameHost.Instance.Screen.Children.Add(screen);
-        }
-        
-        static void GenerateMap(RogueLikeMap map)
-        {
-            var generator = new Generator(map.Width, map.Height);
-            generator.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
-            generator = generator.Generate();
-		      
-            var underlyingMap = generator.Context.GetFirst<ISettableMapView<bool>>();
-            for (int i = 0; i < underlyingMap.Width; i++)
-            {
-                for (int j = 0; j < underlyingMap.Height; j++)
-                {
-                    Point here = (i, j);
-                    bool walkable = underlyingMap[i, j];
-                    map.SetTerrain(new RogueLikeEntity(here, walkable ? '.' : '#', walkable, walkable));
-                }
-            }
-        }
-    }
-}
-```
- 
+## Examples
+A code example that creates a map with a movable player can be found in the `ExampleGame/` folder.

@@ -3,9 +3,9 @@ using GoRogue.MapGeneration;
 using SadConsole;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using TheSadRogue.Integration;
-using TheSadRogue.Integration.Components;
-using TheSadRogue.Integration.Maps;
+using SadRogue.Integration;
+using SadRogue.Integration.Components;
+using SadRogue.Integration.Maps;
 
 
 namespace ExampleGame

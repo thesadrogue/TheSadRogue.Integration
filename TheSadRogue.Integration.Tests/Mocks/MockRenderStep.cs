@@ -2,7 +2,7 @@
 using SadConsole;
 using SadConsole.Renderers;
 
-namespace TheSadRogue.Integration.Tests.Mocks
+namespace SadRogue.Integration.Tests.Mocks
 {
     public class MockRenderStep : IRenderStep
     {

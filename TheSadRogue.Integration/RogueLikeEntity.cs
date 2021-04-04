@@ -8,7 +8,7 @@ using SadConsole.Components;
 using SadConsole.Entities;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration
+namespace SadRogue.Integration
 {
     public partial class RogueLikeEntity : Entity, IGameObject
     {

@@ -7,7 +7,7 @@ using SadConsole.Entities;
 using SadConsole.Input;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Maps
+namespace SadRogue.Integration.Maps
 {
     public abstract partial class RogueLikeMapBase
     {

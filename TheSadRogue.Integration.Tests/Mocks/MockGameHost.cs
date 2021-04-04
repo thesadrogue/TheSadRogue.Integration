@@ -5,7 +5,7 @@ using SadConsole.Input;
 using SadConsole.Renderers;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Tests.Mocks
+namespace SadRogue.Integration.Tests.Mocks
 {
     /// <summary>
     /// A basic SadConsole GameHost based on the one built by Thraka in the SadConsole repository that initializes

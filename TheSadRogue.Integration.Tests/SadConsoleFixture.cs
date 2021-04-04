@@ -1,7 +1,7 @@
 ﻿using System;
 using SadConsole;
 
-namespace TheSadRogue.Integration.Tests
+namespace SadRogue.Integration.Tests
 {
     /// <summary>
     /// A test fixture for initializing SadConsole to run unit tests.

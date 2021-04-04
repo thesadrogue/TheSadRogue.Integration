@@ -12,7 +12,7 @@ using SadConsole.Entities;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-namespace TheSadRogue.Integration.Maps
+namespace SadRogue.Integration.Maps
 {
     /// <summary>
     /// Abstract base class for a Map that contains the necessary function to render to one or more ScreenSurfaces.

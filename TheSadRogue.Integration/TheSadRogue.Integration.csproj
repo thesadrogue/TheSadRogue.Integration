@@ -30,6 +30,7 @@
           - CA1062: Nullability validation is performed by C#8 nullable reference types.
         -->
         <NoWarn>CA1043;CA1303;CA1814;CA1710;CA1305;CA1051;CA1307;CA2211;CA1062</NoWarn>
+        <RootNamespace>SadRogue.Integration</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
