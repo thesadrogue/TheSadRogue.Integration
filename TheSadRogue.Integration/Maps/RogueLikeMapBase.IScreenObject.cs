@@ -34,6 +34,7 @@ namespace SadRogue.Integration.Maps
         /// <inheritdoc/>
         bool IScreenObject.HasSadComponent<TComponent>(out TComponent component) => BackingObject.HasSadComponent(out component);
 
+        /// <inheritdoc/>
         public bool ProcessKeyboard(Keyboard keyboard) => BackingObject.ProcessKeyboard(keyboard);
 
         /// <inheritdoc/>
