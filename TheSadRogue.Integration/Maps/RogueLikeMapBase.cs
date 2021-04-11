@@ -190,8 +190,12 @@ namespace TheSadRogue.Integration.Maps
 
         private void Terrain_AppearanceIsDirtySet(object? sender, EventArgs e)
         {
-            foreach (var surface in _renderers)
-                surface.IsDirty = true;
+            // Nullable override because IsDirtySet never sends null
+            RogueLikeCell terrain = ((TerrainAppearance)sender!).Terrain;
+
+            foreach (var renderer in _renderers)
+                if (renderer.Surface.View.Contains(terrain.Position))
+                    renderer.IsDirty = true;
         }
 
         private static ColoredGlyph GetTerrainAppearance(IGameObject? gameObject)
