@@ -1,8 +1,15 @@
 ﻿using SadConsole;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration
+namespace SadRogue.Integration
 {
+    /// <summary>
+    /// An object representing the appearance of a piece of terrain.
+    /// </summary>
+    /// <remarks>
+    /// Effectively, this is just a ColoredGlyph from SadConsole that is aware of the GameObject it is
+    /// representing the appearance for.  This is useful because the object is aware of its position.
+    /// </remarks>
     public class TerrainAppearance : ColoredGlyph
     {
         /// <summary>
