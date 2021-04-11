@@ -7,7 +7,6 @@ using TheSadRogue.Integration;
 using TheSadRogue.Integration.Components;
 using TheSadRogue.Integration.Maps;
 
-#pragma warning disable 8618
 
 namespace ExampleGame
 {
@@ -20,8 +19,10 @@ namespace ExampleGame
         public const int Height = 25;
         private const int MapWidth = 100;
         private const int MapHeight = 60;
-        public static RogueLikeMap Map;
-        public static RogueLikeEntity PlayerCharacter;
+
+        // Initialized in Init, so null-override is used.
+        public static RogueLikeMap Map = null!;
+        public static RogueLikeEntity PlayerCharacter = null!;
         static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
@@ -43,8 +44,7 @@ namespace ExampleGame
             Map.AddEntity(PlayerCharacter);
 
             // Center view on player
-            // TODO: Null override to work around a GoRogue bug.
-            Map.AllComponents!.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
+            Map.AllComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
             GameHost.Instance.Screen = Map;
         }
@@ -53,8 +53,10 @@ namespace ExampleGame
         {
             // Generate a rectangular map for the sake of testing.
             var generator = new Generator(MapWidth, MapHeight)
-                .AddSteps(DefaultAlgorithms.RectangleMapSteps())
-                .Generate();
+                .ConfigAndGenerateSafe(gen =>
+                {
+                    gen.AddSteps(DefaultAlgorithms.RectangleMapSteps());
+                });
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 

@@ -36,7 +36,6 @@ namespace TheSadRogue.Integration.Maps
         private static readonly ColoredGlyph _transparentAppearance =
             new ColoredGlyph(Color.Transparent, Color.Transparent, 0, Mirror.None);
 
-        // TODO: This should be non-nullable but can't be due to a GoRogue bug
         /// <summary>
         /// Each and every component attached to the map.
         /// </summary>
@@ -44,7 +43,7 @@ namespace TheSadRogue.Integration.Maps
         /// Confused about which collection to add a component to?
         /// Add it here.
         /// </remarks>
-        public ITaggableComponentCollection? AllComponents => GoRogueComponents;
+        public ITaggableComponentCollection AllComponents => GoRogueComponents;
 
         /// <summary>
         /// Creates a new RogueLikeMapBase.
@@ -88,11 +87,9 @@ namespace TheSadRogue.Integration.Maps
             _surfaceEntityRenderers = new Dictionary<ScreenSurface, Renderer>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
 
-            if (AllComponents != null) // TODO: Workaround for GoRogue bug https://github.com/Chris3606/GoRogue/issues/219
-            {
-                AllComponents.ComponentAdded += On_GoRogueComponentAdded;
-                AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
-            }
+            AllComponents.ComponentAdded += On_GoRogueComponentAdded;
+            AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
+
         }
 
         /// <summary>
