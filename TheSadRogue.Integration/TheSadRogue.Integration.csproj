@@ -16,7 +16,7 @@
     Set version and automatically add "-debug" to the version number for debug builds so that they can be published
     to NuGet seperately from the Release builds (to enable full SourceLink support)
     -->
-    <PackageVersion>1.0.0-alpha01</PackageVersion>
+    <Version>1.0.0-alpha01</Version>
     <Version Condition="'$(Configuration)'=='Debug'">$(Version)-debug</Version>
 
     <!-- Generate documentation files for all configurations since Debug and Release are both published to NuGet. -->
@@ -39,7 +39,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageTags>2d;console;development;game;games;library;rogue;roguelike;roguelikes;standard;sadrogue;thesadrogue</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      
+
     <!--
     Warnings disabled project-wide:
       - CA1043: GoRogue explicitly permits non-integral/string values to be used as indexers (Point for IMapView)
