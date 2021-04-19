@@ -7,7 +7,7 @@ using SadConsole.Entities;
 using SadConsole.Input;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Maps
+namespace SadRogue.Integration.Maps
 {
     public abstract partial class RogueLikeMapBase
     {
@@ -34,6 +34,7 @@ namespace TheSadRogue.Integration.Maps
         /// <inheritdoc/>
         bool IScreenObject.HasSadComponent<TComponent>(out TComponent component) => BackingObject.HasSadComponent(out component);
 
+        /// <inheritdoc/>
         public bool ProcessKeyboard(Keyboard keyboard) => BackingObject.ProcessKeyboard(keyboard);
 
         /// <inheritdoc/>

@@ -7,7 +7,7 @@ using SadConsole;
 using SadConsole.Input;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Components
+namespace SadRogue.Integration.Components
 {
     /// <summary>
     /// A basic component that moves a character based on keyboard input
@@ -24,7 +24,7 @@ namespace TheSadRogue.Integration.Components
         /// </summary>
         public ReadOnlyDictionary<Keys, Direction> Motions => _motions.AsReadOnly();
         private readonly Dictionary<Keys, Direction> _motions;
-        
+
         /// <summary>
         /// Creates a new component that controls it's parent entity via keystroke
         /// </summary>
@@ -55,7 +55,7 @@ namespace TheSadRogue.Integration.Components
         public PlayerControlsComponent(Dictionary<Keys, Direction> motions) : this()
         {
             _motions = motions;
-        }    
+        }
         /// <summary>
         /// Create a PlayerControlsComponent with the provided dictionary of keys to movement directions and keys to actions
         /// </summary>
@@ -87,7 +87,7 @@ namespace TheSadRogue.Integration.Components
             if (_actions.ContainsKey(key))
                 _actions.Remove(key);
         }
-        
+
         /// <inheritdoc />
         public override void ProcessKeyboard(IScreenObject host, Keyboard keyboard, out bool handled)
         {
@@ -99,7 +99,7 @@ namespace TheSadRogue.Integration.Components
             foreach (KeyValuePair<Keys,Action> action in Actions)
                 if (keyboard.IsKeyPressed(action.Key))
                     action.Value();
-            
+
             handled = true;
         }
     }

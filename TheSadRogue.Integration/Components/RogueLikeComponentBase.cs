@@ -6,12 +6,15 @@ using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
 
-namespace TheSadRogue.Integration.Components
+namespace SadRogue.Integration.Components
 {
     /// <summary>
-    /// A Component that works with both SadConsole and GoRogue.
+    /// A Component that works with both SadConsole and GoRogue's GameFramework.
     /// </summary>
     /// <remarks>
+    /// You may want to consider <see cref="RogueLikeComponentBase{TParent}"/>
+    /// for some additional functionality.
+    ///
     /// The intended use is for you to derive from this class and
     /// then override the methods you need. The base class there-
     /// fore has declared empty implementations so that no undo
@@ -104,6 +107,12 @@ namespace TheSadRogue.Integration.Components
         public virtual void ProcessKeyboard(IScreenObject host, Keyboard keyboard, out bool handled) => handled = false;
     }
 
+    /// <summary>
+    /// A component that works with both SadConsole's and GoRogue's component system.
+    /// It is identical to <see cref="RogueLikeComponentBase"/>, except that it enforces
+    /// constraints on the type of object that it is attached to.
+    /// </summary>
+    /// <typeparam name="TParent">Type of object this component must be attached to.</typeparam>
     public class RogueLikeComponentBase<TParent> : ComponentBase<TParent>, IComponent, ISortedComponent
         where TParent : class, IGameObject
     {

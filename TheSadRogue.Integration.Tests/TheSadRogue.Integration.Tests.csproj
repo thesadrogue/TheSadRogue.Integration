@@ -5,6 +5,8 @@
         <IsPackable>false</IsPackable>
 
         <TargetFrameworks>net5.0</TargetFrameworks>
+
+        <RootNamespace>SadRogue.Integration.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

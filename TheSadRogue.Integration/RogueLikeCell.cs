@@ -4,14 +4,15 @@ using GoRogue.GameFramework;
 using SadConsole;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration
+namespace SadRogue.Integration
 {
     /// <summary>
-    /// A GameObject with a ColoredGlyph.
+    /// A GoRogue GameObject with a ColoredGlyph, designed to represent terrain on a map.
     /// </summary>
     /// <remarks>
-    /// This class is designed to be very light and efficient.
-    /// Use it for terrain.
+    /// This class creates GameObjects that reside on terrain layer 0 in GoRogue's map.
+    /// When they are added to a map, they automatically render on any screens displaying
+    /// that map as applicable, according to their <see cref="Appearance"/>.
     /// </remarks>
     public class RogueLikeCell : GameObject
     {

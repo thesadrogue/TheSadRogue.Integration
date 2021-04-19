@@ -1,8 +1,8 @@
 using SadRogue.Primitives;
-using TheSadRogue.Integration.Maps;
+using SadRogue.Integration.Maps;
 using Xunit;
 
-namespace TheSadRogue.Integration.Tests
+namespace SadRogue.Integration.Tests
 {
     [Collection("SadConsole-Initialized Tests")]
     public class RogueLikeMapTests : IClassFixture<SadConsoleFixture>

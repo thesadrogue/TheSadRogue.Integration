@@ -5,7 +5,7 @@ using GoRogue.Pathing;
 using SadConsole;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Maps
+namespace SadRogue.Integration.Maps
 {
     /// <summary>
     /// A GoRogue Map that contains map data and implements necessary functionality to be added to the SadConsole

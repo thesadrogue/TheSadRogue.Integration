@@ -1,8 +1,8 @@
 using SadRogue.Primitives;
-using TheSadRogue.Integration.Components;
+using SadRogue.Integration.Components;
 using Xunit;
 
-namespace TheSadRogue.Integration.Tests
+namespace SadRogue.Integration.Tests
 {
     public class RogueLikeEntityTests
     {
