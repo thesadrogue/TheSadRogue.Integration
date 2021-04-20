@@ -4,7 +4,7 @@ using SadConsole;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using SadRogue.Integration;
-using SadRogue.Integration.Components;
+using SadRogue.Integration.FieldOfView;
 using SadRogue.Integration.Maps;
 
 
@@ -22,7 +22,7 @@ namespace ExampleGame
 
         // Initialized in Init, so null-override is used.
         public static RogueLikeMap Map = null!;
-        public static RogueLikeEntity PlayerCharacter = null!;
+        public static Player PlayerCharacter = null!;
         static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
@@ -39,9 +39,10 @@ namespace ExampleGame
             // Generate map
             Map = GenerateMap();
 
-            // Generate player and add to map
+            // Generate player and add to map, recalculating FOV afterwards
             PlayerCharacter = GeneratePlayerCharacter();
             Map.AddEntity(PlayerCharacter);
+            PlayerCharacter.CalculateFOV();
 
             // Center view on player
             Map.AllComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
@@ -61,6 +62,7 @@ namespace ExampleGame
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
             RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Euclidean, viewSize: (Width, Height));
+            map.AllComponents.Add(new DefaultFieldOfViewHandler(Color.Gray));
 
             foreach(var location in map.Positions())
             {
@@ -72,14 +74,11 @@ namespace ExampleGame
             return map;
         }
 
-        private static RogueLikeEntity GeneratePlayerCharacter()
+        private static Player GeneratePlayerCharacter()
         {
             var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
-            var player = new RogueLikeEntity(position, 1, false);
+            var player = new Player(position);
 
-            var motionControl = new PlayerControlsComponent();
-            player.AllComponents.Add(motionControl);
-            player.IsFocused = true;
             return player;
         }
     }
