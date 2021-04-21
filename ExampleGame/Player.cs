@@ -34,7 +34,7 @@ namespace ExampleGame
         /// </summary>
         public void CalculateFOV()
         {
-            CurrentMap?.PlayerFOV.Calculate(Position, FOVRadius, Distance.Chebyshev);
+            CurrentMap?.PlayerFOV.Calculate(Position, FOVRadius, CurrentMap.DistanceMeasurement);
         }
 
         // If the player is added to a map, update the player FOV when the player moves

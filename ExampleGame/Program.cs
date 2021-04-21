@@ -61,8 +61,8 @@ namespace ExampleGame
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
-            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Euclidean, viewSize: (Width, Height));
-            map.AllComponents.Add(new DefaultFieldOfViewHandler(Color.Gray));
+            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Manhattan, viewSize: (Width, Height));
+            map.AllComponents.Add(new DefaultFieldOfViewHandler());
 
             foreach(var location in map.Positions())
             {

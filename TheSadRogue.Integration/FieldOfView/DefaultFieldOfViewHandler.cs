@@ -1,37 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using SadConsole;
 using SadRogue.Primitives;
 
 namespace SadRogue.Integration.FieldOfView
 {
     /// <summary>
     /// Basic field of view handler that makes entities outside of FOV invisible, and makes
-    /// terrain outside of FOV invisible if it is not explored, and grey-colored if it is
+    /// terrain outside of FOV invisible if it is not explored, and tinted a darker color if it is
     /// explored.
     /// </summary>
     /// <remarks>
-    /// This implementation is fairly basic, and does not support complex/relatively uncommon
-    /// cases like changing foreground colors of cells while they are explored but outside
-    /// of FOV.
+    /// This implementation is fairly basic, and does not directly implement more complex
+    /// concepts such as memory.
     ///
-    /// For cases like this, or cases where you want to handle FOV differently, feel free to
+    /// An example of player "memory" is implemented in <see cref="MemoryFieldOfViewHandler"/>,
+    /// but for cases like this, or cases where you want to handle FOV differently, feel free to
     /// create your own implementation of <see cref="FieldOfViewHandlerBase"/>.  This one
     /// may at least serve as an example, even if it does not fit your use case.
     /// </remarks>
     public class DefaultFieldOfViewHandler : FieldOfViewHandlerBase
     {
         /// <summary>
-        /// Foreground color to set to all terrain that is outside of FOV but has been explored.
+        /// Decorator being used to tint terrain that is outside of FOV but has been explored.
         /// </summary>
-        public Color ExploredColor { get; }
+        public CellDecorator ExploredDecorator { get; }
 
-        // Maps terrain to the foreground colors found before FOV visibility is applied.
-        private readonly Dictionary<RogueLikeCell, Color> _originalForegroundColors;
-
-        public DefaultFieldOfViewHandler(Color exploredColor, State startingState = State.Enabled)
+        /// <summary>
+        /// Creates a new handler component.
+        /// </summary>
+        /// <param name="exploredDecorator">
+        /// Color to use for tinting.  Should generally be partially transparent.
+        /// Defaults to (0.05f, 0.05f, 0.05f, 0.75f).
+        /// </param>
+        /// <param name="tintGlyph">
+        /// Glyph to use for tinting squares; should generally be a fully solid glyph.
+        /// </param>
+        /// <param name="startingState">
+        /// Starting state for the handler.
+        /// </param>
+        public DefaultFieldOfViewHandler(Color? exploredDecorator = null, int tintGlyph = 219, State startingState = State.Enabled)
             : base(startingState)
         {
-            ExploredColor = exploredColor;
-            _originalForegroundColors = new Dictionary<RogueLikeCell, Color>();
+            ExploredDecorator = new CellDecorator(
+                exploredDecorator ?? new Color(0.05f, 0.05f, 0.05f, 0.75f),
+                tintGlyph,
+                Mirror.None);
         }
 
         /// <summary>
@@ -53,19 +67,17 @@ namespace SadRogue.Integration.FieldOfView
         protected override void UpdateTerrainSeen(RogueLikeCell terrain)
         {
             terrain.Appearance.IsVisible = true;
-
-            // If we've changed the color previously, put it back; otherwise, the original
-            // color should still be in the foreground
-            if (_originalForegroundColors.ContainsKey(terrain))
+            if (terrain.Appearance.Decorators.Contains(ExploredDecorator))
             {
-                terrain.Appearance.Foreground = _originalForegroundColors[terrain];
-                _originalForegroundColors.Remove(terrain);
+                // If there is only 1 decorator, it must be ours so we can replace
+                // the array with a static blank one
+                terrain.Appearance.Decorators = terrain.Appearance.Decorators.Length == 1 ? Array.Empty<CellDecorator>() : terrain.Appearance.Decorators.Where(i => i != ExploredDecorator).ToArray();
             }
         }
 
         /// <summary>
-        /// Makes terrain invisible if it is not explored.  Makes terrain visible but sets its foreground to
-        /// <see cref="ExploredColor"/> if it is explored.
+        /// Makes terrain invisible if it is not explored.  Makes terrain visible but tints it using
+        /// <see cref="ExploredDecorator"/> if it is explored.
         /// </summary>
         /// <param name="terrain">Terrain to modify.</param>
         protected override void UpdateTerrainUnseen(RogueLikeCell terrain)
@@ -73,15 +85,11 @@ namespace SadRogue.Integration.FieldOfView
             // Parent can't be null because of invariants enforced by structure for when
             // this function is called
             var parent = Parent!;
-            if (parent.PlayerExplored[terrain.Position])
-            {
-                // Record old color in our list so we can restore it later
-                _originalForegroundColors[terrain] = terrain.Appearance.Foreground;
 
-                // Modify the foreground color to the darkened version
-                terrain.Appearance.Foreground = ExploredColor;
-            }
-            else // If it isn't explored, it's invisible
+            // If the unseen terrain is outside of FOV, apply the decorator to tint the square appropriately.
+            if (parent.PlayerExplored[terrain.Position])
+                terrain.Appearance.Decorators = terrain.Appearance.Decorators.Append(ExploredDecorator).ToArray();
+            else // If the unseen tile isn't explored, it's invisible
                 terrain.Appearance.IsVisible = false;
         }
     }
