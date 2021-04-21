@@ -29,21 +29,19 @@ namespace SadRogue.Integration.FieldOfView
         /// <summary>
         /// Creates a new handler component.
         /// </summary>
-        /// <param name="exploredDecorator">
+        /// <param name="exploredColorTint">
         /// Color to use for tinting.  Should generally be partially transparent.
         /// Defaults to (0.05f, 0.05f, 0.05f, 0.75f).
         /// </param>
         /// <param name="tintGlyph">
         /// Glyph to use for tinting squares; should generally be a fully solid glyph.
         /// </param>
-        /// <param name="startingState">
-        /// Starting state for the handler.
-        /// </param>
-        public DefaultFieldOfViewHandler(Color? exploredDecorator = null, int tintGlyph = 219, State startingState = State.Enabled)
+        /// <param name="startingState">The starting value for <see cref="FieldOfViewHandlerBase.CurrentState"/>.</param>
+        public DefaultFieldOfViewHandler(Color? exploredColorTint = null, int tintGlyph = 219, State startingState = State.Enabled)
             : base(startingState)
         {
             ExploredDecorator = new CellDecorator(
-                exploredDecorator ?? new Color(0.05f, 0.05f, 0.05f, 0.75f),
+                exploredColorTint ?? new Color(0.05f, 0.05f, 0.05f, 0.75f),
                 tintGlyph,
                 Mirror.None);
         }
