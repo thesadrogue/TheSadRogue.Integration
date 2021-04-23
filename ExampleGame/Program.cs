@@ -3,7 +3,7 @@ using GoRogue.MapGeneration;
 using SadConsole;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using SadRogue.Integration.FieldOfView;
+using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Maps;
 
 
@@ -61,7 +61,7 @@ namespace ExampleGame
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
             RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Manhattan, viewSize: (Width, Height));
-            map.AllComponents.Add(new MemoryFieldOfViewHandler(Color.DarkSlateBlue));
+            map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
 
             foreach(var location in map.Positions())
             {

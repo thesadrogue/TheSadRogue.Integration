@@ -1,7 +1,6 @@
 ﻿using System;
-using SadRogue.Primitives;
 
-namespace SadRogue.Integration.FieldOfView
+namespace SadRogue.Integration.FieldOfView.Memory
 {
     /// <summary>
     /// Field of view handler that implements the concept of "memory", wherein the player sees previously
@@ -11,26 +10,15 @@ namespace SadRogue.Integration.FieldOfView
     /// All terrain objects in the map this component is added to must be of type <see cref="MemoryAwareRogueLikeCell"/>.
     /// If they are not, it will result in an exception being thrown at run-time.
     /// </remarks>
-    public class MemoryFieldOfViewHandler : FieldOfViewHandlerBase
+    public abstract class MemoryFieldOfViewHandlerBase : FieldOfViewHandlerBase
     {
-        /// <summary>
-        /// Color to use for the foreground of tiles that are outside of FOV but previously seen by
-        /// the player.
-        /// </summary>
-        public Color ExploredColor { get; }
-
         /// <summary>
         /// Creates a new handler.
         /// </summary>
-        /// <param name="exploredColor">
-        /// Color to use for the foreground of tiles that are outside of FOV but previously seen by
-        /// the player.
-        /// </param>
         /// <param name="startingState">The starting value for <see cref="FieldOfViewHandlerBase.CurrentState"/>.</param>
-        public MemoryFieldOfViewHandler(Color exploredColor, State startingState = State.Enabled)
+        protected MemoryFieldOfViewHandlerBase(State startingState = State.Enabled)
             : base(startingState)
         {
-            ExploredColor = exploredColor;
         }
 
         /// <summary>
@@ -52,10 +40,10 @@ namespace SadRogue.Integration.FieldOfView
         /// <param name="terrain">Terrain to modify.</param>
         protected override void UpdateTerrainSeen(RogueLikeCell terrain)
         {
-            // Invalid use of MemoryFieldOfViewHandler
+            // Invalid use of MemoryFieldOfViewHandlerBase
             if (!(terrain is MemoryAwareRogueLikeCell awareTerrain))
                 throw new InvalidOperationException(
-                    $"{nameof(MemoryFieldOfViewHandler)} must only be used on a  map that contains {nameof(MemoryAwareRogueLikeCell)} instances as its terrain.");
+                    $"{nameof(MemoryFieldOfViewHandlerBase)} must only be used on a  map that contains {nameof(MemoryAwareRogueLikeCell)} instances as its terrain.");
 
             // If the appearances don't match currently, synchronize them
             if (!awareTerrain.LastSeenAppearance.Matches(awareTerrain.TrueAppearance))
@@ -76,35 +64,44 @@ namespace SadRogue.Integration.FieldOfView
         }
 
         /// <summary>
-        /// Makes terrain invisible if it is not explored.  Makes terrain visible but darkens the foreground
-        /// color to <see cref="ExploredColor"/> if it is explored.  The terrain will continue to appear as
-        /// it was last seen (even if its true appearance changes) until the player sees it again.
+        /// Makes terrain invisible if it is not explored.  Changes the appearance by calling
+        /// <see cref="ApplyMemoryAppearance"/> if it is explored.  The terrain will continue to
+        /// appear as set by that function (even if its true appearance changes) until the player
+        /// sees it again.
         /// </summary>
         /// <param name="terrain">Terrain to modify.</param>
         protected override void UpdateTerrainUnseen(RogueLikeCell terrain)
         {
-            // Invalid use of MemoryFieldOfViewHandler
+            // Invalid use of MemoryFieldOfViewHandlerBase
             if (!(terrain is MemoryAwareRogueLikeCell awareTerrain))
                 throw new InvalidOperationException(
-                    $"{nameof(MemoryFieldOfViewHandler)} must only be used on a  map that contains {nameof(MemoryAwareRogueLikeCell)} instances as its terrain.");
+                    $"{nameof(MemoryFieldOfViewHandlerBase)} must only be used on a  map that contains {nameof(MemoryAwareRogueLikeCell)} instances as its terrain.");
 
             // If the event handler for synchronizing the appearance with true appearance is added, remove it
             // which will cause the appearance to remain as last-seen if it changes
             awareTerrain.TrueAppearance.IsDirtySet -= On_VisibleTileTrueAppearanceIsDirtySet;
 
-            // If the unseen terrain is explored (eg. it was in FOV previously), apply the darkened color
-            // as appropriate.
+            // If the unseen terrain is explored (eg. it was in FOV previously), apply the visual change
+            // as appropriate
             if (Parent!.PlayerExplored[terrain.Position])
-                awareTerrain.LastSeenAppearance.Foreground = ExploredColor;
+                ApplyMemoryAppearance(awareTerrain);
             else // If the unseen tile isn't explored, it's invisible
                 awareTerrain.LastSeenAppearance.IsVisible = false;
         }
+
+        /// <summary>
+        /// Called when each cell goes outside of FOV, indicating that it can no longer be seen
+        /// and any view of it is reliant on memory.  Should apply the "memory" appearance
+        /// to the cell's <see cref="MemoryAwareRogueLikeCell.LastSeenAppearance"/>.
+        /// </summary>
+        /// <param name="terrain">Terrain to apply memory view to.</param>
+        protected abstract void ApplyMemoryAppearance(MemoryAwareRogueLikeCell terrain);
 
         private void On_VisibleTileTrueAppearanceIsDirtySet(object? sender, EventArgs e)
         {
             // Sender will not be null because of event invariants.  Cast is safe since we
             // control what this handler is added to and it is checked first
-            var awareTerrain = (MemoryAwareRogueLikeCell)(((TerrainAppearance)sender!).Terrain);
+            var awareTerrain = (MemoryAwareRogueLikeCell)((TerrainAppearance)sender!).Terrain;
 
             // If appearances are synchronized, there is nothing to do
             if (awareTerrain.LastSeenAppearance.Matches(awareTerrain.TrueAppearance))

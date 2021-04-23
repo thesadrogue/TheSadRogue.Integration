@@ -14,12 +14,12 @@ namespace SadRogue.Integration.FieldOfView
     /// This implementation is fairly basic, and does not directly implement more complex
     /// concepts such as memory.
     ///
-    /// An example of player "memory" is implemented in <see cref="MemoryFieldOfViewHandler"/>,
+    /// An example of player "memory" is implemented in <see cref="Memory.MemoryFieldOfViewHandlerBase"/>,
     /// but for cases like this, or cases where you want to handle FOV differently, feel free to
     /// create your own implementation of <see cref="FieldOfViewHandlerBase"/>.  This one
     /// may at least serve as an example, even if it does not fit your use case.
     /// </remarks>
-    public class DefaultFieldOfViewHandler : FieldOfViewHandlerBase
+    public class BasicFieldOfViewHandler : FieldOfViewHandlerBase
     {
         /// <summary>
         /// Decorator being used to tint terrain that is outside of FOV but has been explored.
@@ -37,7 +37,7 @@ namespace SadRogue.Integration.FieldOfView
         /// Glyph to use for tinting squares; should generally be a fully solid glyph.
         /// </param>
         /// <param name="startingState">The starting value for <see cref="FieldOfViewHandlerBase.CurrentState"/>.</param>
-        public DefaultFieldOfViewHandler(Color? exploredColorTint = null, int tintGlyph = 219, State startingState = State.Enabled)
+        public BasicFieldOfViewHandler(Color? exploredColorTint = null, int tintGlyph = 219, State startingState = State.Enabled)
             : base(startingState)
         {
             ExploredDecorator = new CellDecorator(

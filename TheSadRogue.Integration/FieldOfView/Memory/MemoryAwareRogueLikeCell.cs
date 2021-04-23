@@ -3,19 +3,19 @@ using GoRogue.Components;
 using SadConsole;
 using SadRogue.Primitives;
 
-namespace SadRogue.Integration.FieldOfView
+namespace SadRogue.Integration.FieldOfView.Memory
 {
     /// <summary>
     /// A roguelike cell that is aware of the concept of player "memory", allowing it to be displayed
     /// as the player last saw it when it is not directly visible.  Designed to be used with a
-    /// <see cref="MemoryFieldOfViewHandler"/>.
+    /// <see cref="MemoryFieldOfViewHandlerBase"/>.
     /// </summary>
     /// <remarks>
     /// For this cell, its <see cref="RogueLikeCell.Appearance"/> represents how it currently appears,
     /// which may or may not be its actual appearance.  Its <see cref="TrueAppearance"/> records its
     /// actual intended appearance.
     ///
-    /// It must be used with a <see cref="MemoryFieldOfViewHandler"/>, which is a map component that will
+    /// It must be used with a <see cref="MemoryFieldOfViewHandlerBase"/>, which is a map component that will
     /// modify the appearances of the cells as appropriate for the current status.
     /// </remarks>
     public class MemoryAwareRogueLikeCell : RogueLikeCell
