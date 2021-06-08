@@ -51,7 +51,7 @@ namespace SadRogue.Integration.Maps
         { }
 
         /// <inheritdoc cref="RogueLikeMapBase.CreateRenderer"/>
-        public new ScreenSurface CreateRenderer(Point? viewSize = null, Font? font = null, Point? fontSize = null)
+        public new ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
             => base.CreateRenderer(viewSize, font, fontSize);
 
         /// <inheritdoc cref="RogueLikeMapBase.DestroyRenderer"/>
