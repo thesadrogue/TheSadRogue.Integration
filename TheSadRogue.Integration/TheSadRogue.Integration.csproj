@@ -75,7 +75,7 @@
   <ItemGroup>
     <PackageReference Include="GoRogue" Version="3.0.0-alpha03" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="SadConsole" Version="9.0.0-beta4" />
+    <PackageReference Include="SadConsole" Version="9.0.0" />
   </ItemGroup>
 
   <!-- When packing, copy the nuget files to the nuget output directory -->

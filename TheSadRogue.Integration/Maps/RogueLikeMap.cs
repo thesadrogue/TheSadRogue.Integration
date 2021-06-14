@@ -86,7 +86,7 @@ namespace SadRogue.Integration.Maps
                             FOV? customPlayerFOV = null, AStar? customPather = null,
                             IComponentCollection? customComponentContainer = null,
                             Point? viewSize = null,
-                            Font? font = null,
+                            IFont? font = null,
                             Point? fontSize = null)
             // Nullability override is safe because value is not used in base constructor and we set it below
             : base(null!, width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability,
