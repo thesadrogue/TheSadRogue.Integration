@@ -100,7 +100,7 @@ namespace SadRogue.Integration.Maps
         /// <param name="font">Font to use for the renderer.</param>
         /// <param name="fontSize">Size of font to use for the renderer.</param>
         /// <returns>A renderer configured with the given parameters.</returns>
-        protected ScreenSurface CreateRenderer(Point? viewSize = null, Font? font = null, Point? fontSize = null)
+        protected ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
         {
             // Default view size is entire Map
             var (viewWidth, viewHeight) = viewSize ?? (Width, Height);
