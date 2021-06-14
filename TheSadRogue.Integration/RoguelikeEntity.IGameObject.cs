@@ -30,7 +30,7 @@ namespace SadRogue.Integration
         // Nullable override to suppress warning on constructors; warning is incorrect; the functions that the
         // constructors call initializes this to a non-null value.
         /// <inheritdoc />
-        public ITaggableComponentCollection GoRogueComponents { get; private set; } = null!;
+        public IComponentCollection GoRogueComponents { get; private set; } = null!;
 
         /// <inheritdoc />
         Point IGameObject.Position

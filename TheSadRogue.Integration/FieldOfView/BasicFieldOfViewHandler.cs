@@ -7,7 +7,7 @@ namespace SadRogue.Integration.FieldOfView
 {
     /// <summary>
     /// Basic field of view handler that makes entities outside of FOV invisible, and makes
-    /// terrain outside of FOV invisible if it is not explored, and tinted a darker color if it is
+    /// terrain outside of FOV invisible if it is not explored, and tinted a darker color if they are
     /// explored.
     /// </summary>
     /// <remarks>

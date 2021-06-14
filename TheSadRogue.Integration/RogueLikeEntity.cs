@@ -29,7 +29,7 @@ namespace SadRogue.Integration
         /// tracked by SadConsole, and all components added here will appear in GoRogue's
         /// component collection as well.
         /// </remarks>
-        public ITaggableComponentCollection AllComponents => GoRogueComponents;
+        public IComponentCollection AllComponents => GoRogueComponents;
 
         #region Initialization
 
@@ -51,7 +51,7 @@ namespace SadRogue.Integration
         /// use cases.
         /// </param>
         public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentCollection = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(Color.White, Color.Transparent, glyph, CheckLayer(layer))
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
@@ -77,7 +77,7 @@ namespace SadRogue.Integration
         /// </param>
         public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true,
             bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
-            ITaggableComponentCollection? customComponentCollection = null)
+            IComponentCollection? customComponentCollection = null)
             : base(foreground, Color.Transparent, glyph, CheckLayer(layer))
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
@@ -102,7 +102,7 @@ namespace SadRogue.Integration
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentCollection = null)
+        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(foreground, background, glyph, CheckLayer(layer))
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
@@ -125,7 +125,7 @@ namespace SadRogue.Integration
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentCollection = null)
+        public RogueLikeEntity(Point position, ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(appearance, CheckLayer(layer))
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
@@ -148,7 +148,7 @@ namespace SadRogue.Integration
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, ref ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentCollection = null)
+        public RogueLikeEntity(Point position, ref ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(ref appearance, CheckLayer(layer))
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
@@ -156,7 +156,7 @@ namespace SadRogue.Integration
 
 
         private void GoRogueInitialize(Point position, bool walkable = true, bool transparent = true,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
         {
             idGenerator ??= GlobalRandom.DefaultRNG.NextUInt;
 

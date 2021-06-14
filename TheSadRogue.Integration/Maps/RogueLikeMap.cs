@@ -84,7 +84,7 @@ namespace SadRogue.Integration.Maps
                             uint layersBlockingTransparency = uint.MaxValue,
                             uint entityLayersSupportingMultipleItems = uint.MaxValue,
                             FOV? customPlayerFOV = null, AStar? customPather = null,
-                            ITaggableComponentCollection? customComponentContainer = null,
+                            IComponentCollection? customComponentContainer = null,
                             Point? viewSize = null,
                             Font? font = null,
                             Point? fontSize = null)

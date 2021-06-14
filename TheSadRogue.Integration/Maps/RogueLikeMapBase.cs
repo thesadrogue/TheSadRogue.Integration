@@ -43,7 +43,7 @@ namespace SadRogue.Integration.Maps
         /// Confused about which collection to add a component to?
         /// Add it here.
         /// </remarks>
-        public ITaggableComponentCollection AllComponents => GoRogueComponents;
+        public IComponentCollection AllComponents => GoRogueComponents;
 
         /// <summary>
         /// Creates a new RogueLikeMapBase.
@@ -73,7 +73,7 @@ namespace SadRogue.Integration.Maps
         protected RogueLikeMapBase(IScreenObject backingObject, int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
             uint entityLayersSupportingMultipleItems = uint.MaxValue, FOV? customPlayerFOV = null,
-            AStar? customPather = null, ITaggableComponentCollection? customComponentContainer = null)
+            AStar? customPather = null, IComponentCollection? customComponentContainer = null)
             : base(width, height, numberOfEntityLayers,
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
             entityLayersSupportingMultipleItems, customPlayerFOV, customPather, customComponentContainer)

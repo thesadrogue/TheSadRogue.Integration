@@ -46,7 +46,7 @@ namespace SadRogue.Integration.Maps
         public AdvancedRogueLikeMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
             uint entityLayersSupportingMultipleItems = uint.MaxValue, FOV? customPlayerFOV = null,
-            AStar? customPather = null, ITaggableComponentCollection? customComponentContainer = null)
+            AStar? customPather = null, IComponentCollection? customComponentContainer = null)
             : base(new ScreenObject(), width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather, customComponentContainer)
         { }
 

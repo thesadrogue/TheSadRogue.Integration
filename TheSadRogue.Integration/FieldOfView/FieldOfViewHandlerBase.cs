@@ -10,7 +10,7 @@ namespace SadRogue.Integration.FieldOfView
 {
     /// <summary>
     /// A map component that controls visibility of map objects based on the player's FOV.  Create a subclass and implement
-    /// abstract methods to determine what properties to set for what case.
+    /// abstract methods to specify what changes to make for each fov-related event.
     /// </summary>
     public abstract class FieldOfViewHandlerBase : ParentAwareComponentBase<RogueLikeMapBase>
     {

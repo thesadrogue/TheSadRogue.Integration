@@ -44,7 +44,7 @@ namespace SadRogue.Integration.FieldOfView.Memory
         /// <param name="customComponentContainer">Accepts a custom collection</param>
         public MemoryAwareRogueLikeCell(Point position, Color foreground, Color background, int glyph, int layer,
             bool walkable = true, bool transparent = true, Func<uint>? idGenerator = null,
-            ITaggableComponentCollection? customComponentContainer = null)
+            IComponentCollection? customComponentContainer = null)
             : base(position, foreground, background, glyph, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
             // Given appearance was assigned to Appearance, so copy it to TrueAppearance
@@ -65,7 +65,7 @@ namespace SadRogue.Integration.FieldOfView.Memory
         /// <param name="idGenerator">The function which produces the unique ID for this cell</param>
         /// <param name="customComponentContainer">Accepts a custom collection</param>
         public MemoryAwareRogueLikeCell(Point position, ColoredGlyph appearance, int layer, bool walkable = true, bool transparent = true,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
             : base(position, appearance, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
             // Given appearance was assigned to Appearance, so copy it to TrueAppearance

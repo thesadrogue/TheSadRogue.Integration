@@ -35,7 +35,7 @@ namespace SadRogue.Integration
         /// <param name="customComponentContainer">Accepts a custom collection</param>
         public RogueLikeCell(Point position, Color foreground, Color background, int glyph, int layer,
             bool walkable = true, bool transparent = true, Func<uint>? idGenerator = null,
-            ITaggableComponentCollection? customComponentContainer = null)
+            IComponentCollection? customComponentContainer = null)
             : base(position, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
             Appearance = new TerrainAppearance(this, foreground, background, glyph);
@@ -51,7 +51,7 @@ namespace SadRogue.Integration
         /// <param name="idGenerator">The function which produces the unique ID for this Cell</param>
         /// <param name="customComponentContainer">Accepts a custom collection</param>
         public RogueLikeCell(Point position, ColoredGlyph appearance, int layer, bool walkable = true, bool transparent = true,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
             : base(position, layer, walkable, transparent, idGenerator, customComponentContainer)
         {
             Appearance = new TerrainAppearance(this, appearance);
