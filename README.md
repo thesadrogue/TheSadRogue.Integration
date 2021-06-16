@@ -16,7 +16,7 @@ The library also provides:
 - Unit tests for its functionality
 
 ### The Integration Library
-The integration library core functionality is located in `TheSadRogue.Integration/`.  Details about its functionality an usage can be found in [its readme](TheSadRogue.Integration/README.md).
+The integration library core functionality is located in `TheSadRogue.Integration/`.  Details about its functionality and usage can be found in [its readme](TheSadRogue.Integration/README.md).
 
 ### A Project Template (TODO)
 This project will also provide a template compatible with `dotnet new`, that will be distributed via NuGet.  This is not yet complete, but will make creating new projects with boilerplate code in place quick and easy.
