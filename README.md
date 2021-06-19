@@ -1,151 +1,84 @@
 # TheSadRogue.Integration
+An integration library between [SadConsole](https://github.com/Thraka/SadConsole) and [GoRogue](https://github.com/Chris3606/GoRogue), and the spiritual successor to the [previous integration library](https://github.com/thesadrogue/SadConsole.GoRogueHelpers).
 
-An integration library between [SadConsole](https://github.com/Thraka/SadConsole ) & [GoRogue](https://github.com/Chris3606/GoRogue ), and the spiritual successor to the [previous integration library](https://github.com/thesadrogue/SadConsole.GoRogueHelpers )
+## Why a whole new library?
+Both SadConsole and GoRogue are undergoing extensive re-writes for their new versions (SadConsole version 9 and GoRogue version 3).  This includes a great many breaking changes to the APIs.  One of the most notable changes is the inclusion of [TheSadRogue.Primitives](https://github.com/thesadrogue/TheSadRogue.Primitives), a library of commonly-used data types when working with a discreet, 2D grid, as a dependency for both libraries.  Because of this change, projects that use both SadConsole(v8) and GoRogue(v2) cannot upgrade one independently of the other without tons of conflicting type declarations, and upgrading everything else is non-trivial as well. 
 
-### Why a whole new library?
+For the purpose of maintaining readable code that is (relatively) hack-free and friendly to beginners, it is more elegant to start a new integration library from scratch.  This also provides an opportunity to fix confusing namespace structure and other problems with the original integration library.
 
-Both SadConsole & GoRogue are undergoing extensive re-writes for their new versions (SadConsole version 9 and GoRogue version 3). This includes a great many breaking changes to the APIs, the most extreme of which is the inclusion of [TheSadRogue.Primitives](https://github.com/thesadrogue/TheSadRogue.Primitives ), a library of commonly-used data types when working with a discreet, 2D grid. Because of this change, projects that use both SadConsole(v8) and GoRogue(v2) cannot upgrade one independently of the other without tons of conflicting type declarations, and upgrading everything else is non-trivial as well. 
-
-For the purpose of maintaining readable code that is (relatively) hack-free and friendly to beginners, it would be more elegant to start a new integration library from scratch. This has the side effect of fixing the confusing namespace structure (or lack thereof) of the original integration library.
-
-### What's in the integration library?
-
+## What's in the integration library?
 This library contains classes that bridge functionality between SadConsole and GoRogue. It is specifically intended to implement similar interfaces from both libraries, and therefore give novice developers a quick start to developing a rogue-like (or lite) game. 
 
-To further that last bit, this library comes complete with:
-- An example RogueLike game to get you started (WIP)
+The library also provides:
+- A `dotnet new` template for easily creating new projects (TODO)
 - A companion tutorial (TODO)
-- A `dotnet new` template (TODO)
+- An example RogueLike game to get you started (WIP)
+- Unit tests for its functionality
 
-The Namespaces match the directory structure:
+### The Integration Library
+The integration library core functionality is located in `TheSadRogue.Integration/`.  Details about its functionality and usage can be found in [its readme](TheSadRogue.Integration/README.md).
 
-```
-Solution/
- +- ExampleGame/ 
- |   +- Program.cs                              # creates & starts the game
- |   +- GameUi.cs                               # manages the screen space 
- |   +- MapGeneration/
- |   |   +- MapGenerator.cs                     # coordinates GenerationSteps
- |   |   +- GenerationSteps/
- |   |       +- BackroomsGenerationStep.cs      # produces a cluster of rectangular rooms
- |   |       +- CaveGenerationStep.cs           # a small cellular automata 
- |   |       +- CaveSeedingStep.cs              # initialize the map for the cave generation to work
- |   |       +- CryptGenerationStep.cs          # create a brick pattern of rooms with thick walls 
- |   |       +- SpiralGenerationStep.cs         # carves a spiral out of a solid area
- |      
- +- TheSadRogue.Integration/ 
- |   +- Components/
- |   |   +- IRogueLikeComponent.cs              # base interface for components
- |   |   +- PlayerControlsComponent.cs          # basic movement & actions 
- |   |   +- RogueLikeComponent.cs               # an abstract type that takes care of things for you
- |   +- Extensions/
- |   |   +- ICellSurfaceExtensions.cs
- |   |   +- IMapViewExtensions.cs 
- |   |   +- IReadOnlySpatialMapExtensions.cs
- |   +- FieldOfView/
- |   |   +- IFieldOfViewHandler.cs              # interface for FOV components
- |   |   +- FieldOfViewHandler.cs               # an implementation of said FOV
- |   |   +- FieldOfViewState.cs                 # an enum to help with calculating FOV
- |   +- RogueLikeEntity.cs                      # An entity recognized by SadConsole & GoRogue
- |   +- RogueLikeMap.cs                         # A Map that contains entites and can be rendered to a screen surgace   
- | 
- +- Tests/                                      # Might be useful to look at if you're stuck
-     +- ...
-```
+### A Project Template (TODO)
+This project will also provide a template compatible with `dotnet new`, that will be distributed via NuGet.  This is not yet complete, but will make creating new projects with boilerplate code in place quick and easy.
 
-### How do I get started?
+### A Companion Tutorial (TODO)
+Eventually, a roguelike tutorial will be written using the integration library that will demonstrate the features, however it does not yet exist.
 
-Here is an example `Program.cs` that will generate and display a map:
-```
-using GoRogue.MapGeneration;
-using GoRogue.MapViews;
-using SadConsole;
-using SadRogue.Primitives;
-using TheSadRogue.Integration;
-using TheSadRogue.Integration.Components;
-using TheSadRogue.Integration.Extensions;
+### An Example Game (WIP)
+An example game is also provided that demonstrates the usage of many of the features of the integration library in the `ExampleGame/` folder. Details about the example may be found in [its readme](ExampleGame/README.md).  The example is still a work in progress.
 
-namespace ExampleGame
-{
-    class Program
-    {
-        public const int Width = 80;
-        public const int Height = 25;
-        private const int MapWidth = 80;
-        private const int MapHeight = 25;
+### Unit Tests
+Unit tests for integration library functionality are included in `TheSadRogue.Integration.Tests/`.  The tests may be provide useful example code, and also show how to create mocks of various SadConsole structures that enable unit testing of SadConsole projects.
 
-        static void Main(string[] args)
-        {
-            Game.Create(Width, Height);
-            Game.Instance.OnStart = Init;
-            Game.Instance.Run();
-            Game.Instance.Dispose();
-        }
 
-        private static void Init()
-        {
-            var map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Manhattan);
-            GenerateMap(map);
-            
-            var player = new RogueLikeEntity( (16,16), 1, layer: 1);
-            player.AddComponent(new PlayerControlsComponent());
-            map.AddEntity(player);
+## How do I get started?
+As detailed above, a template will be provided to create new projects.  Instructions on its use will be placed here after it is created.
 
-            var screen = new ScreenSurface(MapWidth, MapHeight, map.TerrainSurface.ToArray());
-            GameHost.Instance.Screen.Children.Add(screen);
-        }
-        
-        static void GenerateMap(RogueLikeMap map)
-        {
-            var generator = new Generator(map.Width, map.Height);
-            generator.AddSteps(DefaultAlgorithms.DungeonMazeMapSteps());
-            generator = generator.Generate();
-		      
-            var underlyingMap = generator.Context.GetFirst<ISettableMapView<bool>>();
-            for (int i = 0; i < underlyingMap.Width; i++)
-            {
-                for (int j = 0; j < underlyingMap.Height; j++)
-                {
-                    Point here = (i, j);
-                    bool walkable = underlyingMap[i, j];
-                    map.SetTerrain(new RogueLikeEntity(here, walkable ? '.' : '#', walkable, walkable));
-                }
-            }
-        }
-    }
-}
-```
+Additionally, you may find the `ExampleGame/` helpful as it provides well-commented example code that utilizes integration library features.
+
 
 ## Current Progress
+This library is still in alpha and under active development.  Here is a rough summary of the current state of each part.
 
-### RogueLikeMap
+### Integration Library
+- Map and map object structures completed
+    - Allows rendering map directly as a SadConsole object, as well as rendering the same map via multiple renderers
+    - Supports viewports and other concepts implemented directly in SadConsole
+- Structure for controlling visibility based on FOV in place
+    - Extension that implements the concept of character "memory" also in place, which shows how the base classes can be utilized
+- Component integration framework in-place
+    - Components may be added to both maps and map objects
+    - Supports a single base class and single component list per object that combines the GoRogue and SadConsole concept of components into one
+	- Includes a convenient component for implementing player controls
+- NuGet package creation implemented (no actual NuGet release yet)
+- **Missing** the following features from the previous integration library
+    - Everything in the `Tiles` namespace
+	    - May or may not be re-implemented here
+		- Library architecture/structures have changed such that it may no longer be useful as previously implemented; TBD
+	- `Action` namespace/system and associated components
+	    - Needs to be re-evaluated since GoRogue and SadConsole components have been combined
+		- May have some overlap with GoRogue's effect system
+	- World generation code from `Maps.Generators` namespace
+	    - Potentially possible to integrate into GoRogue's new map generation framework
+		- Wrappers around map class need to be re-evaluated due to architecture changes
+	- "Game-frame"/turn system
+	    - Implementation may be greatly simplified since GoRogue/SadConsole components have been combined
+		- May be possible to integrate a more diverse feature set
 
-- Generates
-- Can be added to a `ScreenSurface`
-- Gets a `ColoredGlyph` from the terrain view
-- Doesn't move viewport around yet
-- doesn't update entities when they move
+### New Project Template
+- Not yet implemented
 
-### RogueLikeEntity
+### Companion Tutorial
+- Not yet implemented
 
-- Is likely to refactor when SadConsole's `EntityLite` is completed
-- No component-related methods have been implemented yet.
-
-### RogueLikeComponent
-
-- Completed interface and abstract class
-- Player Controls Component adds movement control to an entity
-
-## Example Game
-
-- Generates terrain according to a composite of different algorithms
-- Generates a player character and gives it a `PlayerControlsComponent`
-- Adds the map to the screen and displays it
-- Reacts to player control
-- Doesn't manage field of view
-- Doesn't have other creatures
-- Doesn't guarantee that the entire map can be accessed 
-- Doesn't place doors that open, close, and lock
-- Doesn't place items
-- Doesn't contain any semblance of health or combat
-- Doesn't have any goals to pursue
+### Example Game
+- Generates map using GoRogue's map generation system
+- Displays map via viewport that centers on the player's position
+- Implements controllable player
+- Implements field-of-view and character memory
+- **Not Yet Implemented**
+    - Enemies/NPCs
+	- Item/loot placement and inventory
+	- Working, lockable doors
+	- Any semblance of health/combat
+	- Goals/win conditions

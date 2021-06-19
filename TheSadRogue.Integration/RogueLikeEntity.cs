@@ -1,7 +1,6 @@
 using System;
 using GoRogue.Components;
 using GoRogue.GameFramework;
-using GoRogue.GameFramework.Components;
 using GoRogue.Random;
 using SadConsole;
 using SadConsole.Components;
@@ -30,7 +29,7 @@ namespace SadRogue.Integration
         /// tracked by SadConsole, and all components added here will appear in GoRogue's
         /// component collection as well.
         /// </remarks>
-        public ITaggableComponentCollection AllComponents => GoRogueComponents;
+        public IComponentCollection AllComponents => GoRogueComponents;
 
         #region Initialization
 
@@ -46,16 +45,16 @@ namespace SadRogue.Integration
         /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
         /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
         /// </param>
-        /// <param name="customComponentContainer">
-        /// A custom component container to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
         public RogueLikeEntity(Point position, int glyph, bool walkable = true, bool transparent = true, int layer = 1,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(Color.White, Color.Transparent, glyph, CheckLayer(layer))
         {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentContainer);
+            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
         /// <summary>
@@ -71,17 +70,17 @@ namespace SadRogue.Integration
         /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
         /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
         /// </param>
-        /// <param name="customComponentContainer">
-        /// A custom component container to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
         public RogueLikeEntity(Point position, Color foreground, int glyph, bool walkable = true,
             bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
-            ITaggableComponentCollection? customComponentContainer = null)
+            IComponentCollection? customComponentCollection = null)
             : base(foreground, Color.Transparent, glyph, CheckLayer(layer))
         {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentContainer);
+            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
         /// <summary>
@@ -98,15 +97,15 @@ namespace SadRogue.Integration
         /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
         /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
         /// </param>
-        /// <param name="customComponentContainer">
-        /// A custom component container to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+        public RogueLikeEntity(Point position, Color foreground, Color background, int glyph, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(foreground, background, glyph, CheckLayer(layer))
         {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentContainer);
+            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
         /// <summary>
@@ -121,15 +120,15 @@ namespace SadRogue.Integration
         /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
         /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
         /// </param>
-        /// <param name="customComponentContainer">
-        /// A custom component container to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+        public RogueLikeEntity(Point position, ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(appearance, CheckLayer(layer))
         {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentContainer);
+            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
         /// <summary>
@@ -144,20 +143,20 @@ namespace SadRogue.Integration
         /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
         /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
         /// </param>
-        /// <param name="customComponentContainer">
-        /// A custom component container to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
         /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
         /// use cases.
         /// </param>
-        public RogueLikeEntity(Point position, ref ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+        public RogueLikeEntity(Point position, ref ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
             : base(ref appearance, CheckLayer(layer))
         {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentContainer);
+            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
 
         private void GoRogueInitialize(Point position, bool walkable = true, bool transparent = true,
-            Func<uint>? idGenerator = null, ITaggableComponentCollection? customComponentContainer = null)
+            Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
         {
             idGenerator ??= GlobalRandom.DefaultRNG.NextUInt;
 
@@ -169,6 +168,7 @@ namespace SadRogue.Integration
 
             ID = idGenerator();
             GoRogueComponents = customComponentContainer ?? new ComponentCollection();
+            GoRogueComponents.ParentForAddedComponents = this;
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
         }
@@ -182,25 +182,12 @@ namespace SadRogue.Integration
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Add(sadComponent);
-            if (e.Component is IGameObjectComponent goRogueComponent)
-            {
-                if (goRogueComponent.Parent != null)
-                    throw new ArgumentException(
-                        $"Components implementing {nameof(IGameObjectComponent)} cannot be added to multiple objects at once.");
-
-                goRogueComponent.Parent = this;
-            }
         }
 
         private void On_GoRogueComponentRemoved(object? s, ComponentChangedEventArgs e)
         {
             if (e.Component is IComponent sadComponent)
                 SadComponents.Remove(sadComponent);
-
-            if (e.Component is IGameObjectComponent goRogueComponent)
-            {
-                goRogueComponent.Parent = null;
-            }
         }
 
         private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)

@@ -16,13 +16,21 @@ namespace SadRogue.Integration
         /// <inheritdoc />
         public int Layer => ZIndex;
 
+        private Map? _currentMap;
+
         /// <inheritdoc />
-        public Map? CurrentMap { get; private set; }
+        public Map? CurrentMap => _currentMap;
+
+        /// <inheritdoc />
+        public event EventHandler<GameObjectCurrentMapChanged>? AddedToMap;
+
+        /// <inheritdoc />
+        public event EventHandler<GameObjectCurrentMapChanged>? RemovedFromMap;
 
         // Nullable override to suppress warning on constructors; warning is incorrect; the functions that the
         // constructors call initializes this to a non-null value.
         /// <inheritdoc />
-        public ITaggableComponentCollection GoRogueComponents { get; private set; } = null!;
+        public IComponentCollection GoRogueComponents { get; private set; } = null!;
 
         /// <inheritdoc />
         Point IGameObject.Position
@@ -47,7 +55,7 @@ namespace SadRogue.Integration
 
         /// <inheritdoc />
         public void OnMapChanged(Map? newMap)
-            => CurrentMap = newMap;
+            => this.SafelySetCurrentMap(ref _currentMap, newMap, AddedToMap, RemovedFromMap);
 
         /// <inheritdoc />
         public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;

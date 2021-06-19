@@ -1,7 +1,7 @@
 using System;
 using GoRogue.Components;
 using GoRogue.GameFramework;
-using GoRogue.GameFramework.Components;
+using GoRogue.Components.ParentAware;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
@@ -20,10 +20,10 @@ namespace SadRogue.Integration.Components
     /// fore has declared empty implementations so that no undo
     /// processing or errors occur.
     /// </remarks>
-    public abstract class RogueLikeComponentBase : ComponentBase, IComponent, ISortedComponent
+    public abstract class RogueLikeComponentBase : ParentAwareComponentBase<IGameObject>, IComponent, ISortedComponent
     {
         /// <summary>
-        /// The Order in which the components are processed. Lower is earlier.
+        /// The order in which the components are processed. Lower is earlier.
         /// </summary>
         public uint SortOrder { get; }
 
@@ -113,7 +113,7 @@ namespace SadRogue.Integration.Components
     /// constraints on the type of object that it is attached to.
     /// </summary>
     /// <typeparam name="TParent">Type of object this component must be attached to.</typeparam>
-    public class RogueLikeComponentBase<TParent> : ComponentBase<TParent>, IComponent, ISortedComponent
+    public class RogueLikeComponentBase<TParent> : ParentAwareComponentBase<TParent>, IComponent, ISortedComponent
         where TParent : class, IGameObject
     {
         /// <summary>

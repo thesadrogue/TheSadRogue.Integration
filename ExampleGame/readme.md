@@ -34,3 +34,20 @@ Blocking characters take no damage for a round, and stun their attacker for a ro
 
 Many enemies have special abilities which make them very difficult to fight. 
 There are two bosses which hold magic items that may make your quest easier or harder.
+
+## Code Organization (WIP)
+The namespaces match the directory structure:
+
+```
+Solution/
+ +- ExampleGame/ 
+ |   +- Program.cs                              # creates & starts the game
+ |   +- GameUi.cs                               # manages the screen space 
+ |   +- MapGeneration/
+ |   |   +- MapGenerator.cs                     # coordinates GenerationSteps
+ |   |   +- GenerationSteps/
+ |   |       +- BackroomsGenerationStep.cs      # produces a cluster of rectangular rooms
+ |   |       +- CaveGenerationStep.cs           # a small cellular automata 
+ |   |       +- CaveSeedingStep.cs              # initialize the map for the cave generation to work
+ |   |       +- CryptGenerationStep.cs          # create a brick pattern of rooms with thick walls 
+ |   |       +- SpiralGenerationStep.cs         # carves a spiral out of a solid area
