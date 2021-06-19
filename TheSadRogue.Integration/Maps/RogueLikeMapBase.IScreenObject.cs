@@ -17,13 +17,13 @@ namespace SadRogue.Integration.Maps
         protected IScreenObject BackingObject { get; set; }
 
         /// <inheritdoc/>
-        public void Render(TimeSpan delta) => BackingObject.Render(delta);
+        public virtual void Render(TimeSpan delta) => BackingObject.Render(delta);
 
         /// <inheritdoc/>
-        public void OnFocused() => BackingObject.OnFocused();
+        public virtual void OnFocused() => BackingObject.OnFocused();
 
         /// <inheritdoc/>
-        public void OnFocusLost() => BackingObject.OnFocusLost();
+        public virtual void OnFocusLost() => BackingObject.OnFocusLost();
 
         /// <inheritdoc/>
         TComponent IScreenObject.GetSadComponent<TComponent>() => BackingObject.GetSadComponent<TComponent>();
@@ -35,20 +35,53 @@ namespace SadRogue.Integration.Maps
         bool IScreenObject.HasSadComponent<TComponent>(out TComponent component) => BackingObject.HasSadComponent(out component);
 
         /// <inheritdoc/>
-        public bool ProcessKeyboard(Keyboard keyboard) => BackingObject.ProcessKeyboard(keyboard);
+        public virtual bool ProcessKeyboard(Keyboard keyboard) => BackingObject.ProcessKeyboard(keyboard);
 
         /// <inheritdoc/>
-        public bool ProcessMouse(MouseScreenObjectState state) => BackingObject.ProcessMouse(state);
+        bool IScreenObject.ProcessMouse(MouseScreenObjectState state)
+        {
+            // The backing object may be an arbitrary IScreenObject which could be an IScreenSurface.  Because surfaces
+            // have positions and sizes, they are handled in a special way by mouse code (specifically the constructor
+            // of MouseScreenObjectState).  Therefore, if BackingObject is a surface we need to make sure this
+            // implementation invokes behavior appropriate for a surface.  So to ensure that any backing object will
+            // work appropriately, we'll just base the state off of the backing object itself.
+            state = new MouseScreenObjectState(BackingObject, state.Mouse.Clone());
+            return ProcessMouse(state);
+        }
+
+        /// <summary>
+        /// Overridable implementation of IScreenObject's ProcessMouse which is guaranteed to receive a mouse state
+        /// appropriate for the map implementation.
+        /// </summary>
+        /// <param name="state"/>
+        /// <returns/>
+        protected virtual bool ProcessMouse(MouseScreenObjectState state) => BackingObject.ProcessMouse(state);
 
         /// <inheritdoc/>
-        public void LostMouse(MouseScreenObjectState state) => BackingObject.LostMouse(state);
+        void IScreenObject.LostMouse(MouseScreenObjectState state)
+        {
+            // The backing object may be an arbitrary IScreenObject which could be an IScreenSurface.  Because surfaces
+            // have positions and sizes, they are handled in a special way by mouse code (specifically the constructor
+            // of MouseScreenObjectState).  Therefore, if BackingObject is a surface we need to make sure this
+            // implementation invokes behavior appropriate for a surface.  So to ensure that any backing object will
+            // work appropriately, we'll just base the state off of the backing object itself.
+            state = new MouseScreenObjectState(BackingObject, state.Mouse.Clone());
+            LostMouse(state);
+        }
+
+        /// <summary>
+        /// Overridable implementation of IScreenObject's LostMouse which is guaranteed to receive a mouse state
+        /// appropriate for the map implementation.
+        /// </summary>
+        /// <param name="state"/>
+        protected virtual void LostMouse(MouseScreenObjectState state) => BackingObject.LostMouse(state);
 
         /// <summary>
         /// Calls Update for all entities, then Updates all SadComponents and Children. Only processes if IsEnabled is
         /// true.
         /// </summary>
         /// <param name="delta">Time since last update.</param>
-        public void Update(TimeSpan delta)
+        public virtual void Update(TimeSpan delta)
         {
             if (!IsEnabled) return;
 
@@ -63,7 +96,7 @@ namespace SadRogue.Integration.Maps
         }
 
         /// <inheritdoc/>
-        public void UpdateAbsolutePosition() => BackingObject.UpdateAbsolutePosition();
+        public virtual void UpdateAbsolutePosition() => BackingObject.UpdateAbsolutePosition();
 
         /// <inheritdoc/>
         public FocusBehavior FocusedMode
