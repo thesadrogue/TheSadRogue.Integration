@@ -55,20 +55,7 @@ namespace SadRogue.Integration.Maps
         protected virtual bool ProcessMouse(MouseScreenObjectState state) => BackingObject.ProcessMouse(state);
 
         /// <inheritdoc/>
-        void IScreenObject.LostMouse(MouseScreenObjectState state)
-        {
-            // Transformation is required to ensure that backing objects which are surfaces are handled correctly.
-            // See https://github.com/thesadrogue/TheSadRogue.Integration/issues/47.
-            state = new MouseScreenObjectState(BackingObject, state.Mouse.Clone());
-            LostMouse(state);
-        }
-
-        /// <summary>
-        /// Overridable implementation of IScreenObject's LostMouse which is guaranteed to receive a mouse state
-        /// appropriate for the map implementation.
-        /// </summary>
-        /// <param name="state"/>
-        protected virtual void LostMouse(MouseScreenObjectState state) => BackingObject.LostMouse(state);
+        public virtual void LostMouse(MouseScreenObjectState state) => BackingObject.LostMouse(state);
 
         /// <summary>
         /// Calls Update for all entities, then Updates all SadComponents and Children. Only processes if IsEnabled is
