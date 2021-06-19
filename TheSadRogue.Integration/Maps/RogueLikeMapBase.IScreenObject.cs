@@ -40,11 +40,8 @@ namespace SadRogue.Integration.Maps
         /// <inheritdoc/>
         bool IScreenObject.ProcessMouse(MouseScreenObjectState state)
         {
-            // The backing object may be an arbitrary IScreenObject which could be an IScreenSurface.  Because surfaces
-            // have positions and sizes, they are handled in a special way by mouse code (specifically the constructor
-            // of MouseScreenObjectState).  Therefore, if BackingObject is a surface we need to make sure this
-            // implementation invokes behavior appropriate for a surface.  So to ensure that any backing object will
-            // work appropriately, we'll just base the state off of the backing object itself.
+            // Transformation is required to ensure that backing objects which are surfaces are handled correctly.
+            // See https://github.com/thesadrogue/TheSadRogue.Integration/issues/47.
             state = new MouseScreenObjectState(BackingObject, state.Mouse.Clone());
             return ProcessMouse(state);
         }
@@ -60,11 +57,8 @@ namespace SadRogue.Integration.Maps
         /// <inheritdoc/>
         void IScreenObject.LostMouse(MouseScreenObjectState state)
         {
-            // The backing object may be an arbitrary IScreenObject which could be an IScreenSurface.  Because surfaces
-            // have positions and sizes, they are handled in a special way by mouse code (specifically the constructor
-            // of MouseScreenObjectState).  Therefore, if BackingObject is a surface we need to make sure this
-            // implementation invokes behavior appropriate for a surface.  So to ensure that any backing object will
-            // work appropriately, we'll just base the state off of the backing object itself.
+            // Transformation is required to ensure that backing objects which are surfaces are handled correctly.
+            // See https://github.com/thesadrogue/TheSadRogue.Integration/issues/47.
             state = new MouseScreenObjectState(BackingObject, state.Mouse.Clone());
             LostMouse(state);
         }
