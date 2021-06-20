@@ -23,16 +23,14 @@ namespace ExampleGame
                 layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather,
                 customComponentContainer, viewSize, font, fontSize)
         {
-            UseMouse = false;
+            UseMouse = true;
         }
 
         protected override bool ProcessMouse(MouseScreenObjectState state)
         {
             System.Diagnostics.Debug.WriteLine("ProcessMouse called!");
 
-            //return base.ProcessMouse(state);
-
-            return true;
+            return base.ProcessMouse(state);
         }
     }
 }
