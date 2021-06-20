@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GoRogue;
 using GoRogue.Components;
+using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
 using GoRogue.SpatialMaps;
@@ -57,8 +57,9 @@ namespace SadRogue.Integration.Maps
         /// <param name="layersBlockingTransparency">Which layers should participate in determining transparency of tiles.  Defaults to all layers.</param>
         /// <param name="entityLayersSupportingMultipleItems">Which entity layers support having multiple objects on the same square.  Defaults to all layers.</param>
         /// <param name="customPlayerFOV">
-        /// Custom FOV to use for <see cref="Map.PlayerFOV"/>.  Typically you will not need to specify this; it is
-        /// generally only useful if you want this property to NOT use <see cref="Map.TransparencyView"/> for data.
+        /// Custom FOV to use for <see cref="Map.PlayerFOV"/>.  Defaults to GoRogue's recursive shadow-casting
+        /// implementation.  It may also be useful to specify this if you want the <see cref="Map.PlayerFOV"/> property
+        /// to not use <see cref="Map.TransparencyView"/> for data.
         /// </param>
         /// <param name="customPather">
         /// Custom A* pathfinder for the map.  Typically, you wont' need to specify this; By default, uses
@@ -72,7 +73,7 @@ namespace SadRogue.Integration.Maps
         /// </param>
         protected RogueLikeMapBase(IScreenObject backingObject, int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
-            uint entityLayersSupportingMultipleItems = uint.MaxValue, FOV? customPlayerFOV = null,
+            uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
             AStar? customPather = null, IComponentCollection? customComponentContainer = null)
             : base(width, height, numberOfEntityLayers,
             distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
