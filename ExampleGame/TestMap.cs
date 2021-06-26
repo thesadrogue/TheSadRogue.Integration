@@ -1,3 +1,4 @@
+using System;
 using GoRogue;
 using GoRogue.Components;
 using GoRogue.Pathing;
@@ -10,6 +11,7 @@ namespace ExampleGame
 {
     public class TestMap : RogueLikeMap
     {
+        private int _count = 0;
         public TestMap(int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
             uint layersBlockingWalkability = uint.MaxValue,
             uint layersBlockingTransparency = uint.MaxValue,
@@ -23,14 +25,14 @@ namespace ExampleGame
                 layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather,
                 customComponentContainer, viewSize, font, fontSize)
         {
-            UseMouse = true;
+            //UseMouse = true;
         }
 
-        protected override bool ProcessMouse(MouseScreenObjectState state)
+        public override void Update(TimeSpan delta)
         {
-            System.Diagnostics.Debug.WriteLine("ProcessMouse called!");
+            System.Diagnostics.Debug.WriteLine($"TestMap Update {_count++}!");
 
-            return base.ProcessMouse(state);
+            base.Update(delta);
         }
     }
 }

@@ -46,7 +46,16 @@ namespace ExampleGame
             // Center view on player
             Map.AllComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
-            GameHost.Instance.Screen = Map;
+            Map.AllComponents.Add(new TestComponent());
+
+            var screen = new TestScreen();
+            screen.Children.Add(Map);
+
+            //var surface = new TestSurface(100, 100); //new ScreenSurface(100, 100);
+            //surface.UseMouse = false;
+            //screen.Children.Add(surface);
+
+            GameHost.Instance.Screen = screen;
         }
 
         private static TestMap GenerateMap()
