@@ -20,13 +20,13 @@ namespace SadRogue.Integration.Maps
     /// </summary>
     public abstract partial class RogueLikeMapBase : Map, IScreenObject
     {
-        private readonly List<ScreenSurface> _renderers;
-        private readonly Dictionary<ScreenSurface, Renderer> _surfaceEntityRenderers;
+        private readonly List<IScreenSurface> _renderers;
+        private readonly Dictionary<IScreenSurface, Renderer> _surfaceEntityRenderers;
 
         /// <summary>
         /// List of renderers (ScreenSurfaces) that currently render the map.
         /// </summary>
-        public IReadOnlyList<ScreenSurface> Renderers => _renderers.AsReadOnly();
+        public IReadOnlyList<IScreenSurface> Renderers => _renderers.AsReadOnly();
 
         /// <summary>
         /// An IGridView of the ColoredGlyphs on the Terrain layer (0) that will produce a fully
@@ -85,8 +85,8 @@ namespace SadRogue.Integration.Maps
             ObjectAdded += Object_Added;
             ObjectRemoved += Object_Removed;
 
-            _renderers = new List<ScreenSurface>();
-            _surfaceEntityRenderers = new Dictionary<ScreenSurface, Renderer>();
+            _renderers = new List<IScreenSurface>();
+            _surfaceEntityRenderers = new Dictionary<IScreenSurface, Renderer>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
 
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
@@ -101,8 +101,9 @@ namespace SadRogue.Integration.Maps
         /// <param name="viewSize">Viewport size for the renderer.</param>
         /// <param name="font">Font to use for the renderer.</param>
         /// <param name="fontSize">Size of font to use for the renderer.</param>
+        /// <param name="owningObject">The owning object to pass to the renderer.</param>
         /// <returns>A renderer configured with the given parameters.</returns>
-        protected ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
+        protected IScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null, IScreenObject? owningObject = null)
         {
             // Default view size is entire Map
             var (viewWidth, viewHeight) = viewSize ?? (Width, Height);
@@ -111,7 +112,7 @@ namespace SadRogue.Integration.Maps
             var cellSurface = new MapTerrainCellSurface(this, viewWidth, viewHeight);
 
             // Create screen surface that renders that cell surface and keep track of it
-            var renderer = new ScreenSurface(cellSurface, font, fontSize);
+            var renderer = new MapScreenSurface(cellSurface, font, fontSize, owningObject);
             _renderers.Add(renderer);
 
             // Create an EntityRenderer and configure it with all the appropriate entities,
@@ -131,7 +132,7 @@ namespace SadRogue.Integration.Maps
         /// longer used, in order to ensure that the renderer resources are freed
         /// </summary>
         /// <param name="renderer">The renderer to unlink.</param>
-        protected void DestroyRenderer(ScreenSurface renderer)
+        protected void DestroyRenderer(IScreenSurface renderer)
         {
             _renderers.Remove(renderer);
             _surfaceEntityRenderers.Remove(renderer);

@@ -35,7 +35,7 @@ namespace SadRogue.Integration.Maps
         /// to not use <see cref="Map.TransparencyView"/> for data.
         /// </param>
         /// <param name="customPather">
-        /// Custom A* pathfinder for the map.  Typically, you wont' need to specify this; By default, uses
+        /// Custom A* pathfinder for the map.  Typically, you won't need to specify this; By default, uses
         /// <see cref="Map.WalkabilityView"/> to determine which locations can be reached, and calculates distance based
         /// on the <see cref="Distance" /> passed in via the constructor.
         /// </param>
@@ -52,10 +52,10 @@ namespace SadRogue.Integration.Maps
         { }
 
         /// <inheritdoc cref="RogueLikeMapBase.CreateRenderer"/>
-        public new ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
+        public IScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
             => base.CreateRenderer(viewSize, font, fontSize);
 
         /// <inheritdoc cref="RogueLikeMapBase.DestroyRenderer"/>
-        public new void DestroyRenderer(ScreenSurface renderer) => base.DestroyRenderer(renderer);
+        public new void DestroyRenderer(IScreenSurface renderer) => base.DestroyRenderer(renderer);
     }
 }

@@ -95,7 +95,7 @@ namespace SadRogue.Integration.Maps
         {
             // It is safe to never call DestroyRenderer, because the only reference to the object is in this class, so
             // they must be deallocated at the same time anyway.
-            BackingObject = CreateRenderer(viewSize, font, fontSize);
+            BackingObject = CreateRenderer(viewSize, font, fontSize, this);
         }
     }
 }
