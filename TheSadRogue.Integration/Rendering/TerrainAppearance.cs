@@ -1,7 +1,7 @@
 ﻿using SadConsole;
 using SadRogue.Primitives;
 
-namespace SadRogue.Integration
+namespace SadRogue.Integration.Rendering
 {
     /// <summary>
     /// An object representing the appearance of a piece of terrain.

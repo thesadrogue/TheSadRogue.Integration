@@ -1,6 +1,7 @@
 ﻿using System;
 using GoRogue.Components;
 using SadConsole;
+using SadRogue.Integration.Rendering;
 using SadRogue.Primitives;
 
 namespace SadRogue.Integration.FieldOfView.Memory

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SadRogue.Integration.Rendering;
+using System;
 
 namespace SadRogue.Integration.FieldOfView.Memory
 {

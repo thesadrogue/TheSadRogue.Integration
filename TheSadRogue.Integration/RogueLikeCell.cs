@@ -2,6 +2,7 @@ using System;
 using GoRogue.Components;
 using GoRogue.GameFramework;
 using SadConsole;
+using SadRogue.Integration.Rendering;
 using SadRogue.Primitives;
 
 namespace SadRogue.Integration

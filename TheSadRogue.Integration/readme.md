@@ -24,6 +24,10 @@ The namespaces match the directory structure, except the namespaces omit "The":
   |   +- RogueLikeMap                              # A basic map that is recognized by GoRogue and is also an object positionable and renderable in the SadConsole screen heirarchy
   |   +- RogueLikeMapBase                          # Abstract base class for a map recognizable by GoRogue and able to integrate with SadConsole surfaces.
   |
+  +- Rendering/                            # Implements rendering-related functionality
+  |   +- MapTerrainCellSurface                     # SadConsole ICellSurface used by map to expose its terrain as a surface
+  |   +- TerrainAppearance                         # Appearance object inheriting from ColoredGlyph used for RogueLikeCell.
+  |
   +- RogueLikeCell                         # A terrain object recognizable by both SadConsole and GoRogue
   +- RogueLikeEntity                       # An entity recognized by both SadConsole and GoRogue
 ```

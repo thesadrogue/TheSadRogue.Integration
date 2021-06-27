@@ -9,6 +9,7 @@ using GoRogue.SpatialMaps;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;
+using SadRogue.Integration.Rendering;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
