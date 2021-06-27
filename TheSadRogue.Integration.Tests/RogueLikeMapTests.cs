@@ -10,7 +10,7 @@ namespace SadRogue.Integration.Tests
         [Fact]
         public void NewMapTest()
         {
-            var map = new RogueLikeMap(24, 12, 3, Distance.Chebyshev);
+            var map = new RogueLikeMapBase(24, 12, null, 3, Distance.Chebyshev);
             Assert.Equal(24, map.Width);
             Assert.Equal(12, map.Height);
             Assert.Equal(3, map.Entities.NumberOfLayers);

@@ -20,7 +20,7 @@ namespace ExampleGame
         private const int MapHeight = 60;
 
         // Initialized in Init, so null-override is used.
-        public static RogueLikeMap Map = null!;
+        public static RogueLikeMapBase Map = null!;
         public static Player PlayerCharacter = null!;
         static void Main(/*string[] args*/)
         {
@@ -44,12 +44,12 @@ namespace ExampleGame
             PlayerCharacter.CalculateFOV();
 
             // Center view on player
-            Map.AllComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
+            Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
             GameHost.Instance.Screen = Map;
         }
 
-        private static RogueLikeMap GenerateMap()
+        private static RogueLikeMapBase GenerateMap()
         {
             // Generate a rectangular map for the sake of testing.
             var generator = new Generator(MapWidth, MapHeight)
@@ -60,7 +60,7 @@ namespace ExampleGame
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
-            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Manhattan, viewSize: (Width, Height));
+            RogueLikeMapBase map = new RogueLikeMapBase(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
             map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
 
             foreach(var location in map.Positions())

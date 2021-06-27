@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GoRogue.Components;
 using GoRogue.FOV;
@@ -14,18 +15,38 @@ using SadRogue.Primitives.GridViews;
 
 namespace SadRogue.Integration.Maps
 {
+    public struct DefaultRendererParams
+    {
+        public Point? ViewSize;
+        public IFont? Font;
+        public Point? FontSize;
+
+        public DefaultRendererParams(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
+        {
+            ViewSize = viewSize;
+            Font = font;
+            FontSize = fontSize;
+        }
+
+        public static implicit operator (Point? viewSize, IFont? font, Point? fontSize)(DefaultRendererParams obj)
+            => (obj.ViewSize, obj.Font, obj.FontSize);
+
+        public static implicit operator DefaultRendererParams((Point? viewSize, IFont? font, Point? fontSize) tuple)
+            => new DefaultRendererParams(tuple.viewSize, tuple.font, tuple.fontSize);
+    }
+
     /// <summary>
     /// Abstract base class for a Map that contains the necessary function to render to one or more ScreenSurfaces.
     /// </summary>
-    public abstract partial class RogueLikeMapBase : Map, IScreenObject
+    public partial class RogueLikeMapBase : Map, IScreenObject
     {
-        private readonly List<ScreenSurface> _renderers;
-        private readonly Dictionary<ScreenSurface, Renderer> _surfaceEntityRenderers;
+        private readonly List<IScreenSurface> _renderers;
+        private readonly Dictionary<IScreenSurface, Renderer> _surfaceEntityRenderers;
 
         /// <summary>
-        /// List of renderers (ScreenSurfaces) that currently render the map.
+        /// List of renderers (IScreenSurfaces) that currently render the map.
         /// </summary>
-        public IReadOnlyList<ScreenSurface> Renderers => _renderers.AsReadOnly();
+        public IReadOnlyList<IScreenSurface> Renderers => _renderers.AsReadOnly();
 
         /// <summary>
         /// An IGridView of the ColoredGlyphs on the Terrain layer (0) that will produce a fully
@@ -45,12 +66,64 @@ namespace SadRogue.Integration.Maps
         /// </remarks>
         public IComponentCollection AllComponents => GoRogueComponents;
 
+        private IScreenSurface? _defaultRenderer;
+
         /// <summary>
-        /// Creates a new RogueLikeMapBase.
+        /// A render that is attached to the map as a child, and will render the contents of the map.  If it is null,
+        /// no default renderer is created.
         /// </summary>
-        /// <param name="backingObject">The object being used for the map's IScreenObject implementation.</param>
+        public IScreenSurface? DefaultRenderer
+        {
+            get => _defaultRenderer;
+            set
+            {
+                if (_defaultRenderer == value) return;
+
+                if (value != null && !_renderers.Contains(value))
+                    throw new InvalidOperationException(
+                        $"Only surfaces created/configured with {nameof(CreateRenderer)} may be used as a map's {nameof(DefaultRenderer)}.");
+
+                if (_defaultRenderer != null)
+                {
+                    Children.Remove(_defaultRenderer);
+                    RemoveRenderer(_defaultRenderer);
+                }
+
+                _defaultRenderer = value;
+                if (_defaultRenderer != null)
+                    Children.Add(_defaultRenderer);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new RogueLikeMap.
+        /// </summary>
+        /// <remarks>
+        /// The map accepts a <paramref name="defaultRendererParams"/> parameter, which specifies font and viewport
+        /// information to use for creating a ScreenSurface to render this map as it is created.  The surface will
+        /// automatically be created and assigned to the <see cref="DefaultRenderer"/> property.  It will also be added
+        /// as a child object of the map, and as such, the renderer will automatically display the map whenever the map
+        /// itself is added as a screen to the SadConsole object hierarchy.
+        ///
+        /// If you wish to use a custom screen surface as the map renderer, you may specify "null" for the
+        /// <paramref name="defaultRendererParams"/> parameter.  You may then assign an appropriate renderer to
+        /// <see cref="DefaultRenderer"/> manually, in which case it will be added as a child object of the map, and
+        /// its faculties will be called as appropriate when the map is added as a screen to the SadConsole hierarchy.
+        ///
+        /// Note that any renderer assigned to DefaultRenderer is expected to have been created by CreateRenderer.
+        /// An overload is provided that allows for providing a function to create the instance used, so it is possible
+        /// to use arbitrary IScreenSurface implementations with this function.
+        ///
+        /// Alternatively, you can elect to simply create renderers using the CreateRenderer functions and not assign
+        /// use the <see cref="DefaultRenderer"/> field at all.  In this case, you must ensure that BOTH the map AND
+        /// the renderer are independently added to the SadConsole screen hierarchy.
+        /// </remarks>
         /// <param name="width">Width of map.</param>
         /// <param name="height">Height of the map.</param>
+        /// <param name="defaultRendererParams">
+        /// Parameters to use for creation of the default rendering surface.  If null is specified, renderer creation
+        /// will need to be performed manually.
+        /// </param>
         /// <param name="numberOfEntityLayers">How many entity (eg. non-terrain) layers to include.</param>
         /// <param name="distanceMeasurement">How to measure distance for pathing, movement, etc.</param>
         /// <param name="layersBlockingWalkability">Which layers should participate in collision detection.  Defaults to all layers.</param>
@@ -71,37 +144,69 @@ namespace SadRogue.Integration.Maps
         /// <see cref="ComponentCollection"/> is used.  Typically you will not need to specify this, as a
         /// ComponentCollection is sufficient for nearly all use cases.
         /// </param>
-        protected RogueLikeMapBase(IScreenObject backingObject, int width, int height, int numberOfEntityLayers, Distance distanceMeasurement,
-            uint layersBlockingWalkability = uint.MaxValue, uint layersBlockingTransparency = uint.MaxValue,
-            uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
-            AStar? customPather = null, IComponentCollection? customComponentContainer = null)
-            : base(width, height, numberOfEntityLayers,
-            distanceMeasurement, layersBlockingWalkability, layersBlockingTransparency,
-            entityLayersSupportingMultipleItems, customPlayerFOV, customPather, customComponentContainer)
+        public RogueLikeMapBase(int width, int height, DefaultRendererParams? defaultRendererParams, int numberOfEntityLayers,
+                                   Distance distanceMeasurement, uint layersBlockingWalkability = uint.MaxValue,
+                                   uint layersBlockingTransparency = uint.MaxValue,
+                                   uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
+                                   AStar? customPather = null, IComponentCollection? customComponentContainer = null)
+            : base(width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability,
+                   layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather,
+                   customComponentContainer)
         {
-            BackingObject = backingObject;
-
             ObjectAdded += Object_Added;
             ObjectRemoved += Object_Removed;
 
-            _renderers = new List<ScreenSurface>();
-            _surfaceEntityRenderers = new Dictionary<ScreenSurface, Renderer>();
+            _renderers = new List<IScreenSurface>();
+            _surfaceEntityRenderers = new Dictionary<IScreenSurface, Renderer>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
 
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
 
+            // ScreenObject initialization
+            UseMouse = Settings.DefaultScreenObjectUseMouse;
+            UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
+            SadComponents = new ObservableCollection<IComponent>();
+            ComponentsUpdate = new List<IComponent>();
+            ComponentsRender = new List<IComponent>();
+            ComponentsKeyboard = new List<IComponent>();
+            ComponentsMouse = new List<IComponent>();
+            ComponentsEmpty = new List<IComponent>();
+            SadComponents.CollectionChanged += Components_CollectionChanged;
+            Children = new ScreenObjectCollection(this);
+
+            // Create a default renderer if needed
+            if (defaultRendererParams.HasValue)
+                DefaultRenderer = CreateRenderer(defaultRendererParams.Value.ViewSize, defaultRendererParams.Value.Font,
+                    defaultRendererParams.Value.FontSize);
         }
 
         /// <summary>
-        /// Creates a renderer that renders this Map.  When no longer used, <see cref="DestroyRenderer"/> must
-        /// be called.
+        /// Creates a ScreenSurface that renders this map.  When the surface is no longer used,
+        /// <see cref="RemoveRenderer"/> must be called.
         /// </summary>
         /// <param name="viewSize">Viewport size for the renderer.</param>
         /// <param name="font">Font to use for the renderer.</param>
         /// <param name="fontSize">Size of font to use for the renderer.</param>
         /// <returns>A renderer configured with the given parameters.</returns>
-        protected ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
+        public ScreenSurface CreateRenderer(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
+            => (ScreenSurface)CreateRenderer(CreateDefaultScreenSurface, viewSize, font, fontSize);
+
+        /// <summary>
+        /// Use the given function to create an IScreenSurface, and configure it to render this map.  When the surface
+        /// is no longer used, <see cref="RemoveRenderer"/> must be called.
+        /// </summary>
+        /// <remarks>
+        /// This allows custom screen surface implementations (for example, ScreenSurface subclasses) to be used to
+        /// render the map.  The creation function given is expected to create a screen surface which renders the
+        /// cell surface specified, using the font specified.
+        /// </remarks>
+        /// <param name="surfaceCreator">Function that will create a new surface with the specified parameters.</param>
+        /// <param name="viewSize">Viewport size for the renderer.</param>
+        /// <param name="font">Font to use for the renderer.</param>
+        /// <param name="fontSize">Size of font to use for the renderer.</param>
+        /// <returns>A renderer created using the given function, configured with the given parameters.</returns>
+        public IScreenSurface CreateRenderer(Func<ICellSurface, IFont?, Point?, IScreenSurface> surfaceCreator, Point? viewSize = null, IFont? font = null, Point? fontSize = null)
         {
             // Default view size is entire Map
             var (viewWidth, viewHeight) = viewSize ?? (Width, Height);
@@ -110,7 +215,7 @@ namespace SadRogue.Integration.Maps
             var cellSurface = new MapTerrainCellSurface(this, viewWidth, viewHeight);
 
             // Create screen surface that renders that cell surface and keep track of it
-            var renderer = new ScreenSurface(cellSurface, font, fontSize);
+            var renderer = surfaceCreator(cellSurface, font, fontSize);
             _renderers.Add(renderer);
 
             // Create an EntityRenderer and configure it with all the appropriate entities,
@@ -130,7 +235,7 @@ namespace SadRogue.Integration.Maps
         /// longer used, in order to ensure that the renderer resources are freed
         /// </summary>
         /// <param name="renderer">The renderer to unlink.</param>
-        protected void DestroyRenderer(ScreenSurface renderer)
+        public void RemoveRenderer(IScreenSurface renderer)
         {
             _renderers.Remove(renderer);
             _surfaceEntityRenderers.Remove(renderer);
@@ -201,5 +306,8 @@ namespace SadRogue.Integration.Maps
 
         private static ColoredGlyph GetTerrainAppearance(IGameObject? gameObject)
             => ((RogueLikeCell?) gameObject)?.Appearance ?? _transparentAppearance;
+
+        private static IScreenSurface CreateDefaultScreenSurface(ICellSurface surface, IFont? font, Point? fontSize)
+            => new ScreenSurface(surface, font, fontSize);
     }
 }

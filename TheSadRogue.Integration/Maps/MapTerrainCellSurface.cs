@@ -5,9 +5,8 @@ using SadConsole;
 using SadConsole.Effects;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using SadRogue.Integration.Maps;
 
-namespace SadRogue.Integration
+namespace SadRogue.Integration.Maps
 {
     /// <summary>
     /// A CellSurface that renders the terrain layer of a map.
