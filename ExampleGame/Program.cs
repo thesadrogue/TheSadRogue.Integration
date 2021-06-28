@@ -20,7 +20,7 @@ namespace ExampleGame
         private const int MapHeight = 60;
 
         // Initialized in Init, so null-override is used.
-        public static RogueLikeMapBase Map = null!;
+        public static RogueLikeMap Map = null!;
         public static Player PlayerCharacter = null!;
         static void Main(/*string[] args*/)
         {
@@ -49,7 +49,7 @@ namespace ExampleGame
             GameHost.Instance.Screen = Map;
         }
 
-        private static RogueLikeMapBase GenerateMap()
+        private static RogueLikeMap GenerateMap()
         {
             // Generate a rectangular map for the sake of testing.
             var generator = new Generator(MapWidth, MapHeight)
@@ -60,7 +60,7 @@ namespace ExampleGame
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
-            RogueLikeMapBase map = new RogueLikeMapBase(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
+            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
             map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
 
             foreach(var location in map.Positions())

@@ -15,12 +15,32 @@ using SadRogue.Primitives.GridViews;
 
 namespace SadRogue.Integration.Maps
 {
+    /// <summary>
+    /// Set of parameters used for the creation of a default renderer for the map.
+    /// </summary>
     public struct DefaultRendererParams
     {
+        /// <summary>
+        /// Size of the viewport to use for the renderer.  Null indicates to set the viewport to the size of the map.
+        /// </summary>
         public Point? ViewSize;
+
+        /// <summary>
+        /// Font to use to display the map.  Null indicates to use the SadConsole default font.
+        /// </summary>
         public IFont? Font;
+
+        /// <summary>
+        /// Size multiplier to use for the font.  Null indicates to use the font's default size.
+        /// </summary>
         public Point? FontSize;
 
+        /// <summary>
+        /// Creates a new set of renderer parameters.
+        /// </summary>
+        /// <param name="viewSize">Size of the viewport to use for the renderer.</param>
+        /// <param name="font">Font to use to display the map.</param>
+        /// <param name="fontSize">Size multiplier for the font.</param>
         public DefaultRendererParams(Point? viewSize = null, IFont? font = null, Point? fontSize = null)
         {
             ViewSize = viewSize;
@@ -28,17 +48,45 @@ namespace SadRogue.Integration.Maps
             FontSize = fontSize;
         }
 
+        /// <summary>
+        /// Converts from a parameter object to a tuple of 3 values for convenience.
+        /// </summary>
+        /// <param name="obj"/>
+        /// <returns/>
         public static implicit operator (Point? viewSize, IFont? font, Point? fontSize)(DefaultRendererParams obj)
             => (obj.ViewSize, obj.Font, obj.FontSize);
 
+        /// <summary>
+        /// Converts from a tuple of 3 values to a parameter object for convenience.
+        /// </summary>
+        /// <param name="tuple"/>
+        /// <returns/>
         public static implicit operator DefaultRendererParams((Point? viewSize, IFont? font, Point? fontSize) tuple)
             => new DefaultRendererParams(tuple.viewSize, tuple.font, tuple.fontSize);
     }
 
     /// <summary>
-    /// Abstract base class for a Map that contains the necessary function to render to one or more ScreenSurfaces.
+    /// A GoRogue Map that contains map data and implements necessary functionality to be added to the SadConsole
+    /// object hierarchy as a screen object.  It can render itself automatically via its <see cref="DefaultRenderer"/>,
+    /// but can also allow you to take control of renderer creation yourself if you need to use custom renderers or render
+    /// the map in more than one location on the screen.
     /// </summary>
-    public partial class RogueLikeMapBase : Map, IScreenObject
+    /// <remarks>
+    /// If default renderer parameters are specified in the constructor, then a default renderer will be created
+    /// automatically.  This will allow the map to render itself to the screen automatically at whatever position it is
+    /// added to the SadConsole screen hierarchy.
+    ///
+    /// If you need to render the map in multiple locations on the screen, you may use the CreateRenderer functions
+    /// to create surfaces that render the map independently.  Any renderers other than the one set to the
+    /// <see cref="DefaultRenderer"/> property must either be added to the SadConsole screen hierarchy
+    /// independently of the map, or added as children of the map manually.
+    ///
+    /// If you need to use custom renderers, you may elect to simply specify "null" for the renderer parameters in
+    /// the constructor, and instead assign a different value to <see cref="DefaultRenderer"/>.  You will need to create
+    /// your renderers using one of the CreateRenderer overloads; an overload is provided that allows you to specify
+    /// a renderer creation function, thus allowing you to utilize custom IScreenSurface classes.
+    /// </remarks>
+    public partial class RogueLikeMap : Map, IScreenObject
     {
         private readonly List<IScreenSurface> _renderers;
         private readonly Dictionary<IScreenSurface, Renderer> _surfaceEntityRenderers;
@@ -144,7 +192,7 @@ namespace SadRogue.Integration.Maps
         /// <see cref="ComponentCollection"/> is used.  Typically you will not need to specify this, as a
         /// ComponentCollection is sufficient for nearly all use cases.
         /// </param>
-        public RogueLikeMapBase(int width, int height, DefaultRendererParams? defaultRendererParams, int numberOfEntityLayers,
+        public RogueLikeMap(int width, int height, DefaultRendererParams? defaultRendererParams, int numberOfEntityLayers,
                                    Distance distanceMeasurement, uint layersBlockingWalkability = uint.MaxValue,
                                    uint layersBlockingTransparency = uint.MaxValue,
                                    uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
@@ -222,7 +270,6 @@ namespace SadRogue.Integration.Maps
             // then add it to the main surface
             var entityRenderer = new Renderer { DoEntityUpdate = false };
             _surfaceEntityRenderers[renderer] = entityRenderer;
-            // TODO: Reverse this order when it won't cause NullReferenceException
             renderer.SadComponents.Add(entityRenderer);
             entityRenderer.AddRange(Entities.Items.Cast<Entity>());
 
