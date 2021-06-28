@@ -137,7 +137,7 @@ namespace SadRogue.Integration.FieldOfView
                         var terrain = Parent.GetTerrainAt<RogueLikeCell>(pos);
                         if (terrain == null) continue;
 
-                        if (Parent.PlayerFOV.BooleanFOV[pos])
+                        if (Parent.PlayerFOV.BooleanResultView[pos])
                             UpdateTerrainSeen(terrain);
                         else
                             UpdateTerrainUnseen(terrain);
@@ -145,7 +145,7 @@ namespace SadRogue.Integration.FieldOfView
 
                     foreach (var entity in Parent.Entities.Items.Cast<RogueLikeEntity>())
                     {
-                        if (Parent.PlayerFOV.BooleanFOV[entity.Position])
+                        if (Parent.PlayerFOV.BooleanResultView[entity.Position])
                             UpdateEntitySeen(entity);
                         else
                             UpdateEntityUnseen(entity);
@@ -212,14 +212,14 @@ namespace SadRogue.Integration.FieldOfView
             switch (e.Item)
             {
                 case RogueLikeCell terrain:
-                    if (parent.PlayerFOV.BooleanFOV[terrain.Position])
+                    if (parent.PlayerFOV.BooleanResultView[terrain.Position])
                         UpdateTerrainSeen(terrain);
                     else
                         UpdateTerrainUnseen(terrain);
                     break;
 
                 case RogueLikeEntity entity:
-                    if (parent.PlayerFOV.BooleanFOV[entity.Position])
+                    if (parent.PlayerFOV.BooleanResultView[entity.Position])
                         UpdateEntitySeen(entity);
                     else
                         UpdateEntityUnseen(entity);
@@ -239,7 +239,7 @@ namespace SadRogue.Integration.FieldOfView
             var parent = Parent!;
 
             var entity = (RogueLikeEntity)e.Item;
-            if (parent.PlayerFOV.BooleanFOV[e.NewPosition])
+            if (parent.PlayerFOV.BooleanResultView[e.NewPosition])
                 UpdateEntitySeen(entity);
             else
                 UpdateEntityUnseen(entity);
