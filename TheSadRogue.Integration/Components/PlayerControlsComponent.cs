@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using GoRogue;
 using GoRogue.GameFramework;
 using SadConsole;
@@ -100,9 +101,9 @@ namespace SadRogue.Integration.Components
         /// <param name="keyboard">Keyboard state to check.</param>
         /// <returns>True if the keyboard state meets the modifier conditions for this input state; false otherwise.</returns>
         public bool ModiferConditionsMet(Keyboard keyboard)
-            => !RequiresCtrl || keyboard.IsKeyPressed(Keys.LeftControl) || keyboard.IsKeyPressed(Keys.RightControl) &&
-                !RequiresAlt || keyboard.IsKeyPressed(Keys.LeftAlt) || keyboard.IsKeyPressed(Keys.RightAlt) &&
-                !RequiresShift || keyboard.IsKeyPressed(Keys.LeftShift) || keyboard.IsKeyPressed(Keys.RightShift);
+            => RequiresCtrl == (keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl)) &&
+                RequiresAlt == (keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt)) &&
+                RequiresShift == (keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift));
 
         /// <summary>
         /// True if the input state given precisely matches the current one in key and modifiers; false otherwise.
@@ -166,10 +167,17 @@ namespace SadRogue.Integration.Components
         public ReadOnlyDictionary<Keys, List<(ControlMapping control, Direction direction)>> Motions => _motions.AsReadOnly();
 
 
+        private Action<Direction> _motionHandler;
+
         /// <summary>
         /// Function to call in order to handle motions generated from bindings set up in <see cref="Motions"/>.
         /// </summary>
-        public readonly Action<Direction> MotionHandler;
+        [AllowNull]
+        public Action<Direction> MotionHandler
+        {
+            get => _motionHandler;
+            set => _motionHandler = value ?? DefaultMotionHandler;
+        }
 
         /// <summary>
         /// Creates a new component that controls it's parent entity via keystroke.
@@ -192,7 +200,7 @@ namespace SadRogue.Integration.Components
             AddMotion(Keys.Left, Direction.Left);
 
             // Add motion handler, or default if one was not specified
-            MotionHandler = motionHandler ?? DefaultMotionHandler;
+            _motionHandler = motionHandler ?? DefaultMotionHandler;
         }
 
         /// <summary>
