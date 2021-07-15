@@ -227,6 +227,9 @@ namespace SadRogue.Integration.Maps
             if (defaultRendererParams.HasValue)
                 DefaultRenderer = CreateRenderer(defaultRendererParams.Value.ViewSize, defaultRendererParams.Value.Font,
                     defaultRendererParams.Value.FontSize);
+
+            // Add component for managing entity's Update, ProcessKeyboard, and ProcessMouse functions
+            SadComponents.Add(new MapEntityForwarderComponent());
         }
 
         /// <summary>

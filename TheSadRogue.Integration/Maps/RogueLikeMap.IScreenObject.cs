@@ -10,7 +10,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using SadConsole;
 using SadConsole.Components;
-using SadConsole.Entities;
 using SadConsole.Input;
 using SadRogue.Primitives;
 
@@ -223,14 +222,6 @@ namespace SadRogue.Integration.Maps
         public virtual void Update(TimeSpan delta)
         {
             if (!IsEnabled) return;
-
-            // Update entities in map
-            foreach (var entity in Entities.Items)
-            {
-                // Guaranteed to succeed since all must be RoguelikeEntities
-                var scEntity = (Entity)entity;
-                scEntity.Update(delta);
-            }
 
             foreach (IComponent component in ComponentsUpdate.ToArray())
                 component.Update(this, delta);
