@@ -5,9 +5,8 @@ using SadConsole;
 using SadConsole.Effects;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
-using SadRogue.Integration.Maps;
 
-namespace SadRogue.Integration
+namespace SadRogue.Integration.Maps
 {
     /// <summary>
     /// A CellSurface that renders the terrain layer of a map.
@@ -18,7 +17,7 @@ namespace SadRogue.Integration
         private readonly BoundedRectangle _viewArea;
         private Color _defaultBackground;
         private Color _defaultForeground;
-        private readonly RogueLikeMapBase _map;
+        private readonly RogueLikeMap _map;
 
         #region Properties/Indexers
         /// <inheritdoc />
@@ -131,7 +130,7 @@ namespace SadRogue.Integration
         /// <param name="map">The map which we are rendering</param>
         /// <param name="viewWidth">The height of the view (screen size)</param>
         /// <param name="viewHeight">The Width of the view (screen size)</param>
-        public MapTerrainCellSurface(RogueLikeMapBase map, int viewWidth, int viewHeight)
+        public MapTerrainCellSurface(RogueLikeMap map, int viewWidth, int viewHeight)
         {
             _map = map;
             Effects = new EffectsManager(this);

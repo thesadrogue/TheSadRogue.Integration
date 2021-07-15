@@ -44,7 +44,7 @@ namespace ExampleGame
             PlayerCharacter.CalculateFOV();
 
             // Center view on player
-            Map.AllComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
+            Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
             GameHost.Instance.Screen = Map;
         }
@@ -60,7 +60,7 @@ namespace ExampleGame
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
-            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, 4, Distance.Manhattan, viewSize: (Width, Height));
+            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
             map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
 
             foreach(var location in map.Positions())
