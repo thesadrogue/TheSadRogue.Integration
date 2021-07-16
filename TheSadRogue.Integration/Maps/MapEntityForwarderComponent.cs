@@ -68,8 +68,8 @@ namespace SadRogue.Integration.Maps
         {
             var map = (RogueLikeMap)host;
 
-            map!.Entities.ItemAdded -= EntitiesOnItemAdded;
-            map!.Entities.ItemRemoved -= EntitiesOnItemRemoved;
+            map.Entities.ItemAdded -= EntitiesOnItemAdded;
+            map.Entities.ItemRemoved -= EntitiesOnItemRemoved;
         }
 
         private void EntitiesOnItemAdded(object? sender, ItemEventArgs<IGameObject> e)
