@@ -61,6 +61,9 @@ namespace SadRogue.Integration.Maps
 
             map.Entities.ItemAdded += EntitiesOnItemAdded;
             map.Entities.ItemRemoved += EntitiesOnItemRemoved;
+
+            foreach (var entity in map.Entities.Items)
+                _mapEntities.Add((Entity)entity);
         }
 
         /// <inheritdoc />
@@ -70,6 +73,8 @@ namespace SadRogue.Integration.Maps
 
             map.Entities.ItemAdded -= EntitiesOnItemAdded;
             map.Entities.ItemRemoved -= EntitiesOnItemRemoved;
+
+            _mapEntities.Clear();
         }
 
         private void EntitiesOnItemAdded(object? sender, ItemEventArgs<IGameObject> e)

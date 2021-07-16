@@ -423,80 +423,11 @@ namespace SadRogue.Integration.Maps
             }
 
             void FilterAddItem(IComponent component)
-            {
-                if (component.IsRender)
-                {
-                    if (!ComponentsRender.Contains(component))
-                        ComponentsRender.Add(component);
-                }
+                => ScreenObject.Components_FilterAddItem(component, ComponentsRender, ComponentsUpdate, ComponentsKeyboard, ComponentsMouse, ComponentsEmpty);
 
-                if (component.IsUpdate)
-                {
-                    if (!ComponentsUpdate.Contains(component))
-                        ComponentsUpdate.Add(component);
-                }
-
-                if (component.IsKeyboard)
-                {
-                    if (!ComponentsKeyboard.Contains(component))
-                        ComponentsKeyboard.Add(component);
-                }
-
-                if (component.IsMouse)
-                {
-                    if (!ComponentsMouse.Contains(component))
-                        ComponentsMouse.Add(component);
-                }
-
-                if (!component.IsRender && !component.IsUpdate && !component.IsKeyboard && !component.IsMouse)
-                {
-                    if (!ComponentsEmpty.Contains(component))
-                        ComponentsEmpty.Add(component);
-                }
-
-                ComponentsRender.Sort(CompareComponent);
-                ComponentsUpdate.Sort(CompareComponent);
-                ComponentsKeyboard.Sort(CompareComponent);
-                ComponentsMouse.Sort(CompareComponent);
-            }
 
             void FilterRemoveItem(IComponent component)
-            {
-                if (component.IsRender)
-                {
-                    if (ComponentsRender.Contains(component))
-                        ComponentsRender.Remove(component);
-                }
-
-                if (component.IsUpdate)
-                {
-                    if (ComponentsUpdate.Contains(component))
-                        ComponentsUpdate.Remove(component);
-                }
-
-                if (component.IsKeyboard)
-                {
-                    if (ComponentsKeyboard.Contains(component))
-                        ComponentsKeyboard.Remove(component);
-                }
-
-                if (component.IsMouse)
-                {
-                    if (ComponentsMouse.Contains(component))
-                        ComponentsMouse.Remove(component);
-                }
-
-                if (!component.IsRender && !component.IsUpdate && !component.IsKeyboard && !component.IsMouse)
-                {
-                    if (!ComponentsEmpty.Contains(component))
-                        ComponentsEmpty.Remove(component);
-                }
-
-                ComponentsRender.Sort(CompareComponent);
-                ComponentsUpdate.Sort(CompareComponent);
-                ComponentsKeyboard.Sort(CompareComponent);
-                ComponentsMouse.Sort(CompareComponent);
-            }
+                => ScreenObject.Components_FilterRemoveItem(component, ComponentsRender, ComponentsUpdate, ComponentsKeyboard, ComponentsMouse, ComponentsEmpty);
         }
 
         /// <summary>
