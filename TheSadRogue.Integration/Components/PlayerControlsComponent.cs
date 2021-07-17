@@ -138,9 +138,27 @@ namespace SadRogue.Integration.Components
         /// This function ensures that precisely the modifiers the input state specifies are true, and NO others.
         /// </remarks>
         /// <param name="keyboard">Keyboard state to check.</param>
+        /// <param name="exactState">Whether to check for an exact state (true), or simply check that all required modifier keys (non-exclusive) are pressed.</param>
         /// <returns>True if the keyboard state meets the modifier conditions for this input state; false otherwise.</returns>
-        public bool ModiferConditionsMet(Keyboard keyboard)
+        public bool ModiferConditionsMet(Keyboard keyboard, bool exactState)
         {
+            if (exactState)
+            {
+                // Check ctrl state
+                if (!MatchesExactState(keyboard, Ctrl, Keys.LeftControl, Keys.RightControl, KeyModifiers.LeftCtrl,
+                    KeyModifiers.RightCtrl))
+                    return false;
+
+                // Check alt state
+                if (!MatchesExactState(keyboard, Alt, Keys.LeftAlt, Keys.RightAlt, KeyModifiers.LeftAlt,
+                    KeyModifiers.RightAlt))
+                    return false;
+
+                // Check shift state
+                return MatchesExactState(keyboard, Shift, Keys.LeftShift, Keys.RightShift, KeyModifiers.LeftShift,
+                    KeyModifiers.RightShift);
+            }
+
             // Check ctrl state
             if (!MatchesState(keyboard, Ctrl, Keys.LeftControl, Keys.RightControl, KeyModifiers.LeftCtrl,
                 KeyModifiers.RightCtrl))
@@ -198,7 +216,7 @@ namespace SadRogue.Integration.Components
         /// <returns/>
         public static bool operator!=(ControlMapping lhs, ControlMapping rhs) => !lhs.Matches(rhs);
 
-        private static bool MatchesState(Keyboard keyboard, KeyModifiers state, Keys keyLeft, Keys keyRight, KeyModifiers left,
+        private static bool MatchesExactState(Keyboard keyboard, KeyModifiers state, Keys keyLeft, Keys keyRight, KeyModifiers left,
                                   KeyModifiers right)
         {
             // Check key state
@@ -211,6 +229,17 @@ namespace SadRogue.Integration.Components
 
             // Invariants enforced by class allow us to assume this means "either left or right".
             return leftDown && !rightDown || rightDown && !leftDown;
+        }
+
+        private static bool MatchesState(Keyboard keyboard, KeyModifiers state, Keys keyLeft, Keys keyRight, KeyModifiers left,
+                                              KeyModifiers right)
+        {
+            if (state == KeyModifiers.None) return true;
+            if (state == left) return keyboard.IsKeyDown(keyLeft);
+            if (state == right) return keyboard.IsKeyDown(keyRight);
+
+            // Invariants enforced by class allow us to assume this means "either left or right".
+            return keyboard.IsKeyDown(keyLeft) || keyboard.IsKeyDown(keyRight);
         }
     }
 
@@ -246,6 +275,31 @@ namespace SadRogue.Integration.Components
         }
 
         /// <summary>
+        /// Dictates how the controls component will resolve keypresses.  Defaults to true.
+        /// </summary>
+        /// <remarks>
+        /// When true, keybindings will only resolve when all modifiers match exactly.  For example, if a keybinding
+        /// for Keys.A is added, then the handler for that binding will only happen if Keys.A and NO modifier keys
+        /// are pressed; Ctrl + A will not fire that handler, nor will Shift + A.
+        ///
+        /// When false, the dispatcher will instead use the modifiers specified for a binding as "requirements";
+        /// any modifiers not specified may or may not be turned on.  Matches will resolve to the most specific binding
+        /// possible.
+        ///
+        /// For example when this is set to false, if the following key bindings are registered:
+        ///     1. Ctrl + Keys.A
+        ///     2. Keys.A
+        ///     3. Keys.S
+        /// If the user presses Ctrl + A or Ctrl + Shift + A, #1 will fire.  Simply pressing Keys.A will fire #2.  However, if a
+        /// user presses Ctrl + S, #3 will fire, since it is the most specific binding that meets the modifier requirements.
+        /// Simply pressing Keys.S will also trigger #3.
+        ///
+        /// Non-exact matching can be useful if you wish to ignore modifier states unless they are relevant, OR if you
+        /// wish to handle modifier keys manually within a given keybinding's handler.
+        /// </remarks>
+        public bool ExactMatches;
+
+        /// <summary>
         /// Creates a new component that controls it's parent entity via keystroke.
         /// </summary>
         /// <param name="motionHandler">
@@ -255,6 +309,8 @@ namespace SadRogue.Integration.Components
         public PlayerControlsComponent(Action<Direction>? motionHandler = null)
             : base(false, false, false, true, 1)
         {
+            ExactMatches = true;
+
             // Initialize dictionaries
             _actions = new Dictionary<Keys, List<(ControlMapping, Action)>>();
             _motions = new Dictionary<Keys, List<(ControlMapping control, Direction direction)>>();
@@ -280,7 +336,7 @@ namespace SadRogue.Integration.Components
             if (!_actions.ContainsKey(control.Key))
                 _actions[control.Key] = new List<(ControlMapping control, Action action)>();
 
-            _actions[control.Key].Add((control, action));
+            InsertOrdered(_actions[control.Key], (control, action));
         }
 
         /// <summary>
@@ -309,7 +365,7 @@ namespace SadRogue.Integration.Components
             if (!_motions.ContainsKey(control.Key))
                 _motions[control.Key] = new List<(ControlMapping control, Direction direction)>();
 
-            _motions[control.Key].Add((control, direction));
+            InsertOrdered(_motions[control.Key], (control, direction));
         }
 
         /// <summary>
@@ -336,7 +392,7 @@ namespace SadRogue.Integration.Components
                 if (_motions.ContainsKey(key.Key))
                 {
                     foreach (var (control, direction) in _motions[key.Key])
-                        if (control.ModiferConditionsMet(keyboard))
+                        if (control.ModiferConditionsMet(keyboard, ExactMatches))
                         {
                             MotionHandler(direction);
                             handled = true;
@@ -347,7 +403,7 @@ namespace SadRogue.Integration.Components
                 if (_actions.ContainsKey(key.Key))
                 {
                     foreach (var (control, action) in _actions[key.Key])
-                        if (control.ModiferConditionsMet(keyboard))
+                        if (control.ModiferConditionsMet(keyboard, ExactMatches))
                         {
                             action();
                             handled = true;
@@ -363,6 +419,32 @@ namespace SadRogue.Integration.Components
         {
             if(Parent!.CanMoveIn(direction))
                 Parent!.Position += direction;
+        }
+
+        private static void InsertOrdered<T>(List<(ControlMapping control, T obj)> list, (ControlMapping control, T obj) binding)
+        {
+            int idx = list.Count;
+            for(int i = 0; i < list.Count; i++)
+            {
+                var item = list[i];
+                if (CountModifiers(ref binding.control) >= CountModifiers(ref item.control))
+                    continue;
+
+                idx = i;
+                break;
+            }
+
+            list.Insert(idx, binding);
+        }
+
+        private static int CountModifiers(ref ControlMapping control)
+        {
+            int count = 0;
+            if (control.Shift != KeyModifiers.None) count++;
+            if (control.Alt != KeyModifiers.None) count++;
+            if (control.Ctrl != KeyModifiers.None) count++;
+
+            return count;
         }
     }
 }
