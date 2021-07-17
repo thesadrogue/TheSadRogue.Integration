@@ -24,9 +24,6 @@ namespace ExampleGame
             // Add component for controlling player movement via keyboard
             var motionControl = new PlayerControlsComponent();
             AllComponents.Add(motionControl);
-
-            // Ensure player receives input
-            IsFocused = true;
         }
 
         /// <summary>

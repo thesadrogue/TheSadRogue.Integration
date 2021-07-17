@@ -47,6 +47,8 @@ namespace ExampleGame
             Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
             GameHost.Instance.Screen = Map;
+            Map.IsFocused = true;
+            GameHost.Instance.DestroyDefaultStartingConsole();
         }
 
         private static RogueLikeMap GenerateMap()
