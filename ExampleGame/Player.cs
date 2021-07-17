@@ -1,4 +1,5 @@
 ﻿using GoRogue.GameFramework;
+using SadConsole.Input;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using SadRogue.Primitives;

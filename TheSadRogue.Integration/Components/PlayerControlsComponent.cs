@@ -16,13 +16,41 @@ namespace SadRogue.Integration.Components
     public enum KeyModifiers
     {
         /// <summary>
+        /// Represents no key modifiers.
+        /// </summary>
+        None,
+        /// <summary>
+        /// Represents the left shift key.
+        /// </summary>
+        LeftShift,
+        /// <summary>
+        /// Represents the right shift key.
+        /// </summary>
+        RightShift,
+        /// <summary>
         /// Represents either the left or right shift key.
         /// </summary>
         Shift,
         /// <summary>
+        /// Represents the left control key.
+        /// </summary>
+        LeftCtrl,
+        /// <summary>
+        /// Represents the right control key.
+        /// </summary>
+        RightCtrl,
+        /// <summary>
         /// Represents either the left or right ctrl key.
         /// </summary>
         Ctrl,
+        /// <summary>
+        /// Represents the left alt key.
+        /// </summary>
+        LeftAlt,
+        /// <summary>
+        /// Represents the right alt key.
+        /// </summary>
+        RightAlt,
         /// <summary>
         /// Represents either the left or right alt key.
         /// </summary>
@@ -40,19 +68,20 @@ namespace SadRogue.Integration.Components
         public readonly Keys Key;
 
         /// <summary>
-        /// Whether or not a shift key must be pressed to satisfy the key state.
+        /// Any modifiers related to shift (left-shift, right-shift, or either) that are associated with this control.
         /// </summary>
-        public readonly bool RequiresShift;
+        public readonly KeyModifiers Shift;
 
         /// <summary>
-        /// Whether or not a ctrl key must be pressed to satisfy the key state.
+        /// Any modifiers related to control (left-ctrl, right-ctrl, or either) that are associated with this control.
         /// </summary>
-        public readonly bool RequiresCtrl;
+        public readonly KeyModifiers Ctrl;
 
         /// <summary>
-        /// Whether or not an alt key must be pressed to satisfy the key state.
+        /// Any modifiers related to alt (left-alt, right-alt, or either) that are associated with this control.
         /// </summary>
-        public readonly bool RequiresAlt;
+        public readonly KeyModifiers Alt;
+
 
         /// <summary>
         /// Creates a new input state.
@@ -62,25 +91,35 @@ namespace SadRogue.Integration.Components
         public ControlMapping(Keys key, params KeyModifiers[] modifiers)
         {
             Key = key;
-            RequiresCtrl = false;
-            RequiresAlt = false;
-            RequiresShift = false;
 
+            Shift = KeyModifiers.None;
+            Ctrl = KeyModifiers.None;
+            Alt = KeyModifiers.None;
             foreach (var modifier in modifiers)
             {
                 switch (modifier)
                 {
-                    case KeyModifiers.Ctrl:
-                        RequiresCtrl = true;
-                        break;
+                    case KeyModifiers.LeftAlt:
+                    case KeyModifiers.RightAlt:
                     case KeyModifiers.Alt:
-                        RequiresAlt = true;
+                        if (Alt != KeyModifiers.None)
+                            throw new ArgumentException("Only one Alt modifier is allowed.", nameof(modifiers));
+                        Alt = modifier;
                         break;
+                    case KeyModifiers.LeftCtrl:
+                    case KeyModifiers.RightCtrl:
+                    case KeyModifiers.Ctrl:
+                        if (Ctrl != KeyModifiers.None)
+                            throw new ArgumentException("Only one Ctrl modifier is allowed.", nameof(modifiers));
+                        Ctrl = modifier;
+                        break;
+                    case KeyModifiers.RightShift:
+                    case KeyModifiers.LeftShift:
                     case KeyModifiers.Shift:
-                        RequiresShift = true;
+                        if (Shift != KeyModifiers.None)
+                            throw new ArgumentException("Only one Shift modifier is allowed.", nameof(modifiers));
+                        Shift = modifier;
                         break;
-                    default:
-                        throw new ArgumentException("Unsupported key modifier given.", nameof(modifiers));
                 }
             }
         }
@@ -101,9 +140,21 @@ namespace SadRogue.Integration.Components
         /// <param name="keyboard">Keyboard state to check.</param>
         /// <returns>True if the keyboard state meets the modifier conditions for this input state; false otherwise.</returns>
         public bool ModiferConditionsMet(Keyboard keyboard)
-            => RequiresCtrl == (keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl)) &&
-                RequiresAlt == (keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt)) &&
-                RequiresShift == (keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift));
+        {
+            // Check ctrl state
+            if (!MatchesState(keyboard, Ctrl, Keys.LeftControl, Keys.RightControl, KeyModifiers.LeftCtrl,
+                KeyModifiers.RightCtrl))
+                return false;
+
+            // Check alt state
+            if (!MatchesState(keyboard, Alt, Keys.LeftAlt, Keys.RightAlt, KeyModifiers.LeftAlt,
+                KeyModifiers.RightAlt))
+                return false;
+
+            // Check shift state
+            return MatchesState(keyboard, Shift, Keys.LeftShift, Keys.RightShift, KeyModifiers.LeftShift,
+                KeyModifiers.RightShift);
+        }
 
         /// <summary>
         /// True if the input state given precisely matches the current one in key and modifiers; false otherwise.
@@ -126,10 +177,10 @@ namespace SadRogue.Integration.Components
         /// <param name="other"/>
         /// <returns/>
         public bool Matches(ControlMapping other)
-            => Key == other.Key && RequiresCtrl == other.RequiresCtrl && RequiresAlt == other.RequiresShift == other.RequiresShift;
+            => Key == other.Key && Ctrl == other.Ctrl && Alt == other.Alt && Shift == other.Shift;
 
         /// <inheritdoc />
-        public override int GetHashCode() => HashCode.Combine(Key, RequiresCtrl, RequiresAlt, RequiresShift);
+        public override int GetHashCode() => HashCode.Combine(Key, Ctrl, Alt, Shift);
 
         /// <summary>
         /// True if the two input states specified precisely match in key and modifiers; false otherwise.
@@ -146,6 +197,21 @@ namespace SadRogue.Integration.Components
         /// <param name="rhs"/>
         /// <returns/>
         public static bool operator!=(ControlMapping lhs, ControlMapping rhs) => !lhs.Matches(rhs);
+
+        private static bool MatchesState(Keyboard keyboard, KeyModifiers state, Keys keyLeft, Keys keyRight, KeyModifiers left,
+                                  KeyModifiers right)
+        {
+            // Check key state
+            bool leftDown = keyboard.IsKeyDown(keyLeft);
+            bool rightDown = keyboard.IsKeyDown(keyRight);
+
+            if (state == KeyModifiers.None) return !(leftDown || rightDown);
+            if (state == left) return leftDown && !rightDown;
+            if (state == right) return rightDown && !leftDown;
+
+            // Invariants enforced by class allow us to assume this means "either left or right".
+            return leftDown && !rightDown || rightDown && !leftDown;
+        }
     }
 
     /// <summary>
