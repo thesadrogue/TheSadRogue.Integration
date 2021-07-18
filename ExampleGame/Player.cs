@@ -1,6 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using SadRogue.Integration;
-using SadRogue.Integration.Components;
+using SadRogue.Integration.Components.Keybindings;
 using SadRogue.Primitives;
 
 namespace ExampleGame
@@ -22,7 +22,7 @@ namespace ExampleGame
             Moved += OnMoved;
 
             // Add component for controlling player movement via keyboard
-            var motionControl = new PlayerControlsComponent();
+            var motionControl = new PlayerKeybindingsComponent();
             AllComponents.Add(motionControl);
         }
 
