@@ -1,5 +1,5 @@
 using SadRogue.Primitives;
-using SadRogue.Integration.Components;
+using SadRogue.Integration.Components.Keybindings;
 using Xunit;
 
 namespace SadRogue.Integration.Tests
@@ -42,7 +42,7 @@ namespace SadRogue.Integration.Tests
         public void AddComponentTest()
         {
             var entity = new RogueLikeEntity((1,3), Color.Cyan, 2);
-            var component = new PlayerControlsComponent();
+            var component = new PlayerKeybindingsComponent();
 
             Assert.Equal(4, component.Motions.Count);
             Assert.Empty(component.Actions);
