@@ -70,6 +70,17 @@ namespace SadRogue.Integration.Keybindings
         };
 
         /// <summary>
+        /// Motions that map the WASD keys to appropriate movement directions.
+        /// </summary>
+        public static readonly IEnumerable<(InputKey binding, Direction direction)> WasdMotions = new[]
+        {
+            ((InputKey)Keys.W, Direction.Up),
+            (Keys.D, Direction.Right),
+            (Keys.S, Direction.Down),
+            (Keys.A, Direction.Left)
+        };
+
+        /// <summary>
         /// Motions that map NumPad 8, 6, 2, and 4 to the appropriate cardinal movement directions.
         /// </summary>
         public static readonly IEnumerable<(InputKey binding, Direction direction)> NumPadCardinalMotions = new[]
