@@ -23,7 +23,7 @@ namespace ExampleGame
 
             // Add component for controlling player movement via keyboard
             var motionControl = new PlayerKeybindingsComponent();
-            motionControl.AddMotions(PlayerKeybindingsComponent.ArrowMotions);
+            motionControl.SetMotions(PlayerKeybindingsComponent.ArrowMotions);
             AllComponents.Add(motionControl);
         }
 

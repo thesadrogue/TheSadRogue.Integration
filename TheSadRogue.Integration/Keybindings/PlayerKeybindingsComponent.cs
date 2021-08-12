@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using GoRogue;
 using GoRogue.GameFramework;
 using SadConsole;
@@ -56,16 +57,49 @@ namespace SadRogue.Integration.Keybindings
     /// </remarks>
     public class PlayerKeybindingsComponent : RogueLikeComponentBase
     {
+        #region Commonly Used Motion Schemes
         /// <summary>
         /// Motions that map the arrow keys to appropriate movement directions.
         /// </summary>
-        public static readonly (InputKey binding, Direction direction)[] ArrowMotions =
+        public static readonly IEnumerable<(InputKey binding, Direction direction)> ArrowMotions = new[]
         {
-            (Keys.Up, Direction.Up),
+            ((InputKey)Keys.Up, Direction.Up),
             (Keys.Right, Direction.Right),
             (Keys.Down, Direction.Down),
             (Keys.Left, Direction.Left)
         };
+
+        /// <summary>
+        /// Motions that map NumPad 8, 6, 2, and 4 to the appropriate cardinal movement directions.
+        /// </summary>
+        public static readonly IEnumerable<(InputKey binding, Direction direction)> NumPadCardinalMotions = new[]
+        {
+            ((InputKey)Keys.NumPad8, Direction.Up),
+            (Keys.NumPad6, Direction.Right),
+            (Keys.NumPad2, Direction.Down),
+            (Keys.NumPad4, Direction.Left)
+        };
+
+        /// <summary>
+        /// Motions that map NumPad 9, 3, 1, and 7 to the appropriate diagonal movement directions.
+        /// </summary>
+        public static readonly IEnumerable<(InputKey binding, Direction direction)> NumPadDiagonalMotions = new[]
+        {
+            ((InputKey)Keys.NumPad9, Direction.UpRight),
+            (Keys.NumPad3, Direction.DownRight),
+            (Keys.NumPad1, Direction.DownLeft),
+            (Keys.NumPad7, Direction.UpLeft)
+        };
+
+        /// <summary>
+        /// Motions that map the NumPad keys to the appropriate movement (8-way) movement directions.
+        /// </summary>
+        /// <remarks>
+        /// This is simply a combination of <see cref="NumPadCardinalMotions"/> and <see cref="NumPadDiagonalMotions"/>.
+        /// </remarks>
+        public static readonly IEnumerable<(InputKey binding, Direction direction)> NumPadAllMotions =
+            NumPadCardinalMotions.Concat(NumPadDiagonalMotions).ToArray();
+        #endregion
 
         private readonly Dictionary<Keys, List<(InputKey binding, Action action)>> _actions;
         /// <summary>
@@ -121,29 +155,31 @@ namespace SadRogue.Integration.Keybindings
         }
 
         /// <summary>
-        /// Adds a new Action to the keybindings.
+        /// Adds a new Action that binds the given key to the given action, overriding any existing Action bindings
+        /// for that key.
         /// </summary>
         /// <param name="binding">The keybinding to bind.</param>
         /// <param name="action">The action to perform when said binding is pressed.</param>
-        public void AddAction(InputKey binding, Action action)
-            => AddActions((binding, action));
+        public void SetAction(InputKey binding, Action action)
+            => SetActions((binding, action));
 
         /// <summary>
-        /// Adds new Actions to the keybindings.
+        /// Adds Actions that set the given keys to the corresponding action.  Any existing Action keybindings for these
+        /// InputKeys are overriden.
         /// </summary>
-        /// <param name="actions">Action bindings to add.</param>
-        public void AddActions(params (InputKey binding, Action action)[] actions)
-            => AddActions((IEnumerable<(InputKey binding, Action action)>)actions);
+        /// <param name="actions">Actions to add.</param>
+        public void SetActions(params (InputKey binding, Action action)[] actions)
+            => SetActions((IEnumerable<(InputKey binding, Action action)>)actions);
 
         /// <summary>
-        /// Adds new Actions to the keybindings.
+        /// Adds Actions that set the given keys to the corresponding action.  Any existing Action keybindings for these
+        /// InputKeys are overriden.
         /// </summary>
-        /// <param name="actions">Action bindings to add.</param>
-        public void AddActions(IEnumerable<(InputKey binding, Action action)> actions)
+        /// <param name="actions">Actions to add.</param>
+        public void SetActions(IEnumerable<(InputKey binding, Action action)> actions)
         {
             foreach (var action in actions)
             {
-                // TODO: Verify exclusivity and uniqueness with itself and _motions?
                 if (!_actions.ContainsKey(action.binding.Key))
                     _actions[action.binding.Key] = new List<(InputKey binding, Action action)>();
 
@@ -167,22 +203,23 @@ namespace SadRogue.Integration.Keybindings
         }
 
         /// <summary>
-        /// Adds a new Motion keybinding.
+        /// Adds a new Motion that binds the given key to the given direction, overriding any existing Motion binding
+        /// for that key.
         /// </summary>
         /// <param name="binding">Keybinding to bind.</param>
         /// <param name="direction">Direction to generate when keybinding is pressed.</param>
-        public void AddMotion(InputKey binding, Direction direction)
-            => AddMotions((binding, direction));
+        public void SetMotion(InputKey binding, Direction direction)
+            => SetMotions((binding, direction));
 
         /// <summary>
-        /// Adds a the given Motion keybindings.
+        /// Adds Motions that set the given keys to the corresponding directions.  Any existing Motion keybindings for
+        /// these InputKeys are overriden.
         /// </summary>
         /// <param name="motions">Motions to add.</param>
-        public void AddMotions(IEnumerable<(InputKey binding, Direction direction)> motions)
+        public void SetMotions(IEnumerable<(InputKey binding, Direction direction)> motions)
         {
             foreach (var motion in motions)
             {
-                // TODO: Verify exclusivity and uniqueness with itself and _actions?
                 if (!_motions.ContainsKey(motion.binding.Key))
                     _motions[motion.binding.Key] = new List<(InputKey binding, Direction direction)>();
 
@@ -191,11 +228,12 @@ namespace SadRogue.Integration.Keybindings
         }
 
         /// <summary>
-        /// Adds a the given Motion keybindings.
+        /// Adds Motions that set the given keys to the corresponding directions.  Any existing Motion keybindings for
+        /// these InputKeys are overriden.
         /// </summary>
-        /// <param name="motions">Motions to add.</param>
-        public void AddMotions(params (InputKey binding, Direction direction)[] motions)
-            => AddMotions((IEnumerable<(InputKey binding, Direction direction)>)motions);
+        /// <param name="motions">Motions to set.</param>
+        public void SetMotions(params (InputKey binding, Direction direction)[] motions)
+            => SetMotions((IEnumerable<(InputKey binding, Direction direction)>)motions);
 
         /// <summary>
         /// Removes the binding for a Motion.
@@ -255,17 +293,39 @@ namespace SadRogue.Integration.Keybindings
         private static void InsertOrdered<T>(List<(InputKey control, T obj)> list, (InputKey control, T obj) binding)
         {
             int idx = list.Count;
+            bool foundExistingBinding = false;
+
             for(int i = 0; i < list.Count; i++)
             {
                 var item = list[i];
-                if (CountModifiers(ref binding.control) >= CountModifiers(ref item.control))
+                int bindingKeyModCount = CountModifiers(ref binding.control);
+                int itemKeyModCount = CountModifiers(ref item.control);
+
+                // The insertion point is further down the list
+                if (bindingKeyModCount > itemKeyModCount)
                     continue;
+
+                // The insertion point is further down the list, but we should check for duplicates.
+                if (bindingKeyModCount == itemKeyModCount)
+                {
+                    // If we found a match, flag it, record the index, and end the search.  Otherwise the insertion
+                    // point is further down the list.
+                    if (binding.control.Matches(item.control))
+                        foundExistingBinding = true;
+                    else
+                        continue;
+                }
 
                 idx = i;
                 break;
             }
 
-            list.Insert(idx, binding);
+            // If we found an existing binding for this key, just replace it; otherwise insert a new one
+            // at the proper position.
+            if (foundExistingBinding)
+                list[idx] = binding;
+            else
+                list.Insert(idx, binding);
         }
 
         private static int CountModifiers(ref InputKey control)
