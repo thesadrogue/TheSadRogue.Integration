@@ -1,4 +1,4 @@
-﻿namespace SadRogue.Integration.Components.Keybindings
+﻿namespace SadRogue.Integration.Keybindings
 {
     /// <summary>
     /// Modifiers for key commands.

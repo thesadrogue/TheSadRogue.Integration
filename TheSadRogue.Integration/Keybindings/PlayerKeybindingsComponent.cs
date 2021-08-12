@@ -6,9 +6,10 @@ using GoRogue;
 using GoRogue.GameFramework;
 using SadConsole;
 using SadConsole.Input;
+using SadRogue.Integration.Components;
 using SadRogue.Primitives;
 
-namespace SadRogue.Integration.Components.Keybindings
+namespace SadRogue.Integration.Keybindings
 {
     /// <summary>
     /// A keybindings component for mapping player inputs to actions.
@@ -55,6 +56,16 @@ namespace SadRogue.Integration.Components.Keybindings
     /// </remarks>
     public class PlayerKeybindingsComponent : RogueLikeComponentBase
     {
+        /// <summary>
+        /// Motions that map the arrow keys to appropriate movement directions.
+        /// </summary>
+        public static readonly (InputKey binding, Direction direction)[] ArrowMotions =
+        {
+            (Keys.Up, Direction.Up),
+            (Keys.Right, Direction.Right),
+            (Keys.Down, Direction.Down),
+            (Keys.Left, Direction.Left)
+        };
 
         private readonly Dictionary<Keys, List<(InputKey binding, Action action)>> _actions;
         /// <summary>
@@ -105,13 +116,6 @@ namespace SadRogue.Integration.Components.Keybindings
             _actions = new Dictionary<Keys, List<(InputKey, Action)>>();
             _motions = new Dictionary<Keys, List<(InputKey binding, Direction direction)>>();
 
-            // Add default motion controls
-            // TODO: Providing these default motions may be better-served as groups of keybindings
-            AddMotion(Keys.Up, Direction.Up);
-            AddMotion(Keys.Right, Direction.Right);
-            AddMotion(Keys.Down, Direction.Down);
-            AddMotion(Keys.Left, Direction.Left);
-
             // Add motion handler, or default if one was not specified
             _motionHandler = motionHandler ?? DefaultMotionHandler;
         }
@@ -122,12 +126,29 @@ namespace SadRogue.Integration.Components.Keybindings
         /// <param name="binding">The keybinding to bind.</param>
         /// <param name="action">The action to perform when said binding is pressed.</param>
         public void AddAction(InputKey binding, Action action)
-        {
-            // TODO: Verify exclusivity and uniqueness with itself and _motions?
-            if (!_actions.ContainsKey(binding.Key))
-                _actions[binding.Key] = new List<(InputKey binding, Action action)>();
+            => AddActions((binding, action));
 
-            InsertOrdered(_actions[binding.Key], (control: binding, action));
+        /// <summary>
+        /// Adds new Actions to the keybindings.
+        /// </summary>
+        /// <param name="actions">Action bindings to add.</param>
+        public void AddActions(params (InputKey binding, Action action)[] actions)
+            => AddActions((IEnumerable<(InputKey binding, Action action)>)actions);
+
+        /// <summary>
+        /// Adds new Actions to the keybindings.
+        /// </summary>
+        /// <param name="actions">Action bindings to add.</param>
+        public void AddActions(IEnumerable<(InputKey binding, Action action)> actions)
+        {
+            foreach (var action in actions)
+            {
+                // TODO: Verify exclusivity and uniqueness with itself and _motions?
+                if (!_actions.ContainsKey(action.binding.Key))
+                    _actions[action.binding.Key] = new List<(InputKey binding, Action action)>();
+
+                InsertOrdered(_actions[action.binding.Key], action);
+            }
         }
 
         /// <summary>
@@ -151,13 +172,30 @@ namespace SadRogue.Integration.Components.Keybindings
         /// <param name="binding">Keybinding to bind.</param>
         /// <param name="direction">Direction to generate when keybinding is pressed.</param>
         public void AddMotion(InputKey binding, Direction direction)
-        {
-            // TODO: Verify exclusivity and uniqueness with itself and _actions?
-            if (!_motions.ContainsKey(binding.Key))
-                _motions[binding.Key] = new List<(InputKey binding, Direction direction)>();
+            => AddMotions((binding, direction));
 
-            InsertOrdered(_motions[binding.Key], (control: binding, direction));
+        /// <summary>
+        /// Adds a the given Motion keybindings.
+        /// </summary>
+        /// <param name="motions">Motions to add.</param>
+        public void AddMotions(IEnumerable<(InputKey binding, Direction direction)> motions)
+        {
+            foreach (var motion in motions)
+            {
+                // TODO: Verify exclusivity and uniqueness with itself and _actions?
+                if (!_motions.ContainsKey(motion.binding.Key))
+                    _motions[motion.binding.Key] = new List<(InputKey binding, Direction direction)>();
+
+                InsertOrdered(_motions[motion.binding.Key], motion);
+            }
         }
+
+        /// <summary>
+        /// Adds a the given Motion keybindings.
+        /// </summary>
+        /// <param name="motions">Motions to add.</param>
+        public void AddMotions(params (InputKey binding, Direction direction)[] motions)
+            => AddMotions((IEnumerable<(InputKey binding, Direction direction)>)motions);
 
         /// <summary>
         /// Removes the binding for a Motion.

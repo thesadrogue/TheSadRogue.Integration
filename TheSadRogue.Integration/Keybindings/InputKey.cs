@@ -2,7 +2,7 @@
 using SadConsole.Input;
 using SadRogue.Primitives;
 
-namespace SadRogue.Integration.Components.Keybindings
+namespace SadRogue.Integration.Keybindings
 {
     /// <summary>
     /// Represents an input state that can be bound to an action.
