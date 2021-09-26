@@ -22,6 +22,7 @@ namespace ExampleGame
         // Initialized in Init, so null-override is used.
         public static RogueLikeMap Map = null!;
         public static Player PlayerCharacter = null!;
+
         static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
@@ -46,14 +47,17 @@ namespace ExampleGame
             // Center view on player
             Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
+            // Set the map as the active screen so that it processes input and renders itself.
             GameHost.Instance.Screen = Map;
             Map.IsFocused = true;
+
+            // Destroy the default starting console that SadConsole created automatically because we're not using it.
             GameHost.Instance.DestroyDefaultStartingConsole();
         }
 
         private static RogueLikeMap GenerateMap()
         {
-            // Generate a rectangular map for the sake of testing.
+            // Generate a rectangular map for the sake of testing with GoRogue's map generation system.
             var generator = new Generator(MapWidth, MapHeight)
                 .ConfigAndGenerateSafe(gen =>
                 {
@@ -62,9 +66,16 @@ namespace ExampleGame
 
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
+            // Create a RogueLikeMap structure, specifying the appropriate viewport size for the default renderer
             RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
+
+            // Add a component that will implement a character "memory" system, where tiles will be dimmed when they aren't seen by the player,
+            // and remain visible exactly as they were when the player last saw them regardless of changes to their actual appearance,
+            // until the player sees them again.
             map.AllComponents.Add(new DimmingMemoryFieldOfViewHandler(0.6f));
 
+            // Translate the GoRogue map generation context's information on the map to appropriate RogueLikeCells.  We must use MemoryAwareRogueLikeCells
+            // because we are using the integration library's "memory-based" fov visibility system.
             foreach(var location in map.Positions())
             {
                 bool walkable = generatedMap[location];
@@ -77,6 +88,8 @@ namespace ExampleGame
 
         private static Player GeneratePlayerCharacter()
         {
+            // Create a player and position them at the first square encountered that is walkable,
+            // for the sake of testing.
             var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
             var player = new Player(position);
 
