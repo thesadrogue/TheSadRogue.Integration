@@ -32,7 +32,7 @@ Unit tests for integration library functionality are included in `TheSadRogue.In
 
 
 ## How do I get started?
-As detailed above, a template will be provided to create new projects.  Instructions on its use will be placed here after it is created.
+As detailed above, a template will be provided to create new projects.  Instructions on its use will be placed here after it is created.  For now, you need to compile the source into a NuGet package manually, since it has no official NuGet release.
 
 Additionally, you may find the `ExampleGame/` helpful as it provides well-commented example code that utilizes integration library features.
 
