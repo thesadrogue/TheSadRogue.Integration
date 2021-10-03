@@ -12,7 +12,7 @@ namespace ExampleGame
     /// <summary>
     /// A tiny game to give examples of how to use GoRogue
     /// </summary>
-    class Program
+    internal static class Program
     {
         public const int Width = 80;
         public const int Height = 25;
@@ -23,7 +23,7 @@ namespace ExampleGame
         public static RogueLikeMap Map = null!;
         public static Player PlayerCharacter = null!;
 
-        static void Main(/*string[] args*/)
+        private static void Main(/*string[] args*/)
         {
             Game.Create(Width, Height);
             Game.Instance.OnStart = Init;

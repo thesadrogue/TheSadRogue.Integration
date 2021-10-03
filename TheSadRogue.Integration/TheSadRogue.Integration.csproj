@@ -73,9 +73,12 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="3.0.0-alpha04" />
+    <PackageReference Include="GoRogue" Version="3.0.0-alpha06" />
+	<PackageReference Include="JetBrains.Annotations" Version="2021.2.0">
+	  <PrivateAssets>all</PrivateAssets>
+	</PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="SadConsole" Version="9.1.0" />
+    <PackageReference Include="SadConsole" Version="9.1.1" />
   </ItemGroup>
 
   <!-- When packing, copy the nuget files to the nuget output directory -->
