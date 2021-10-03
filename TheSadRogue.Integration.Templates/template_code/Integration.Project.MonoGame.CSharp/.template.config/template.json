@@ -12,11 +12,11 @@
     "identity": "Integration.Project.MonoGame.CSharp",
     "groupIdentity":"Integration.Project.MonoGame",
     "name": "GoRogue-SadConsole Game (MonoGame)",
-    "shortName": "gr-sadconsole-mg",
+    "shortName": "gorogue-sadconsole-mg",
     "preferNameDirectory": true,
     "tags": {
         "language": "C#",
         "type": "project"
     },
-    "sourceName": "MyGame"
+    "sourceName": "TheSadRogue.Integration.Templates.MonoGame"
 }

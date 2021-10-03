@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSadRogue.Integration.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSadRogue.Integration.Templates", "TheSadRogue.Integration.Templates\TheSadRogue.Integration.Templates.csproj", "{2DF5552B-5C6E-4DA9-9158-5DCBEA153520}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheSadRogue.Integration.Templates.MonoGame", "TheSadRogue.Integration.Templates\template_code\Integration.Project.MonoGame.CSharp\TheSadRogue.Integration.Templates.MonoGame.csproj", "{17E6C102-20F2-48AB-9E75-F1E6BB0DF19D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{2DF5552B-5C6E-4DA9-9158-5DCBEA153520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DF5552B-5C6E-4DA9-9158-5DCBEA153520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DF5552B-5C6E-4DA9-9158-5DCBEA153520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E6C102-20F2-48AB-9E75-F1E6BB0DF19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E6C102-20F2-48AB-9E75-F1E6BB0DF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E6C102-20F2-48AB-9E75-F1E6BB0DF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E6C102-20F2-48AB-9E75-F1E6BB0DF19D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -6,7 +6,7 @@ using SadRogue.Integration.Maps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 
-namespace MyGame
+namespace TheSadRogue.Integration.Templates.MonoGame
 {
     internal static class Program
     {

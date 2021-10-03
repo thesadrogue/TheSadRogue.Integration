@@ -3,7 +3,7 @@ using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Primitives;
 
-namespace MyGame
+namespace TheSadRogue.Integration.Templates.MonoGame
 {
     internal class Player : RogueLikeEntity
     {
