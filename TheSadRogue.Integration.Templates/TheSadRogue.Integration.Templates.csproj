@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageVersion>1.0.0-alpha01</PackageVersion>
+    <PackageId>TheSadRogue.Integration.Templates</PackageId>
+    <Title>GoRogue-SadConsole Game Templates</Title>
+    <Authors>Chris3606;Thraka;fcheadle</Authors>
+    <Description>Templates to use as starting points for creating games with the SadConsole-GoRogue integration library.</Description>
+    <PackageTags>dotnet-new;templates;template;gorogue;sadconsole;roguelike;roguelikes;sadrogue;thesadrogue</PackageTags>
+    <TargetFramework>net5.0</TargetFramework>
+	<!-- See https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu5128#solution-1; warning unneded for template. -->
+	<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+	
+	<!-- Generate package when building for convenience -->
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="template_code\**\*" Exclude="template_code\**\bin\**;template_code\**\obj\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <Copy SourceFiles="$(OutputPath)../$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(OutputPath)..\..\..\..\nuget" />
+  </Target>
+
+</Project>

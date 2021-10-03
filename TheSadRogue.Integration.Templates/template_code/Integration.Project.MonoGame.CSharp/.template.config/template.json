@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Chris3606;Thraka;fcheadle",
+    "classifications": [
+        "Console",
+        "Roguelike",
+        "SadConsole",
+		"GoRogue",
+        "MonoGame",
+		"TheSadRogue.Integration"
+    ],
+    "identity": "Integration.Project.MonoGame.CSharp",
+    "groupIdentity":"Integration.Project.MonoGame",
+    "name": "GoRogue-SadConsole Game (MonoGame)",
+    "shortName": "gr-sadconsole-mg",
+    "preferNameDirectory": true,
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "MyGame"
+}
