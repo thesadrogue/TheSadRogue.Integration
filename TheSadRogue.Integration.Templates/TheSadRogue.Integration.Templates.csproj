@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="template_code\Integration.Project.MonoGame.CSharp\MapScreen.cs" />
     <Content Include="template_code\**\*" Exclude="template_code\**\bin\**;template_code\**\obj\**" />
     <Compile Remove="**\*" />
   </ItemGroup>
