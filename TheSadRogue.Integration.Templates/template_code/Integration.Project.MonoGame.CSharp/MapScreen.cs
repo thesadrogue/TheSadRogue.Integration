@@ -1,7 +1,8 @@
-﻿using System.Linq;
-using GoRogue.MapGeneration;
+﻿using GoRogue.MapGeneration;
 using SadConsole;
+using SadRogue.Integration;
 using SadRogue.Integration.FieldOfView.Memory;
+using SadRogue.Integration.Keybindings;
 using SadRogue.Integration.Maps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
@@ -11,7 +12,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     internal class MapScreen : ScreenObject
     {
         public readonly MyGameMap Map;
-        public readonly Player Player;
+        public readonly RogueLikeEntity Player;
         public readonly Console MessageLog;
 
         const int MessageLogHeight = 5;
@@ -27,10 +28,11 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             MessageLog.Parent = this;
             MessageLog.Position = new(0, Program.Height - MessageLogHeight);
 
-            // Generate player, add to map, and calculate initial FOV
+            // Generate player, add to map at a random walkable position, and calculate initial FOV
             Player = GeneratePlayerCharacter();
+            Player.Position = Map.WalkabilityView.RandomPosition((_, walkable) => walkable);
             Map.AddEntity(Player);
-            Player.CalculateFOV();
+            Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 
             // Center view on player as they move
             Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = Player });
@@ -71,12 +73,20 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             return map;
         }
 
-        private Player GeneratePlayerCharacter()
+        // Generates a RogueLikeEntity with the proper components to be our Player.  It may be useful to implement
+        // GoRogue's Factory system if you intend to create all of your map objects via composition like this.
+        private RogueLikeEntity GeneratePlayerCharacter()
         {
-            // Create a player and position them at the first square encountered that is walkable,
-            // for the sake of testing.
-            var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
-            var player = new Player(position);
+            // Create player object
+            var player = new RogueLikeEntity('@', false, layer: (int)MyGameMap.Layer.Monsters);
+
+            // Add component for controlling player movement via keyboard
+            var motionControl = new PlayerKeybindingsComponent();
+            motionControl.SetMotions(PlayerKeybindingsComponent.ArrowMotions);
+            player.AllComponents.Add(motionControl);
+
+            // Add component for updating map's player FOV as they move
+            player.AllComponents.Add(new PlayerFOVController());
 
             return player;
         }
