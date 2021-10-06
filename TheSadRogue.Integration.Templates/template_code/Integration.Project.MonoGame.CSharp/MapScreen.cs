@@ -13,7 +13,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     {
         public readonly MyGameMap Map;
         public readonly RogueLikeEntity Player;
-        public readonly Console MessageLog;
+        public readonly MessageLogConsole MessageLog;
 
         const int MessageLogHeight = 5;
 
@@ -24,7 +24,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             Map.Parent = this;
 
             // Create message log
-            MessageLog = new Console(Program.Width, MessageLogHeight);
+            MessageLog = new MessageLogConsole(Program.Width, MessageLogHeight);
             MessageLog.Parent = this;
             MessageLog.Position = new(0, Program.Height - MessageLogHeight);
 
