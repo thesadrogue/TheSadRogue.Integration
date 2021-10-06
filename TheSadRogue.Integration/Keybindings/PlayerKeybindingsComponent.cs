@@ -57,7 +57,7 @@ namespace SadRogue.Integration.Keybindings
     /// wish to handle modifier keys manually within a given keybinding's handler.
     /// </remarks>
     [PublicAPI]
-    public class PlayerKeybindingsComponent : RogueLikeComponentBase
+    public class PlayerKeybindingsComponent : RogueLikeComponentBase<IGameObject>
     {
         #region Commonly Used Motion Schemes
         /// <summary>
