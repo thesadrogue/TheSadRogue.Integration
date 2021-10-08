@@ -17,9 +17,8 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             Items
         };
 
-        public MyGameMap(int width, int height, DefaultRendererParams? defaultRendererParams,
-                         Distance distanceMeasurement)
-            : base(width, height, defaultRendererParams, Enum.GetValues<Layer>().Length - 1, distanceMeasurement)
+        public MyGameMap(int width, int height, DefaultRendererParams? defaultRendererParams)
+            : base(width, height, defaultRendererParams, Enum.GetValues<Layer>().Length - 1, Distance.Chebyshev)
         { }
     }
 }
