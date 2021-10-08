@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿
+using System.Linq;
 using GoRogue.GameFramework;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
+using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -24,7 +26,11 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             if (path == null) return;
             var firstPoint = path.GetStep(0);
             if (Parent.CanMove(firstPoint))
+            {
+                Program.GameScreen.MessageLog.AddMessage($"An enemy moves {Direction.GetDirection(Parent.Position, firstPoint)}!");
                 Parent.Position = firstPoint;
+            }
+
         }
     }
 }

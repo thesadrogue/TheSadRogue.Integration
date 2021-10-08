@@ -28,9 +28,6 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             GameScreen = new MapScreen(MapWidth, MapHeight);
             GameHost.Instance.Screen = GameScreen;
 
-            // TODO: Temporary
-            GameScreen.MessageLog.AddMessage("Setup complete!");
-
             // Destroy the default starting console that SadConsole created automatically because we're not using it.
             GameHost.Instance.DestroyDefaultStartingConsole();
         }
