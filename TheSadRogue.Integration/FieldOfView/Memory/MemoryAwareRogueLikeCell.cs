@@ -35,6 +35,24 @@ namespace SadRogue.Integration.FieldOfView.Memory
         /// <summary>
         /// Creates a new terrain object.
         /// </summary>
+        /// <param name="foreground">The true foreground color of the Cell</param>
+        /// <param name="background">The true background color of the Cell</param>
+        /// <param name="glyph">The true glyph of the cell</param>
+        /// <param name="layer">The map layer to which this cell is added</param>
+        /// <param name="walkable">Whether the cell is considered walkable in collision detection</param>
+        /// <param name="transparent">Whether the cell is considered transparent in field-of-view algorithms</param>
+        /// <param name="idGenerator">The function which produces the unique ID for this cell</param>
+        /// <param name="customComponentContainer">Accepts a custom collection</param>
+        public MemoryAwareRogueLikeCell(Color foreground, Color background, int glyph, int layer,
+                                        bool walkable = true, bool transparent = true, Func<uint>? idGenerator = null,
+                                        IComponentCollection? customComponentContainer = null)
+            : this(new Point(0, 0), foreground, background, glyph, layer, walkable, transparent, idGenerator,
+                customComponentContainer)
+        { }
+
+        /// <summary>
+        /// Creates a new terrain object.
+        /// </summary>
         /// <param name="position">Where the cell is located</param>
         /// <param name="foreground">The true foreground color of the Cell</param>
         /// <param name="background">The true background color of the Cell</param>
@@ -55,6 +73,22 @@ namespace SadRogue.Integration.FieldOfView.Memory
             // Since the tile hasn't been seen, make it invisible.
             LastSeenAppearance.IsVisible = false;
         }
+
+        /// <summary>
+        /// Creates a new terrain object.
+        /// </summary>
+        /// <param name="appearance">The true appearance of the cell.</param>
+        /// <param name="layer">The map layer to which this cell is added</param>
+        /// <param name="walkable">Whether the cell is considered walkable in collision detection</param>
+        /// <param name="transparent">Whether the cell is considered transparent in field-of-view algorithms</param>
+        /// <param name="idGenerator">The function which produces the unique ID for this cell</param>
+        /// <param name="customComponentContainer">Accepts a custom collection</param>
+        public MemoryAwareRogueLikeCell(ColoredGlyph appearance, int layer, bool walkable = true,
+                                        bool transparent = true,
+                                        Func<uint>? idGenerator = null,
+                                        IComponentCollection? customComponentContainer = null)
+            : this(new Point(0, 0), appearance, layer, walkable, transparent, idGenerator, customComponentContainer)
+        { }
 
         /// <summary>
         /// Creates a new terrain object.
