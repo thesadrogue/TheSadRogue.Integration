@@ -51,7 +51,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             var enemy = new RogueLikeEntity(Color.Red, 'g', false, layer: (int)MyGameMap.Layer.Monsters);
 
             // Add AI component to path toward player when in view
-            enemy.AllComponents.Add(new EnemyAI());
+            enemy.AllComponents.Add(new DemoEnemyAI());
 
             return enemy;
         }

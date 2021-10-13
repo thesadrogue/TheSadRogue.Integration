@@ -22,7 +22,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
 
             foreach (var entity in Parent.CurrentMap!.Entities.Items)
             {
-                var ai = entity.GoRogueComponents.GetFirstOrDefault<EnemyAI>();
+                var ai = entity.GoRogueComponents.GetFirstOrDefault<DemoEnemyAI>();
                 ai?.TakeTurn();
             }
         }

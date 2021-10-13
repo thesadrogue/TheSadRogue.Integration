@@ -2,6 +2,15 @@
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
+    /// <summary>
+    /// The provided code is a simple template to demonstrate some integration library features and set up some boilerplate
+    /// for you.  Feel free to use, or delete, any of it that you want; it shows one way of doing things, not the only way!
+    ///
+    /// The code contains a few comments beginning with "CUSTOMIZATION:", which show you some common points to modify in
+    /// order to accomplish some common tasks.  The tags by no means represent a comprehensive guide to everything you
+    /// might want to modify; they're simply designed to provide a "quick-start" guide that can help you accomplish some
+    /// common tasks.
+    /// </summary>
     internal static class Program
     {
         // Window width/height
