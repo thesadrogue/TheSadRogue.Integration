@@ -9,8 +9,8 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// moves.
     /// </summary>
     /// <remarks>
-    /// Components can also be attached to maps, so the code for calling TakeTurn on all entities could be moved to a
-    /// map component as well so that it is re-usable.
+    /// CUSTOMIZATION: Components can also be attached to maps, so the code for calling TakeTurn on all entities could
+    /// be moved to a map component as well so that it is more re-usable by code that doesn't pertain to movement.
     /// </remarks>
     internal class CustomPlayerKeybindingsComponent : PlayerKeybindingsComponent
     {

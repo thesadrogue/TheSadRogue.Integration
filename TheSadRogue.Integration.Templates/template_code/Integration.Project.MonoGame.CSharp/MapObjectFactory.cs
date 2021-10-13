@@ -6,12 +6,20 @@ using SadRogue.Primitives;
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
     /// <summary>
-    /// Simple class with some static functions for creating map objects.  You can choose to use inheritance to create
-    /// your objects instead, but the integration library offers a robust component system that integrates both
-    /// SadConsole's and GoRogue's components into one interface, so you're not bound to do so.  If you _do_ choose to
-    /// use composition and have factory functions like this, you may find it helpful to implement the factory system
-    /// implemented in the GoRogue.Factories namespace.
+    /// Simple class with some static functions for creating map objects.
     /// </summary>
+    /// <remarks>
+    /// CUSTOMIZATION:  This demonstrates how to create objects based on "composition"; using components.  The integration
+    /// library offers a robust component system that integrates both SadConsole's and GoRogue's components into one
+    /// interface to support this.  You can either add more functions to create more objects, or remove this and
+    /// implement the "factory" system in the GoRogue.Factories namespace, which provides a more robust interface for it.
+    ///
+    /// Note that SadConsole components cannot be attached directly to `RogueLikeCell` or `MemoryAwareRogueLikeCell`
+    /// instances for reasons pertaining to performance.
+    ///
+    /// Alternatively, you can remove this system and choose to use inheritance to create your objects instead - the
+    /// integration library also supports creating subclasses or RogueLikeCell and Entity.
+    /// </remarks>
     internal static class MapObjectFactory
     {
         public static MemoryAwareRogueLikeCell Floor(Point position)

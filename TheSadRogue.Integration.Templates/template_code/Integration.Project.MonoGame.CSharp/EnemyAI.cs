@@ -18,8 +18,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
 
         public void TakeTurn()
         {
-            if (Parent == null) return;
-            if (Parent!.CurrentMap == null) return;
+            if (Parent?.CurrentMap == null) return;
             if (!Parent.CurrentMap.PlayerFOV.CurrentFOV.Contains(Parent.Position)) return;
 
             var path = Parent.CurrentMap.AStar.ShortestPath(Parent.Position, Program.GameScreen.Player.Position);

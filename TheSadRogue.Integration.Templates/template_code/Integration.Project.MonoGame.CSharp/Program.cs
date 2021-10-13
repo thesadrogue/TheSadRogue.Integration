@@ -24,8 +24,11 @@ namespace TheSadRogue.Integration.Templates.MonoGame
 
         private static void Init()
         {
-            // Create a Map/MapScreen and as the active screen so that it processes input and renders itself.
-            GameScreen = new MapScreen(MapWidth, MapHeight);
+            // Generate a dungeon map
+            var map = MapFactory.GenerateDungeonMap(MapWidth, MapHeight);
+
+            // Create a MapScreen and set it as the active screen so that it processes input and renders itself.
+            GameScreen = new MapScreen(map);
             GameHost.Instance.Screen = GameScreen;
 
             // Destroy the default starting console that SadConsole created automatically because we're not using it.
