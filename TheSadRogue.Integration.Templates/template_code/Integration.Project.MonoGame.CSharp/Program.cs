@@ -3,6 +3,8 @@
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
     /// <summary>
+    /// ***********README***********
+    ///
     /// The provided code is a simple template to demonstrate some integration library features and set up some boilerplate
     /// for you.  Feel free to use, or delete, any of it that you want; it shows one way of doing things, not the only way!
     ///
