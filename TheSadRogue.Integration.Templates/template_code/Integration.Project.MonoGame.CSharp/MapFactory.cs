@@ -15,6 +15,10 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// As is the case for map objects, you can use composition to create your objects by attaching components
     /// directly to the map.  The integration library also supports creating subclasses of RogueLikeMap (as we do
     /// here).
+    ///
+    /// Additionally, GoRogue's map generation framework supports adding arbitrary components to contexts, so the integration
+    /// library map could be added as a component to the context, and then things like enemy placement could be their own
+    /// custom GoRogue map generation steps.
     /// </remarks>
     internal static class MapFactory
     {
