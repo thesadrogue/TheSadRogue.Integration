@@ -26,6 +26,24 @@ namespace SadRogue.Integration
         /// <summary>
         /// Creates a new RogueLikeCell
         /// </summary>
+        /// <param name="foreground">The Foreground color of the Cell</param>
+        /// <param name="background">The Foreground color of the Cell</param>
+        /// <param name="glyph">The symbol of the Cell</param>
+        /// <param name="layer">The map layer to which this Cell is added</param>
+        /// <param name="walkable">Whether the Cell is considered in Collision Detection</param>
+        /// <param name="transparent">Whether the Cell is considered in Field-of-View algorithms</param>
+        /// <param name="idGenerator">The function which produces the unique ID for this Cell</param>
+        /// <param name="customComponentContainer">Accepts a custom collection</param>
+        public RogueLikeCell(Color foreground, Color background, int glyph, int layer,
+                             bool walkable = true, bool transparent = true, Func<uint>? idGenerator = null,
+                             IComponentCollection? customComponentContainer = null)
+            : this(new Point(0, 0), foreground, background, glyph, layer, walkable, transparent, idGenerator,
+                customComponentContainer)
+        { }
+
+        /// <summary>
+        /// Creates a new RogueLikeCell
+        /// </summary>
         /// <param name="position">Where the Cell is located</param>
         /// <param name="foreground">The Foreground color of the Cell</param>
         /// <param name="background">The Foreground color of the Cell</param>
@@ -42,6 +60,21 @@ namespace SadRogue.Integration
         {
             Appearance = new TerrainAppearance(this, foreground, background, glyph);
         }
+
+        /// <summary>
+        /// Creates a new RogueLikeCell
+        /// </summary>
+        /// <param name="appearance">The Foreground color of the Cell</param>
+        /// <param name="layer">The map layer to which this Cell is added</param>
+        /// <param name="walkable">Whether the Cell is considered in Collision Detection</param>
+        /// <param name="transparent">Whether the Cell is considered in Field-of-View algorithms</param>
+        /// <param name="idGenerator">The function which produces the unique ID for this Cell</param>
+        /// <param name="customComponentContainer">Accepts a custom collection</param>
+        public RogueLikeCell(ColoredGlyph appearance, int layer, bool walkable = true, bool transparent = true,
+                             Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
+            : this(new Point(0, 0), appearance, layer, walkable, transparent, idGenerator, customComponentContainer)
+        { }
+
         /// <summary>
         /// Creates a new RogueLikeCell
         /// </summary>

@@ -1,6 +1,5 @@
 using System;
 using GoRogue.Components;
-using GoRogue.GameFramework;
 using GoRogue.Components.ParentAware;
 using JetBrains.Annotations;
 using SadConsole;
@@ -11,11 +10,11 @@ namespace SadRogue.Integration.Components
 {
     /// <summary>
     /// A Component that works with both SadConsole and GoRogue's GameFramework that may be attached to any
-    /// IGameObject.
+    /// IGameObject or anything that implements IObjectWithComponents.
     /// </summary>
     /// <remarks>
-    /// You may want to consider <see cref="RogueLikeComponentBase{TParent}"/>
-    /// for some additional functionality.
+    /// You may want to consider <see cref="RogueLikeComponentBase{TParent}"/> so that the Parent field has
+    /// a more useful type.
     ///
     /// The intended use is for you to derive from this class and
     /// then override the methods you need. The base class there-
@@ -23,7 +22,7 @@ namespace SadRogue.Integration.Components
     /// processing or errors occur.
     /// </remarks>
     [PublicAPI]
-    public abstract class RogueLikeComponentBase : RogueLikeComponentBase<IGameObject>
+    public abstract class RogueLikeComponentBase : RogueLikeComponentBase<IObjectWithComponents>
     {
 
         /// <summary>
@@ -41,13 +40,13 @@ namespace SadRogue.Integration.Components
 
     /// <summary>
     /// A component that works with both SadConsole's and GoRogue's component system.
-    /// It is identical to <see cref="RogueLikeComponentBase"/>, except that it enforces
-    /// additional constraints on the type of object that it is attached to.
+    /// It is identical to <see cref="RogueLikeComponentBase"/>, except that it ensures that it is always attached
+    /// to an object of type <see tparam="TParent"/>, and exposes the Parent property as that type.
     /// </summary>
     /// <typeparam name="TParent">Type of object this component must be attached to.</typeparam>
     [PublicAPI]
     public class RogueLikeComponentBase<TParent> : ParentAwareComponentBase<TParent>, IComponent, ISortedComponent
-        where TParent : class, IGameObject
+        where TParent : class, IObjectWithComponents
     {
         /// <summary>
         /// The Order in which the components are processed. Lower is earlier.

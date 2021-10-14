@@ -38,6 +38,27 @@ namespace SadRogue.Integration
         /// <summary>
         /// Creates a new entity.
         /// </summary>
+        /// <param name="glyph">The entity's glyph when displayed.</param>
+        /// <param name="walkable">Whether or not the entity can be walked through.</param>
+        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
+        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
+        /// <param name="idGenerator">
+        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
+        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
+        /// </param>
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
+        /// use cases.
+        /// </param>
+        public RogueLikeEntity(int glyph, bool walkable = true, bool transparent = true, int layer = 1,
+                               Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
+            : this(new Point(0, 0), glyph, walkable, transparent, layer, idGenerator, customComponentCollection)
+        { }
+
+        /// <summary>
+        /// Creates a new entity.
+        /// </summary>
         /// <param name="position">Position the entity will start at.</param>
         /// <param name="glyph">The entity's glyph when displayed.</param>
         /// <param name="walkable">Whether or not the entity can be walked through.</param>
@@ -58,6 +79,29 @@ namespace SadRogue.Integration
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
+
+        /// <summary>
+        /// Creates a new entity.
+        /// </summary>
+        /// <param name="foreground">The foreground for the entity's glyph when displayed.</param>
+        /// <param name="glyph">The entity's glyph when displayed.</param>
+        /// <param name="walkable">Whether or not the entity can be walked through.</param>
+        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
+        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
+        /// <param name="idGenerator">
+        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
+        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
+        /// </param>
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
+        /// use cases.
+        /// </param>
+        public RogueLikeEntity(Color foreground, int glyph, bool walkable = true,
+                               bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
+                               IComponentCollection? customComponentCollection = null)
+            : this(new Point(0, 0), foreground, glyph, walkable, transparent, layer, idGenerator, customComponentCollection)
+        { }
 
         /// <summary>
         /// Creates a new entity.
@@ -88,6 +132,31 @@ namespace SadRogue.Integration
         /// <summary>
         /// Creates a new entity.
         /// </summary>
+        /// <param name="foreground">The foreground for the entity's glyph when displayed.</param>
+        /// <param name="background">The background for the entity's glyph when displayed.</param>
+        /// <param name="glyph">The entity's glyph when displayed.</param>
+        /// <param name="walkable">Whether or not the entity can be walked through.</param>
+        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
+        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
+        /// <param name="idGenerator">
+        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
+        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
+        /// </param>
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
+        /// use cases.
+        /// </param>
+        public RogueLikeEntity(Color foreground, Color background, int glyph, bool walkable = true,
+                               bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
+                               IComponentCollection? customComponentCollection = null)
+            : this(new Point(0, 0), foreground, background, glyph, walkable, transparent, layer, idGenerator,
+                customComponentCollection)
+        { }
+
+        /// <summary>
+        /// Creates a new entity.
+        /// </summary>
         /// <param name="position">Position the entity will start at.</param>
         /// <param name="foreground">The foreground for the entity's glyph when displayed.</param>
         /// <param name="background">The background for the entity's glyph when displayed.</param>
@@ -113,6 +182,27 @@ namespace SadRogue.Integration
         /// <summary>
         /// Creates a new entity.
         /// </summary>
+        /// <param name="appearance">The appearance of the entity when displayed.  A copy will be made of this value.</param>
+        /// <param name="walkable">Whether or not the entity can be walked through.</param>
+        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
+        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
+        /// <param name="idGenerator">
+        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
+        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
+        /// </param>
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
+        /// use cases.
+        /// </param>
+        public RogueLikeEntity(ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1,
+                               Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
+            : this(new Point(0, 0), appearance, walkable, transparent, layer, idGenerator, customComponentCollection)
+        { }
+
+        /// <summary>
+        /// Creates a new entity.
+        /// </summary>
         /// <param name="position">Position the entity will start at.</param>
         /// <param name="appearance">The appearance of the entity when displayed.  A copy will be made of this value.</param>
         /// <param name="walkable">Whether or not the entity can be walked through.</param>
@@ -132,6 +222,29 @@ namespace SadRogue.Integration
         {
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
+
+        /// <summary>
+        /// Creates a new entity.
+        /// </summary>
+        /// <param name="appearance">The appearance of the entity when displayed.  No copy will be made of this value; the given instance will be used directly.</param>
+        /// <param name="walkable">Whether or not the entity can be walked through.</param>
+        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
+        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
+        /// <param name="idGenerator">
+        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
+        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
+        /// </param>
+        /// <param name="customComponentCollection">
+        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
+        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
+        /// use cases.
+        /// </param>
+        public RogueLikeEntity(ref ColoredGlyph appearance, bool walkable = true,
+                               bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
+                               IComponentCollection? customComponentCollection = null)
+            : this(new Point(0, 0), ref appearance, walkable, transparent, layer, idGenerator,
+                customComponentCollection)
+        { }
 
         /// <summary>
         /// Creates a new entity.
