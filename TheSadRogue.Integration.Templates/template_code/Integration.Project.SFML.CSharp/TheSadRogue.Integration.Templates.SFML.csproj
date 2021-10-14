@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SadConsole.Host.SFML" Version="9.1.1" />
+    <PackageReference Include="TheSadRogue.Integration" Version="1.0.0-alpha02" />
+  </ItemGroup>
+
+</Project>

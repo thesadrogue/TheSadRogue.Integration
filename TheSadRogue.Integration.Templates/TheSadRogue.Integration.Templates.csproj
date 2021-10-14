@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>1.0.0-alpha01</PackageVersion>
+    <PackageVersion>1.0.0</PackageVersion>
     <PackageId>TheSadRogue.Integration.Templates</PackageId>
     <Title>GoRogue-SadConsole Game Templates</Title>
     <Authors>Chris3606;Thraka;fcheadle</Authors>
@@ -21,7 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="template_code\Integration.Project.MonoGame.CSharp\MapScreen.cs" />
     <Content Include="template_code\**\*" Exclude="template_code\**\bin\**;template_code\**\obj\**" />
     <Compile Remove="**\*" />
   </ItemGroup>
