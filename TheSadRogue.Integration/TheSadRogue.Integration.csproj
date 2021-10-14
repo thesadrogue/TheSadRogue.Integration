@@ -27,9 +27,7 @@
 
     <!-- More nuget package settings-->
     <PackageId>TheSadRogue.Integration</PackageId>
-    <PackageReleaseNotes>
-      Updated minimum required version of GoRogue.
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>Changelog at https://github.com/thesadrogue/TheSadRogue.Integration/blob/main/TheSadRogue.Integration/readme.md.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/thesadrogue/TheSadRogue.Integration</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

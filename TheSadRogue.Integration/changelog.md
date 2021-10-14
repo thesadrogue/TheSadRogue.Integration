@@ -14,6 +14,7 @@ None.
 - Added constructors to `RogueLikeCell`, `MemoryAwareRogueLikeCell`, and `RogueLikeEntity` that don't take a mandatory position parameter
 
 ## Changed
-- `PlayerKeybindingsComponent.MotionHandler` is now a virtual function you can override, instead of an `Action`.
+- Updated minimum required version of GoRogue to 3.0.0-alpha07
+- `PlayerKeybindingsComponent.MotionHandler` is now a virtual function you can override, instead of an `Action`
 - `RogueLikeComponentBase` accepts any object which implements `IObjectWithComponents` as its parent
     - For `RogueLikeEntity` components, you should now use `RogueLikeComponentBase<IGameObject>` or `RogueLikeComponentBase<RogueLikeEntity>` as appropriate
