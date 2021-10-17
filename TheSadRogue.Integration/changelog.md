@@ -7,6 +7,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
+## [1.0.0-alpha03] - 2021-10-17
+
+## Added
+- Added `WalkabilityChanging` event that fires directly _before_ walkability is set to map objects
+- Added `TransparencyChanging` event that fires directly _before_ transparancy is set to map objects
+
+## Changed
+- Updated minimum required version of GoRogue to 3.0.0-alpha08
+
+## Fixed
+- Fixed bug that prevented setting the `IsWalkable` field of map objects while they were part of the map
+
 ## [1.0.0-alpha02] - 2021-10-13
 
 ## Added
