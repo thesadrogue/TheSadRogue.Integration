@@ -16,7 +16,7 @@
     Set version and automatically add "-debug" to the version number for debug builds so that they can be published
     to NuGet seperately from the Release builds (to enable full SourceLink support)
     -->
-    <Version>1.0.0-alpha02</Version>
+    <Version>1.0.0-alpha03</Version>
     <Version Condition="'$(Configuration)'=='Debug'">$(Version)-debug</Version>
 
     <!-- Generate documentation files for all configurations since Debug and Release are both published to NuGet. -->
@@ -27,7 +27,7 @@
 
     <!-- More nuget package settings-->
     <PackageId>TheSadRogue.Integration</PackageId>
-    <PackageReleaseNotes>Changelog at https://github.com/thesadrogue/TheSadRogue.Integration/blob/main/TheSadRogue.Integration/readme.md.</PackageReleaseNotes>
+    <PackageReleaseNotes>Changelog at https://github.com/thesadrogue/TheSadRogue.Integration/blob/main/TheSadRogue.Integration/changelog.md.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/thesadrogue/TheSadRogue.Integration</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -71,7 +71,7 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="3.0.0-alpha07" />
+    <PackageReference Include="GoRogue" Version="3.0.0-alpha08" />
 	<PackageReference Include="JetBrains.Annotations" Version="2021.2.0">
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
