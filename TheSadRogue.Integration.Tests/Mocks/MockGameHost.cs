@@ -13,9 +13,9 @@ namespace SadRogue.Integration.Tests.Mocks
     /// </summary>
     public class MockGameHost : GameHost
     {
-        public class Texture : ITexture
+        private class Texture : ITexture
         {
-            private SixLabors.ImageSharp.Image _graphic;
+            private readonly SixLabors.ImageSharp.Image _graphic;
 
             public string ResourcePath { get; private set; }
 
