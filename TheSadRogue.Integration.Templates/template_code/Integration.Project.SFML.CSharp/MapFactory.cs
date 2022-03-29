@@ -1,6 +1,8 @@
 ﻿using GoRogue.MapGeneration;
+using GoRogue.Random;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives.GridViews;
+using ShaiRandom.Generators;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -55,7 +57,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             for (int i = 0; i < 10; i++)
             {
                 var enemy = MapObjectFactory.Enemy();
-                enemy.Position = map.WalkabilityView.RandomPosition(true);
+                enemy.Position = GlobalRandom.DefaultRNG.RandomPosition(map.WalkabilityView, true);
                 map.AddEntity(enemy);
             }
 
