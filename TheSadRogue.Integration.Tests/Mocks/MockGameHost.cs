@@ -13,15 +13,17 @@ namespace SadRogue.Integration.Tests.Mocks
     /// </summary>
     public class MockGameHost : GameHost
     {
-        public class Texture : ITexture
+        private class Texture : ITexture
         {
-            private SixLabors.ImageSharp.Image _graphic;
+            private readonly SixLabors.ImageSharp.Image _graphic;
 
             public string ResourcePath { get; private set; }
 
             public int Height => _graphic.Height;
 
             public int Width => _graphic.Width;
+
+            public int Size => Width * Height;
 
             public void Dispose()
             {
@@ -30,6 +32,10 @@ namespace SadRogue.Integration.Tests.Mocks
             public Color GetPixel(Point position) => throw new NotImplementedException();
             public Color GetPixel(int index) => throw new NotImplementedException();
             public Color[] GetPixels() => throw new NotImplementedException();
+            public void SetPixels(Color[] colors) => throw new NotImplementedException();
+
+            public void SetPixels(ReadOnlySpan<Color> colors) => throw new NotImplementedException();
+
             public void SetPixel(Point position, Color color) => throw new NotImplementedException();
             public void SetPixel(int index, Color color) => throw new NotImplementedException();
             public ICellSurface ToSurface(TextureConvertMode mode, int surfaceWidth, int surfaceHeight, TextureConvertBackgroundStyle backgroundStyle = TextureConvertBackgroundStyle.Pixel, TextureConvertForegroundStyle foregroundStyle = TextureConvertForegroundStyle.Block, Color[] cachedColorArray = null, ICellSurface cachedSurface = null) => throw new NotImplementedException();

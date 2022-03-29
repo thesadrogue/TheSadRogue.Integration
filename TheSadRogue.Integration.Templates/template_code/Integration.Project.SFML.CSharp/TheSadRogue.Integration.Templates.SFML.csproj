@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SadConsole.Host.SFML" Version="9.1.1" />
-    <PackageReference Include="TheSadRogue.Integration" Version="1.0.0-alpha02" />
+    <PackageReference Include="SadConsole.Host.SFML" Version="9.2.1" />
+    <PackageReference Include="TheSadRogue.Integration" Version="1.0.0-alpha03" />
   </ItemGroup>
 
 </Project>

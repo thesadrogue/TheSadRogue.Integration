@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <!-- Basic package information -->
-    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <Authors>Chris3606, fcheadle, Thraka</Authors>
     <Company>TheSadRogue</Company>
-    <Copyright>Copyright © 2021 Christopher Ridley (Chris3606), Forrest Cheadle (fcheadle), Steve De George JR (Thraka)</Copyright>
+    <Copyright>Copyright © 2022 Christopher Ridley (Chris3606), Forrest Cheadle (fcheadle), Steve De George JR (Thraka)</Copyright>
     <Description>An official integration library for using GoRogue and SadConsole together to create a roguelike.</Description>
 
     <!-- Target C# 8 and enable nullable reference types -->
@@ -16,7 +16,7 @@
     Set version and automatically add "-debug" to the version number for debug builds so that they can be published
     to NuGet seperately from the Release builds (to enable full SourceLink support)
     -->
-    <Version>1.0.0-alpha03</Version>
+    <Version>1.0.0-alpha04</Version>
     <Version Condition="'$(Configuration)'=='Debug'">$(Version)-debug</Version>
 
     <!-- Generate documentation files for all configurations since Debug and Release are both published to NuGet. -->
@@ -71,12 +71,12 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="3.0.0-alpha08" />
+    <PackageReference Include="GoRogue" Version="3.0.0-alpha11" />
 	<PackageReference Include="JetBrains.Annotations" Version="2021.2.0">
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="SadConsole" Version="9.1.1" />
+    <PackageReference Include="SadConsole" Version="9.2.2" />
   </ItemGroup>
 
   <!-- When packing, copy the nuget files to the nuget output directory -->

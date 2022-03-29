@@ -6,6 +6,7 @@ using GoRogue.Components;
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
+using GoRogue.Pooling;
 using GoRogue.SpatialMaps;
 using JetBrains.Annotations;
 using SadConsole;
@@ -177,9 +178,20 @@ namespace SadRogue.Integration.Maps
         /// </param>
         /// <param name="numberOfEntityLayers">How many entity (eg. non-terrain) layers to include.</param>
         /// <param name="distanceMeasurement">How to measure distance for pathing, movement, etc.</param>
+        /// <param name="customListPoolCreator">
+        /// A function used to determine the list pool implementation used for the spatial maps which support multiple
+        /// items in a location (if any).  The function takes the layer it is creating the pool for as a parameter.
+        /// If no custom creator is specified, a ListPool is used.
+        /// </param>
         /// <param name="layersBlockingWalkability">Which layers should participate in collision detection.  Defaults to all layers.</param>
         /// <param name="layersBlockingTransparency">Which layers should participate in determining transparency of tiles.  Defaults to all layers.</param>
         /// <param name="entityLayersSupportingMultipleItems">Which entity layers support having multiple objects on the same square.  Defaults to all layers.</param>
+        /// <param name="pointComparer">
+        /// Equality comparer to use for comparison and hashing of points, as object are added to/removed from/moved
+        /// around the map.  Be especially mindful of the efficiency of its GetHashCode function, as it will
+        /// determine the efficiency of many AMap functions.  Defaults to a fast hashing algorithm that generates
+        /// a unique integer for each point based on the width of the map.
+        /// </param>
         /// <param name="customPlayerFOV">
         /// Custom FOV to use for <see cref="Map.PlayerFOV"/>.  Defaults to GoRogue's recursive shadow-casting
         /// implementation.  It may also be useful to specify this if you want the <see cref="Map.PlayerFOV"/> property
@@ -196,13 +208,17 @@ namespace SadRogue.Integration.Maps
         /// ComponentCollection is sufficient for nearly all use cases.
         /// </param>
         public RogueLikeMap(int width, int height, DefaultRendererParams? defaultRendererParams, int numberOfEntityLayers,
-                                   Distance distanceMeasurement, uint layersBlockingWalkability = uint.MaxValue,
-                                   uint layersBlockingTransparency = uint.MaxValue,
-                                   uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
-                                   AStar? customPather = null, IComponentCollection? customComponentContainer = null)
-            : base(width, height, numberOfEntityLayers, distanceMeasurement, layersBlockingWalkability,
-                   layersBlockingTransparency, entityLayersSupportingMultipleItems, customPlayerFOV, customPather,
-                   customComponentContainer)
+                            Distance distanceMeasurement,
+                            Func<int, IListPool<IGameObject>>? customListPoolCreator = null,
+                            uint layersBlockingWalkability = uint.MaxValue,
+                            uint layersBlockingTransparency = uint.MaxValue,
+                            uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
+                            IEqualityComparer<Point>? pointComparer = null, AStar? customPather = null,
+                            IComponentCollection? customComponentContainer = null)
+            : base(width, height, numberOfEntityLayers, distanceMeasurement, customListPoolCreator,
+                   layersBlockingWalkability,
+                   layersBlockingTransparency, entityLayersSupportingMultipleItems, pointComparer, customPlayerFOV,
+                   customPather, customComponentContainer)
         {
             ObjectAdded += Object_Added;
             ObjectRemoved += Object_Removed;
@@ -274,7 +290,7 @@ namespace SadRogue.Integration.Maps
 
             // Create an EntityRenderer and configure it with all the appropriate entities,
             // then add it to the main surface
-            var entityRenderer = new Renderer { DoEntityUpdate = false };
+            var entityRenderer = new Renderer { DoEntityUpdate = false, SkipExistsChecks = true };
             _surfaceEntityRenderers[renderer] = entityRenderer;
             renderer.SadComponents.Add(entityRenderer);
             entityRenderer.AddRange(Entities.Items.Cast<Entity>());

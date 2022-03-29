@@ -199,6 +199,26 @@ namespace SadRogue.Integration.Keybindings
         }
 
         /// <summary>
+        /// Removes the given action bindings.
+        /// </summary>
+        /// <param name="bindings">The keybindings to remove.</param>
+        public void RemoveActions(IEnumerable<InputKey> bindings)
+        {
+            foreach (var binding in bindings)
+                RemoveAction(binding);
+        }
+
+        /// <summary>
+        /// Removes the given action bindings.
+        /// </summary>
+        /// <param name="bindings">The keybindings to remove.</param>
+        public void RemoveActions(params InputKey[] bindings)
+        {
+            foreach (var binding in bindings)
+                RemoveAction(binding);
+        }
+
+        /// <summary>
         /// Adds a new Motion that binds the given key to the given direction, overriding any existing Motion binding
         /// for that key.
         /// </summary>
@@ -244,6 +264,26 @@ namespace SadRogue.Integration.Keybindings
 
             if (_motions[binding.Key].Count == 0)
                 _motions.Remove(binding.Key);
+        }
+
+        /// <summary>
+        /// Removes the bindings for the given Motions.
+        /// </summary>
+        /// <param name="bindings">The keybindings to remove.</param>
+        public void RemoveMotions(IEnumerable<InputKey> bindings)
+        {
+            foreach (var binding in bindings)
+                RemoveMotion(binding);
+        }
+
+        /// <summary>
+        /// Removes the bindings for the given Motions.
+        /// </summary>
+        /// <param name="bindings">The keybindings to remove.</param>
+        public void RemoveMotions(params InputKey[] bindings)
+        {
+            foreach (var binding in bindings)
+                RemoveMotion(binding);
         }
 
         /// <inheritdoc />
