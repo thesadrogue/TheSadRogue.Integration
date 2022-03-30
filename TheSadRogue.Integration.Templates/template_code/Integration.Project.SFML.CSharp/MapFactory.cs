@@ -4,7 +4,7 @@ using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Primitives.GridViews;
 using ShaiRandom.Generators;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// Similar to <see cref="MapObjectFactory"/>, but for producing various types of maps.  The functions here

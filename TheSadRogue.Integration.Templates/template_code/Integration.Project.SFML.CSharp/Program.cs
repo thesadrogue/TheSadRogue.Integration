@@ -1,6 +1,6 @@
 ﻿using SadConsole;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// ***********README***********

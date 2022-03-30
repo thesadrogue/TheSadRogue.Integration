@@ -3,7 +3,7 @@ using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// Simple class with some static functions for creating map objects.

@@ -3,7 +3,7 @@ using SadConsole;
 using SadRogue.Integration;
 using ShaiRandom.Generators;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     internal class MapScreen : ScreenObject
     {
