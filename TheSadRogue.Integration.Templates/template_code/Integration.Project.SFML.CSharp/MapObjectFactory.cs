@@ -18,7 +18,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// instances for reasons pertaining to performance.
     ///
     /// Alternatively, you can remove this system and choose to use inheritance to create your objects instead - the
-    /// integration library also supports creating subclasses or RogueLikeCell and Entity.
+    /// integration library also supports creating subclasses or RogueLikeCell and RogueLikeEntity.
     /// </remarks>
     internal static class MapObjectFactory
     {
