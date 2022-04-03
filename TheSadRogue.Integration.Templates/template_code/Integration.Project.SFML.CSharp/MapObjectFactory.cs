@@ -26,7 +26,7 @@ namespace TheSadRogue.Integration.Templates.SFML
             => new(position, Color.White, Color.Black, '.', (int)MyGameMap.Layer.Terrain);
 
         public static MemoryAwareRogueLikeCell Wall(Point position)
-            => new(position, Color.White, Color.Black, '#', (int)MyGameMap.Layer.Terrain, false);
+            => new(position, Color.White, Color.Black, '#', (int)MyGameMap.Layer.Terrain, false, false);
 
         public static RogueLikeEntity Player()
         {
