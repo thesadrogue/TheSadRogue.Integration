@@ -2,7 +2,7 @@
 using SadRogue.Integration.Maps;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// RogueLikeMap class that simplifies constructor and wraps map layers into a convenient, type-safe, customizable

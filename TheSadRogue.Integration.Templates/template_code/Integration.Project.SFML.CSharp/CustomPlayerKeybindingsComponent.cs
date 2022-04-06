@@ -2,7 +2,7 @@
 using SadRogue.Integration.Keybindings;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// Subclass of the integration library's keybindings component that moves enemies as appropriate when the player

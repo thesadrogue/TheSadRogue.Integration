@@ -1,7 +1,7 @@
 ﻿using SadConsole;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// A very basic SadConsole Console subclass that acts as a game message log.

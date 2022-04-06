@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <PackageId>TheSadRogue.Integration.Templates</PackageId>
     <Title>GoRogue-SadConsole Game Templates</Title>
     <Authors>Chris3606;Thraka;fcheadle</Authors>
@@ -15,7 +15,7 @@
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <ContentTargetFolders>content</ContentTargetFolders>
-	
+
 	<!-- Generate package when building for convenience -->
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

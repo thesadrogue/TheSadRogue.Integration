@@ -3,7 +3,7 @@ using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// Simple class with some static functions for creating map objects.
@@ -18,7 +18,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// instances for reasons pertaining to performance.
     ///
     /// Alternatively, you can remove this system and choose to use inheritance to create your objects instead - the
-    /// integration library also supports creating subclasses or RogueLikeCell and Entity.
+    /// integration library also supports creating subclasses or RogueLikeCell and RogueLikeEntity.
     /// </remarks>
     internal static class MapObjectFactory
     {
@@ -26,7 +26,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             => new(position, Color.White, Color.Black, '.', (int)MyGameMap.Layer.Terrain);
 
         public static MemoryAwareRogueLikeCell Wall(Point position)
-            => new(position, Color.White, Color.Black, '#', (int)MyGameMap.Layer.Terrain, false);
+            => new(position, Color.White, Color.Black, '#', (int)MyGameMap.Layer.Terrain, false, false);
 
         public static RogueLikeEntity Player()
         {

@@ -1,8 +1,9 @@
-﻿using SadConsole;
+﻿using GoRogue.Random;
+using SadConsole;
 using SadRogue.Integration;
-using SadRogue.Primitives.GridViews;
+using ShaiRandom.Generators;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     internal class MapScreen : ScreenObject
     {
@@ -37,7 +38,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
 
             // Generate player, add to map at a random walkable position, and calculate initial FOV
             Player = MapObjectFactory.Player();
-            Player.Position = Map.WalkabilityView.RandomPosition(true);
+            Player.Position = GlobalRandom.DefaultRNG.RandomPosition(Map.WalkabilityView, true);
             Map.AddEntity(Player);
             Player.AllComponents.GetFirst<PlayerFOVController>().CalculateFOV();
 

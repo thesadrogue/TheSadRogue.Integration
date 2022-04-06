@@ -5,7 +5,7 @@ using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using SadRogue.Primitives;
 
-namespace TheSadRogue.Integration.Templates.MonoGame
+namespace TheSadRogue.Integration.Templates.SFML
 {
     /// <summary>
     /// Component that you can attach to your player object to ensure that it re-calculates the map's FOV whenever the
