@@ -1,0 +1,1 @@
+nuget push TheSadRogue.Integration.Templates.%1.nupkg -Source https://api.nuget.org/v3/index.json

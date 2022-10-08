@@ -16,7 +16,7 @@
     Set version and automatically add "-debug" to the version number for debug builds so that they can be published
     to NuGet seperately from the Release builds (to enable full SourceLink support)
     -->
-    <Version>1.0.0-alpha04</Version>
+    <Version>1.0.0-beta01</Version>
     <Version Condition="'$(Configuration)'=='Debug'">$(Version)-debug</Version>
 
     <!-- Generate documentation files for all configurations since Debug and Release are both published to NuGet. -->
@@ -35,7 +35,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageTags>2d;console;development;game;games;library;rogue;roguelike;roguelikes;standard;sadrogue;thesadrogue</PackageTags>
+    <PackageTags>2d;console;development;game;games;library;rogue;roguelike;roguelikes;standard;sadrogue;thesadrogue;gorogue;sadconsole</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!--
@@ -71,8 +71,8 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="3.0.0-alpha11" />
-	<PackageReference Include="JetBrains.Annotations" Version="2021.2.0">
+    <PackageReference Include="GoRogue" Version="3.0.0-beta01" />
+	<PackageReference Include="JetBrains.Annotations" Version="2022.1.0">
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
