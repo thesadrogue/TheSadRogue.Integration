@@ -35,7 +35,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageTags>2d;console;development;game;games;library;rogue;roguelike;roguelikes;standard;sadrogue;thesadrogue</PackageTags>
+    <PackageTags>2d;console;development;game;games;library;rogue;roguelike;roguelikes;standard;sadrogue;thesadrogue;gorogue;sadconsole</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!--
