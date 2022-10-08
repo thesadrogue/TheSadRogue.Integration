@@ -16,7 +16,7 @@
     Set version and automatically add "-debug" to the version number for debug builds so that they can be published
     to NuGet seperately from the Release builds (to enable full SourceLink support)
     -->
-    <Version>1.0.0-beta01-rc1</Version>
+    <Version>1.0.0-beta01</Version>
     <Version Condition="'$(Configuration)'=='Debug'">$(Version)-debug</Version>
 
     <!-- Generate documentation files for all configurations since Debug and Release are both published to NuGet. -->
