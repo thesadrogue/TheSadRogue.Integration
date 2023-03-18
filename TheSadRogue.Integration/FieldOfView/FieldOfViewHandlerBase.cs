@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using GoRogue.Components.ParentAware;
 using GoRogue.GameFramework;
-using GoRogue.SpatialMaps;
 using JetBrains.Annotations;
 using SadRogue.Integration.Maps;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+using SadRogue.Primitives.SpatialMaps;
 
 namespace SadRogue.Integration.FieldOfView
 {

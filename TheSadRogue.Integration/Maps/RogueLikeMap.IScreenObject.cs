@@ -34,10 +34,10 @@ namespace SadRogue.Integration.Maps
 
 
         /// <inheritdoc/>
-        public event EventHandler<ValueChangedEventArgs<IScreenObject>> ParentChanged;
+        public event EventHandler<SadConsole.ValueChangedEventArgs<IScreenObject>> ParentChanged;
 
         /// <inheritdoc/>
-        public event EventHandler<ValueChangedEventArgs<Point>> PositionChanged;
+        public event EventHandler<SadConsole.ValueChangedEventArgs<Point>> PositionChanged;
 
         /// <inheritdoc/>
         public event EventHandler VisibleChanged;
@@ -438,7 +438,7 @@ namespace SadRogue.Integration.Maps
         protected virtual void OnParentChanged(IScreenObject oldParent, IScreenObject newParent)
         {
             UpdateAbsolutePosition();
-            ParentChanged?.Invoke(this, new ValueChangedEventArgs<IScreenObject>(oldParent, newParent));
+            ParentChanged?.Invoke(this, new SadConsole.ValueChangedEventArgs<IScreenObject>(oldParent, newParent));
         }
 
         /// <summary>
@@ -449,7 +449,7 @@ namespace SadRogue.Integration.Maps
         protected virtual void OnPositionChanged(Point oldPosition, Point newPosition)
         {
             UpdateAbsolutePosition();
-            PositionChanged?.Invoke(this, new ValueChangedEventArgs<Point>(oldPosition, newPosition));
+            PositionChanged?.Invoke(this, new SadConsole.ValueChangedEventArgs<Point>(oldPosition, newPosition));
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using GoRogue.GameFramework;
-using SadRogue.Integration;
+﻿using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
 using SadRogue.Primitives;
 
@@ -19,7 +18,7 @@ namespace ExampleGame
             FOVRadius = fovRadius;
 
             // Set hook so that FOV is recalculated when the player moves
-            Moved += OnMoved;
+            PositionChanged += OnPositionChanged;
 
             // Add component for controlling player movement via keyboard
             var motionControl = new PlayerKeybindingsComponent();
@@ -36,7 +35,7 @@ namespace ExampleGame
         }
 
         // If the player is added to a map, update the player FOV when the player moves
-        private void OnMoved(object? sender, GameObjectPropertyChanged<Point> e)
+        private void OnPositionChanged(object? sender, SadConsole.ValueChangedEventArgs<Point> e)
         {
             CalculateFOV();
         }

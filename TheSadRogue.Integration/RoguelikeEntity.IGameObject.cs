@@ -33,7 +33,7 @@ namespace SadRogue.Integration
         public IComponentCollection GoRogueComponents { get; private set; } = null!;
 
         /// <inheritdoc />
-        Point IGameObject.Position
+        Point IPositionable.Position
         {
             get => base.Position;
             set => base.Position = value;
@@ -57,19 +57,32 @@ namespace SadRogue.Integration
         public void OnMapChanged(Map? newMap)
             => this.SafelySetCurrentMap(ref _currentMap, newMap, AddedToMap, RemovedFromMap);
 
+        private event EventHandler<ValueChangedEventArgs<Point>>? PositionablePositionChanging;
         /// <inheritdoc />
-        public event EventHandler<GameObjectPropertyChanged<Point>>? Moved;
+        event EventHandler<ValueChangedEventArgs<Point>>? IPositionable.PositionChanging
+        {
+            add => PositionablePositionChanging += value;
+            remove => PositionablePositionChanging -= value;
+        }
+
+        private event EventHandler<ValueChangedEventArgs<Point>>? PositionablePositionChanged;
+        /// <inheritdoc />
+        event EventHandler<ValueChangedEventArgs<Point>>? IPositionable.PositionChanged
+        {
+            add => PositionablePositionChanged += value;
+            remove => PositionablePositionChanged -= value;
+        }
 
         /// <inheritdoc />
-        public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanging;
+        public event EventHandler<ValueChangedEventArgs<bool>>? TransparencyChanging;
 
         /// <inheritdoc />
-        public event EventHandler<GameObjectPropertyChanged<bool>>? TransparencyChanged;
+        public event EventHandler<ValueChangedEventArgs<bool>>? TransparencyChanged;
 
         /// <inheritdoc />
-        public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanging;
+        public event EventHandler<ValueChangedEventArgs<bool>>? WalkabilityChanging;
 
         /// <inheritdoc />
-        public event EventHandler<GameObjectPropertyChanged<bool>>? WalkabilityChanged;
+        public event EventHandler<ValueChangedEventArgs<bool>>? WalkabilityChanged;
     }
 }

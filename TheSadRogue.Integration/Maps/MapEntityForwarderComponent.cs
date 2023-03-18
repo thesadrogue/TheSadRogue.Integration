@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using GoRogue.GameFramework;
-using GoRogue.SpatialMaps;
 using JetBrains.Annotations;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;
 using SadConsole.Input;
+using SadRogue.Primitives.SpatialMaps;
 
 namespace SadRogue.Integration.Maps
 {
