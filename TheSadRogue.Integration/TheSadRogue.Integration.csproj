@@ -62,6 +62,9 @@
       - CA1062: Nullability validation is performed by C# 8 nullable reference types.
     -->
     <NoWarn>CA1043;CA1303;CA1814;CA1710;CA1305;CA1051;CA1307;CA2211;CA1062</NoWarn>
+
+    <!-- Since we explicitly support .NET 5.0 as one (of many) targets, suppress the warning about .NET 5 being at end of life. -->
+    <CheckEolTargetFramework Condition="$(TargetFramework.StartsWith('net5.0')) == true">false</CheckEolTargetFramework>
   </PropertyGroup>
 
   <!-- Define trace constant for debug builds. -->
