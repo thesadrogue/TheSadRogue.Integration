@@ -5,7 +5,7 @@
     <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <Authors>Chris3606, fcheadle, Thraka</Authors>
     <Company>TheSadRogue</Company>
-    <Copyright>Copyright © 2022 Christopher Ridley (Chris3606), Forrest Cheadle (fcheadle), Steve De George JR (Thraka)</Copyright>
+    <Copyright>Copyright © 2023 Christopher Ridley (Chris3606), Forrest Cheadle (fcheadle), Steve De George JR (Thraka)</Copyright>
     <Description>An official integration library for using GoRogue and SadConsole together to create a roguelike.</Description>
 
     <!-- Target C# 8 and enable nullable reference types -->
@@ -71,17 +71,17 @@
 
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="3.0.0-beta03" />
-	<PackageReference Include="JetBrains.Annotations" Version="2022.1.0">
+    <PackageReference Include="GoRogue" Version="3.0.0-beta04" />
+	<PackageReference Include="JetBrains.Annotations" Version="2022.3.1">
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="SadConsole" Version="9.2.2" />
   </ItemGroup>
 
   <!-- When packing, copy the nuget files to the nuget output directory -->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(OutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(OutputPath)..\..\..\nuget" />
-    <Copy SourceFiles="$(OutputPath)\$(PackageId).$(PackageVersion).snupkg" DestinationFolder="$(OutputPath)..\..\..\nuget" />
+    <Copy SourceFiles="$(OutputPath)\$(PackageId).$(Version).nupkg" DestinationFolder="$(OutputPath)..\..\..\nuget" />
+    <Copy SourceFiles="$(OutputPath)\$(PackageId).$(Version).snupkg" DestinationFolder="$(OutputPath)..\..\..\nuget" />
   </Target>
 </Project>

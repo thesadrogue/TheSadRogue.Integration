@@ -207,6 +207,10 @@ namespace SadRogue.Integration.Maps
         /// <see cref="ComponentCollection"/> is used.  Typically you will not need to specify this, as a
         /// ComponentCollection is sufficient for nearly all use cases.
         /// </param>
+        /// <param name="useCachedGridViews">
+        /// Whether or not to use cached grid views for <see cref="Map.TransparencyView"/> and <see cref="Map.WalkabilityView"/>,
+        /// rather than calculating values on the fly.  Calculating on the fly is notably slower, but takes up less memory.
+        /// </param>
         public RogueLikeMap(int width, int height, DefaultRendererParams? defaultRendererParams, int numberOfEntityLayers,
                             Distance distanceMeasurement,
                             Func<int, IListPool<IGameObject>>? customListPoolCreator = null,
@@ -214,11 +218,12 @@ namespace SadRogue.Integration.Maps
                             uint layersBlockingTransparency = uint.MaxValue,
                             uint entityLayersSupportingMultipleItems = uint.MaxValue, IFOV? customPlayerFOV = null,
                             IEqualityComparer<Point>? pointComparer = null, AStar? customPather = null,
-                            IComponentCollection? customComponentContainer = null)
+                            IComponentCollection? customComponentContainer = null,
+                            bool useCachedGridViews = true)
             : base(width, height, numberOfEntityLayers, distanceMeasurement, customListPoolCreator,
                    layersBlockingWalkability,
                    layersBlockingTransparency, entityLayersSupportingMultipleItems, pointComparer, customPlayerFOV,
-                   customPather, customComponentContainer)
+                   customPather, customComponentContainer, useCachedGridViews)
         {
             ObjectAdded += Object_Added;
             ObjectRemoved += Object_Removed;
