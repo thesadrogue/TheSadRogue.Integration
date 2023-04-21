@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
-## [1.0.0-beta02] - 2023-03-20
+## [1.0.0-beta02] - 2023-04-21
 
 ## Changed
 - Updated primitives library and GoRogue version requirements
