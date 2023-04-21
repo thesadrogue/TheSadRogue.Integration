@@ -6,14 +6,14 @@ using GoRogue.Components;
 using GoRogue.FOV;
 using GoRogue.GameFramework;
 using GoRogue.Pathing;
-using GoRogue.Pooling;
-using GoRogue.SpatialMaps;
 using JetBrains.Annotations;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Entities;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
+using SadRogue.Primitives.Pooling;
+using SadRogue.Primitives.SpatialMaps;
 
 namespace SadRogue.Integration.Maps
 {

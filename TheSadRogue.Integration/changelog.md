@@ -7,7 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
+## [1.0.0-beta02] - 2023-03-20
+
+## Changed
+- Updated primitives library and GoRogue version requirements
+    - See those library's changelogs; spatial maps and a few other things changed namespaces and the API changed slightly
+- Usages of `RogueLikeEntity.Moved` should now be replaced by `RogueLikeEntity.PositionChanged` (which is SadConsole's event)
+
+## Fixed
+- Fixed a bug in the template's method of calculating FOV where it could use out-of-date TransparencyView values once the player is added to a second map
+
 ## [1.0.0-beta01] - 2022-10-07
+
+## Changed
 - Updated primitives library minimum version to ensure performance improvements
 
 ## [1.0.0-alpha03] - 2021-10-17

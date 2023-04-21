@@ -1,6 +1,5 @@
 ﻿using System;
 using GoRogue.Components.ParentAware;
-using GoRogue.GameFramework;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
 using SadRogue.Primitives;
@@ -34,12 +33,12 @@ namespace TheSadRogue.Integration.Templates.SFML
         public void CalculateFOV()
             => Parent?.CurrentMap?.PlayerFOV.Calculate(Parent.Position, FOVRadius, Parent.CurrentMap.DistanceMeasurement);
 
-        private void OnAdded(object s, EventArgs e) => Parent!.Moved += OnMoved;
+        private void OnAdded(object s, EventArgs e) => Parent!.PositionChanged += OnPositionChanged;
 
         private void OnRemoved(object s, ParentAwareComponentRemovedEventArgs<RogueLikeEntity> e)
-            => e.OldParent.Moved -= OnMoved;
+            => e.OldParent.PositionChanged -= OnPositionChanged;
 
-        private void OnMoved(object sender, GameObjectPropertyChanged<Point> e)
+        private void OnPositionChanged(object sender, SadConsole.ValueChangedEventArgs<Point> e)
             => CalculateFOV();
     }
 }

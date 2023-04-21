@@ -276,7 +276,6 @@ namespace SadRogue.Integration
             idGenerator ??= GlobalRandom.DefaultRNG.NextUInt;
 
             Position = position;
-            PositionChanged += Position_Changed;
 
             IsWalkable = walkable;
             IsTransparent = transparent;
@@ -286,6 +285,16 @@ namespace SadRogue.Integration
             GoRogueComponents.ParentForAddedComponents = this;
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
+        }
+
+        /// <inheritdoc />
+        protected override void OnPositionChanged(Point oldPosition, Point newPosition)
+        {
+            var args = new Primitives.ValueChangedEventArgs<Point>(oldPosition, newPosition);
+
+            PositionablePositionChanging?.Invoke(this, args);
+            base.OnPositionChanged(oldPosition, newPosition);
+            PositionablePositionChanged?.Invoke(this, args);
         }
 
         private static int CheckLayer(int layer) => layer != 0 ? layer : throw new ArgumentException($"{nameof(RogueLikeEntity)} objects may not reside on the terrain layer.", nameof(layer));
@@ -304,10 +313,6 @@ namespace SadRogue.Integration
             if (e.Component is IComponent sadComponent)
                 SadComponents.Remove(sadComponent);
         }
-
-        private void Position_Changed(object? sender, ValueChangedEventArgs<Point> e)
-            => Moved?.Invoke(sender, new GameObjectPropertyChanged<Point>(this, e.OldValue, e.NewValue));
-
         #endregion
     }
 }

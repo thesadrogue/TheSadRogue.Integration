@@ -90,7 +90,7 @@ namespace ExampleGame
         {
             // Create a player and position them at the first square encountered that is walkable,
             // for the sake of testing.
-            var position = Map.WalkabilityView.Positions().ToEnumerable().First(p => Map.WalkabilityView[p]);
+            var position = Map.WalkabilityView.Positions().First(p => Map.WalkabilityView[p]);
             var player = new Player(position);
 
             return player;
