@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
+## [1.0.0-beta03] - 2023-05-17
+
+## Changed
+- Updated GoRogue version requirements
+- Provided explicit multi-target option for .NET 7.0
+
 ## [1.0.0-beta02] - 2023-04-21
 
 ## Changed
