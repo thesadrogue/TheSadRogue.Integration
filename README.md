@@ -2,7 +2,7 @@
 An integration library between [SadConsole](https://github.com/Thraka/SadConsole) and [GoRogue](https://github.com/Chris3606/GoRogue), and the spiritual successor to the [previous integration library](https://github.com/thesadrogue/SadConsole.GoRogueHelpers).
 
 ## Why a whole new library?
-Both SadConsole and GoRogue are undergoing extensive re-writes for their new versions (SadConsole version 9 and GoRogue version 3).  This includes a great many breaking changes to the APIs.  One of the most notable changes is the inclusion of [TheSadRogue.Primitives](https://github.com/thesadrogue/TheSadRogue.Primitives), a library of commonly-used data types when working with a discreet, 2D grid, as a dependency for both libraries.  Because of this change, projects that use both SadConsole(v8) and GoRogue(v2) cannot upgrade one independently of the other without tons of conflicting type declarations, and upgrading everything else is non-trivial as well. 
+Both SadConsole v9 and GoRogue v3 have undergone extensive re-writes compared to their previous major versions.  This includes a great many breaking changes to the APIs.  One of the most notable changes is the inclusion of [TheSadRogue.Primitives](https://github.com/thesadrogue/TheSadRogue.Primitives), a library of commonly-used data types when working with a discreet, 2D grid, as a dependency for both libraries.  Because of this change, projects that use both SadConsole(v8) and GoRogue(v2) cannot upgrade one independently of the other without tons of conflicting type declarations, and upgrading everything else is non-trivial as well. 
 
 For the purpose of maintaining readable code that is (relatively) hack-free and friendly to beginners, it is more elegant to start a new integration library from scratch.  This also provides an opportunity to fix confusing namespace structure and other problems with the original integration library.
 
@@ -10,7 +10,7 @@ For the purpose of maintaining readable code that is (relatively) hack-free and 
 This library contains classes that bridge functionality between SadConsole and GoRogue. It is specifically intended to implement similar interfaces from both libraries, and therefore give novice developers a quick start to developing a rogue-like (or lite) game. 
 
 The library also provides:
-- A `dotnet new` template for easily creating new projects (TODO)
+- A `dotnet new` template for easily creating new projects
 - A companion tutorial (TODO)
 - An example RogueLike game to get you started (WIP)
 - Unit tests for its functionality
@@ -18,8 +18,10 @@ The library also provides:
 ### The Integration Library
 The integration library core functionality is located in `TheSadRogue.Integration/`.  Details about its functionality and usage can be found in [its readme](TheSadRogue.Integration/README.md).
 
-### A Project Template (TODO)
-This project will also provide a template compatible with `dotnet new`, that will be distributed via NuGet.  This is not yet complete, but will make creating new projects with boilerplate code in place quick and easy.
+### A Project Template
+This project also provides a set of templates compatible with `dotnet new`, which are distributed via NuGet.  These templates make creating new projects with boilerplate code in place quick and easy.  There are two templates provided; one for using the MonoGame host for SadConsole, and one for the SFML host.
+
+The source code for the templates exists in `TheSadRogue.Integration.Templates/`, although you would more typically use them by using `dotnet new` as detailed in the [getting started](#how-do-i-get-started) section.
 
 ### A Companion Tutorial (TODO)
 Eventually, a roguelike tutorial will be written using the integration library that will demonstrate the features, however it does not yet exist.
@@ -27,18 +29,28 @@ Eventually, a roguelike tutorial will be written using the integration library t
 ### An Example Game (WIP)
 An example game is also provided that demonstrates the usage of many of the features of the integration library in the `ExampleGame/` folder. Details about the example may be found in [its readme](ExampleGame/README.md).  The example is still a work in progress.
 
+A more complex (but still not 100% feature complete) example currently exists [here](https://github.com/Chris3606/SadRogueExample).  This example is a relatively straightforward re-creation of a game similar to the one created by the (in)famous libtcod-python tutorial.
+
 ### Unit Tests
 Unit tests for integration library functionality are included in `TheSadRogue.Integration.Tests/`.  The tests may be provide useful example code, and also show how to create mocks of various SadConsole structures that enable unit testing of SadConsole projects.
 
 
 ## How do I get started?
-As detailed above, a template will be provided to create new projects.  Instructions on its use will be placed here after it is created.  For now, you need to compile the source into a NuGet package manually, since it has no official NuGet release.
 
-Additionally, you may find the `ExampleGame/` helpful as it provides well-commented example code that utilizes integration library features.
+As stated above, `dotnet` templates are provided to make creating new projects easy.  The templates can be installed and used easily with the following commands:
+
+```
+dotnet new install TheSadRogue.Integration.Templates
+dotnet new gorogue-sadconsole-<host> -o <ProjectName>
+```
+
+Simply substitute "host" for "mg" to use the MonoGame host for SadConsole, or "sfml" to use the SFML host for SadConsole.
+
+Additionally, you may find the examples listed above helpful, as they provide well-commented example code that utilizes integration library features.
 
 
 ## Current Progress
-This library is still in alpha and under active development.  Here is a rough summary of the current state of each part.
+This library is still in beta and under active development.  Here is a rough summary of the current state of each part.
 
 ### Integration Library
 - Map and map object structures completed
@@ -52,21 +64,18 @@ This library is still in alpha and under active development.  Here is a rough su
 	- Includes a convenient component for implementing player controls
 - NuGet package creation implemented (no actual NuGet release yet)
 - **Missing** the following features from the previous integration library
-    - Everything in the `Tiles` namespace
-	    - May or may not be re-implemented here
-		- Library architecture/structures have changed such that it may no longer be useful as previously implemented; TBD
 	- `Action` namespace/system and associated components
-	    - Needs to be re-evaluated since GoRogue and SadConsole components have been combined
+	    - Will likely not be included; GoRogue and SadConsole components have been combined
 		- May have some overlap with GoRogue's effect system
 	- World generation code from `Maps.Generators` namespace
 	    - Potentially possible to integrate into GoRogue's new map generation framework
 		- Wrappers around map class need to be re-evaluated due to architecture changes
 	- "Game-frame"/turn system
 	    - Implementation may be greatly simplified since GoRogue/SadConsole components have been combined
-		- May be possible to integrate a more diverse feature set
+		- May be possible to integrate a more diverse feature set, and much easier for users to just implement themselves now
 
 ### New Project Template
-- Not yet implemented
+- Currently complete; examples of usage are above.
 
 ### Companion Tutorial
 - Not yet implemented
@@ -82,3 +91,5 @@ This library is still in alpha and under active development.  Here is a rough su
 	- Working, lockable doors
 	- Any semblance of health/combat
 	- Goals/win conditions
+
+Note that the [second example](https://github.com/Chris3606/SadRogueExample) listed in a different repository does implement many of these features, so for now serves to fill these gaps.

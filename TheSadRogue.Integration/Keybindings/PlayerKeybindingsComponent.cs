@@ -117,14 +117,16 @@ namespace SadRogue.Integration.Keybindings
         /// <summary>
         /// A mapping of keybindings to an action to be performed.
         /// </summary>
-        public ReadOnlyDictionary<Keys, List<(InputKey binding, Action action)>> Actions => _actions.AsReadOnly();
+        public ReadOnlyDictionary<Keys, List<(InputKey binding, Action action)>> Actions
+            => Utility.AsReadOnly(_actions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         private readonly Dictionary<Keys, List<(InputKey binding, Direction direction)>> _motions;
         /// <summary>
         /// A mapping of keybindings to a direction to generate, which will be passed to the <see cref="MotionHandler"/>.
         /// Useful for handling move-type actions.
         /// </summary>
-        public ReadOnlyDictionary<Keys, List<(InputKey binding, Direction direction)>> Motions => _motions.AsReadOnly();
+        public ReadOnlyDictionary<Keys, List<(InputKey binding, Direction direction)>> Motions
+            => Utility.AsReadOnly(_motions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         /// <summary>
         /// Dictates how the controls component will resolve keypresses.  Defaults to true.  See class description
