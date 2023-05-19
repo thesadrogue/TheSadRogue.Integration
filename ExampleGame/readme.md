@@ -1,4 +1,4 @@
-# Cycle of the Simulacra
+# Cycle of the Simulacra (WIP)
 ## The Example Game using both SadConsole v9 and GoRogue v3
 
 Plot: You come to awareness at the shrine in the center of the map. The only things nearby are an alter, a dagger, a tome, and an hourglass.

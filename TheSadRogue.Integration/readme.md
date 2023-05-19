@@ -33,8 +33,7 @@ The namespaces match the directory structure, except the namespaces omit "The":
   +- TerrainAppearance                     # A subclass of ColoredGlyph that is aware of the object whose appearance it represents
 ```
 
-## Usage
-
+## Usage Intent/Guidelines
 In your game, your map class should be or inherit from a `RogueLikeMap`.  You then need to add the map to the SadConsole screen hierarchy in order to allow it to process events and render correctly.  If you need to render the map independently in multiple places on the screen, you will need to specify `null` for the `defaultRendererParams`, to indicate that there won't be an initial default renderer.  You can then use the map's `CreateRenderer` function to generate renderers.  In this case, you _must_ add _both_ the map itself _and_ any renderers you create to SadConsole's screen object hierarchy, in order to ensure that events are processed correctly.  Any renderers you create should be unhooked from the map by calling the `RogueLikeMap.RemoveRenderer` function once they are no longer being used, in order to prevent resource leaks.
 
 Your terrain objects should derive from `RogueLikeCell`, and your entities (eg. non-terrain objects) should derive from `RogueLikeEntity`.  Entities and terrain objects are added to the map just like you would with GoRogue's `Map`; they will automatically be rendered appropriately with SadConsole.
@@ -42,4 +41,4 @@ Your terrain objects should derive from `RogueLikeCell`, and your entities (eg. 
 Any components you intend to attach to `RogueLikeEntity` instances may (but are not required to) inherit from `RogueLikeComponentBase` or `RogueLikeComponentBase<T>`. When you add a component of any variety to an entity or a `RogueLikeMap`, you should add it to the `AllComponents` list; it will be added to both GoRogue's and SadConsole's component collections as applicable.  If you wanted, you could add a component to _only_ SadConsole's collection by adding it to `SadComponents`, but generally it is preferable to let them be managed automatically.
 
 ## Examples
-A code example that creates a map with a movable player can be found in the `ExampleGame/` folder.
+A code example that creates a map with a movable player can be found in the `ExampleGame/` folder.  A more complex example can be found [here](https://github.com/Chris3606/SadRogueExample).
