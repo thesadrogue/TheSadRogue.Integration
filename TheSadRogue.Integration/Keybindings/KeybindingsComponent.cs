@@ -56,7 +56,7 @@ namespace SadRogue.Integration.Keybindings
     /// wish to handle modifier keys manually within a given keybinding's handler.
     /// </remarks>
     [PublicAPI]
-    public class PlayerKeybindingsComponent : RogueLikeComponentBase<IGameObject>
+    public class KeybindingsComponent : RogueLikeComponentBase<IGameObject>
     {
         #region Commonly Used Motion Schemes
         /// <summary>
@@ -140,7 +140,7 @@ namespace SadRogue.Integration.Keybindings
         /// Creates a new component that maps keybindings to various forms of actions.
         /// </summary>
         /// <param name="sortOrder">Sort order for the component.</param>
-        public PlayerKeybindingsComponent(uint sortOrder = 5U)
+        public KeybindingsComponent(uint sortOrder = 5U)
             : base(false, false, false, true, sortOrder)
         {
             ExactMatches = true;
