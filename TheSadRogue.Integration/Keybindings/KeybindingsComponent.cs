@@ -26,21 +26,21 @@ namespace SadRogue.Integration.Keybindings
     /// The component supports two main types of bindings:
     ///     1. Actions - An action simply maps a keybinding to a function to call when that input key is pressed.
     ///     2. Motions - A motion instead maps a keybinding to a Direction.  When the keybinding is pressed, the Direction
-    ///        the key is mapped to is passed to the virtual <see cref="KeybindingsComponent.MotionHandler"/> function, which will handle it.
+    ///        the key is mapped to is passed to the virtual <see cref="KeybindingsComponent{T}.MotionHandler"/> function, which will handle it.
     ///        This can serve as a convenient way to implement movement, look-around, and other direction-centric input.
     ///
     /// For Motions, the default motion handler does nothing; so if you wish to use motions, you will need to create a subclass
-    /// of this class and implement <see cref="KeybindingsComponent.MotionHandler"/> accordingly.
+    /// of this class and implement <see cref="KeybindingsComponent{T}.MotionHandler"/> accordingly.
     ///
     /// The component also has a number of configuration parameters that affect how keybindings are interpreted, which
     /// may be useful to tailor it to your use case.
     ///
-    /// First is the <see cref="KeybindingsComponent.ExactMatches"/> flag.  This defaults to true, and in this mode it will only interpret
+    /// First is the <see cref="KeybindingsComponent{T}.ExactMatches"/> flag.  This defaults to true, and in this mode it will only interpret
     /// a keybinding as pressed if the modifiers currently pressed match the ones in the keybinding EXACTLY.  For example,
     /// in this mode, a keybinding of Ctrl + A, will only be activated if the user presses Ctrl + A, not Ctrl + Shift + A,
     /// Ctrl + Alt + A, or any other combination.
     ///
-    /// When <see cref="KeybindingsComponent.ExactMatches"/> is set to false, modifier keys on keybindings are treated differently.  Modifier
+    /// When <see cref="KeybindingsComponent{T}.ExactMatches"/> is set to false, modifier keys on keybindings are treated differently.  Modifier
     /// keys listed in the keybinding are required, however extra modifier keys are allowed, so long as there is not
     /// another registered binding that matches specifically.  In this mode, if we have the following keybindings
     /// registered in the component:
