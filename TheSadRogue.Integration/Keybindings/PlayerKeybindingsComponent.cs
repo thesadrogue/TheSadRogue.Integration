@@ -118,6 +118,7 @@ namespace SadRogue.Integration.Keybindings
         /// A mapping of keybindings to an action to be performed.
         /// </summary>
         public ReadOnlyDictionary<Keys, List<(InputKey binding, Action action)>> Actions
+            // ReSharper disable once InvokeAsExtensionMethod
             => Utility.AsReadOnly(_actions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         private readonly Dictionary<Keys, List<(InputKey binding, Direction direction)>> _motions;
@@ -126,6 +127,7 @@ namespace SadRogue.Integration.Keybindings
         /// Useful for handling move-type actions.
         /// </summary>
         public ReadOnlyDictionary<Keys, List<(InputKey binding, Direction direction)>> Motions
+            // ReSharper disable once InvokeAsExtensionMethod
             => Utility.AsReadOnly(_motions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         /// <summary>
@@ -137,12 +139,8 @@ namespace SadRogue.Integration.Keybindings
         /// <summary>
         /// Creates a new component that maps keybindings to various forms of actions.
         /// </summary>
-        /// <param name="motionHandler">
-        /// The function to use for handling any keybindings in <see cref="Motions"/>.  If set to null, a default handler
-        /// will be used that simply sets the parent object's Position if it can move in the selected direction.
-        /// </param>
         /// <param name="sortOrder">Sort order for the component.</param>
-        public PlayerKeybindingsComponent(Action<Direction>? motionHandler = null, uint sortOrder = 5U)
+        public PlayerKeybindingsComponent(uint sortOrder = 5U)
             : base(false, false, false, true, sortOrder)
         {
             ExactMatches = true;
