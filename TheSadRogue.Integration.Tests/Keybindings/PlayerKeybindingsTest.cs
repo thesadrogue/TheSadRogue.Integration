@@ -10,7 +10,7 @@ namespace SadRogue.Integration.Tests.Keybindings
         public void NewPlayerKeybindingsComponent()
         {
             var player = new RogueLikeEntity((0,0), Color.White,1);
-            var component = new PlayerKeybindingsComponent();
+            var component = new KeybindingsComponent();
 
             Assert.Empty(component.Motions);
             Assert.Empty(component.Actions);

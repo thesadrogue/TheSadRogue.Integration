@@ -42,7 +42,7 @@ namespace SadRogue.Integration.Tests
         public void AddComponentTest()
         {
             var entity = new RogueLikeEntity((1,3), Color.Cyan, 2);
-            var component = new PlayerKeybindingsComponent();
+            var component = new KeybindingsComponent();
 
             Assert.Empty(component.Motions);
             Assert.Empty(component.Actions);

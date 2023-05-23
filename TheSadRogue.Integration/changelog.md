@@ -7,46 +7,66 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
+## [1.0.0-beta04] - 2023-05-23
+
+### Added
+- Added `KeybindingsComponent<T>` which enforces that its parent is of a particular type and records its `Parent` field of that type
+- `RogueLikeComponentBase` and `RogueLikeComponentBase<T>` now fully support being added only as a SadConsole component (the `Parent` field will now update in this case)
+
+### Changed
+- Updated GoRogue version requirements
+- Renamed `PlayerKeybindingsComponent` to `KeybindingsComponent`
+- `KeybindingsComponent` now records its `Parent` as type `IScreenObject`; this is more accurate anyway since the component uses elements of SadConsole's component structure
+- `KeybindingsComponent` no longer needs to be attached to the player entity
+- The default `KeybindingsComponent.MotionHandler` implementation does nothing (meant to be overriden if motions are used)
+- `RogueLikeComponentBase` now records its `Parent` as type `object` (use `RogueLikeComponentBase<T>` for a type which records its Parent as a more specific type)
+- `RogueLikeComponentBase<T>` no longer requires that type T inherit from `IObjectWithComponents`
+    - This enables `RogueLikeComponentBase<T>` to be used with custom component systems, and allows them to be added as **only** SadConsole components on objects which don't have GoRogue components
+
+### Removed
+- `KeybindingsComponent` (previously `PlayerKeybindingsComponent`) no longer takes the (unused) `motionHandler` parameter in the constructor
+
+
 ## [1.0.0-beta03] - 2023-05-17
 
-## Changed
+### Changed
 - Updated GoRogue version requirements
 - Provided explicit multi-target option for .NET 7.0
 
 ## [1.0.0-beta02] - 2023-04-21
 
-## Changed
+### Changed
 - Updated primitives library and GoRogue version requirements
     - See those library's changelogs; spatial maps and a few other things changed namespaces and the API changed slightly
 - Usages of `RogueLikeEntity.Moved` should now be replaced by `RogueLikeEntity.PositionChanged` (which is SadConsole's event)
 
-## Fixed
+### Fixed
 - Fixed a bug in the template's method of calculating FOV where it could use out-of-date TransparencyView values once the player is added to a second map
 
 ## [1.0.0-beta01] - 2022-10-07
 
-## Changed
+### Changed
 - Updated primitives library minimum version to ensure performance improvements
 
 ## [1.0.0-alpha03] - 2021-10-17
 
-## Added
+### Added
 - Added `WalkabilityChanging` event that fires directly _before_ walkability is set to map objects
 - Added `TransparencyChanging` event that fires directly _before_ transparancy is set to map objects
 
-## Changed
+### Changed
 - Updated minimum required version of GoRogue to 3.0.0-alpha08
 
-## Fixed
+### Fixed
 - Fixed bug that prevented setting the `IsWalkable` field of map objects while they were part of the map
 
 ## [1.0.0-alpha02] - 2021-10-13
 
-## Added
+### Added
 - Added support for having `RogueLikeMap` as the parent type for `RogueLikeComponentBase` and `RogueLikeComponentBase<T>`
 - Added constructors to `RogueLikeCell`, `MemoryAwareRogueLikeCell`, and `RogueLikeEntity` that don't take a mandatory position parameter
 
-## Changed
+### Changed
 - Updated minimum required version of GoRogue to 3.0.0-alpha07
 - `PlayerKeybindingsComponent.MotionHandler` is now a virtual function you can override, instead of an `Action`
 - `RogueLikeComponentBase` accepts any object which implements `IObjectWithComponents` as its parent

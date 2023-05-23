@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GoRogue;
-using GoRogue.GameFramework;
 using JetBrains.Annotations;
 using SadConsole;
 using SadConsole.Input;
@@ -13,12 +12,13 @@ using SadRogue.Primitives;
 namespace SadRogue.Integration.Keybindings
 {
     /// <summary>
-    /// A keybindings component for mapping player inputs to actions.
+    /// A keybindings component for mapping keyboard inputs to actions.
     /// </summary>
     /// <remarks>
     /// This keybindings component is designed to provide a fairly robust input handling system that can be used to
-    /// map keybindings to actions, and process them during the game loop.  It must be attached to a player entity
-    /// in order to interact directly with that entity.
+    /// map keybindings to actions, and process them during the game loop.  It must be attached some IScreenObject
+    /// that receives keyboard input in order to function; this could be a SadConsole object, a RogueLikeMap, or an entity
+    /// within a RogueLikeMap.
     ///
     /// Keybindings may be supplied simply as SadConsole Keys enumeration values, or as InputKey structures.  InputKeys
     /// provide built-in support for typical "modifier" keys, including shift, control, and alt.
@@ -26,22 +26,21 @@ namespace SadRogue.Integration.Keybindings
     /// The component supports two main types of bindings:
     ///     1. Actions - An action simply maps a keybinding to a function to call when that input key is pressed.
     ///     2. Motions - A motion instead maps a keybinding to a Direction.  When the keybinding is pressed, the Direction
-    ///        the key is mapped to is passed to the virtual <see cref="MotionHandler"/> function, which will handle it.
+    ///        the key is mapped to is passed to the virtual <see cref="KeybindingsComponent{T}.MotionHandler"/> function, which will handle it.
     ///        This can serve as a convenient way to implement movement, look-around, and other direction-centric input.
     ///
-    /// For Motions, the default motion handler will simply attempt to move the Parent object of this
-    /// component in the direction generated.  If you need to do something more complex than simply attempt to move in a
-    /// direction, you may create a subclass and override <see cref="MotionHandler"/>.
+    /// For Motions, the default motion handler does nothing; so if you wish to use motions, you will need to create a subclass
+    /// of this class and implement <see cref="KeybindingsComponent{T}.MotionHandler"/> accordingly.
     ///
     /// The component also has a number of configuration parameters that affect how keybindings are interpreted, which
     /// may be useful to tailor it to your use case.
     ///
-    /// First is the <see cref="ExactMatches"/> flag.  This defaults to true, and in this mode it will only interpret
+    /// First is the <see cref="KeybindingsComponent{T}.ExactMatches"/> flag.  This defaults to true, and in this mode it will only interpret
     /// a keybinding as pressed if the modifiers currently pressed match the ones in the keybinding EXACTLY.  For example,
     /// in this mode, a keybinding of Ctrl + A, will only be activated if the user presses Ctrl + A, not Ctrl + Shift + A,
     /// Ctrl + Alt + A, or any other combination.
     ///
-    /// When <see cref="ExactMatches"/> is set to false, modifier keys on keybindings are treated differently.  Modifier
+    /// When <see cref="KeybindingsComponent{T}.ExactMatches"/> is set to false, modifier keys on keybindings are treated differently.  Modifier
     /// keys listed in the keybinding are required, however extra modifier keys are allowed, so long as there is not
     /// another registered binding that matches specifically.  In this mode, if we have the following keybindings
     /// registered in the component:
@@ -56,7 +55,7 @@ namespace SadRogue.Integration.Keybindings
     /// wish to handle modifier keys manually within a given keybinding's handler.
     /// </remarks>
     [PublicAPI]
-    public class PlayerKeybindingsComponent : RogueLikeComponentBase<IGameObject>
+    public class KeybindingsComponent : KeybindingsComponent<IScreenObject>
     {
         #region Commonly Used Motion Schemes
         /// <summary>
@@ -113,11 +112,30 @@ namespace SadRogue.Integration.Keybindings
             NumPadCardinalMotions.Concat(NumPadDiagonalMotions).ToArray();
         #endregion
 
+        /// <summary>
+        /// Creates a new component that maps keybindings to various forms of actions.
+        /// </summary>
+        /// <param name="sortOrder">Sort order for the component.</param>
+        public KeybindingsComponent(uint sortOrder = 5U)
+            : base(sortOrder)
+        { }
+    }
+
+    /// <summary>
+    /// Identical to <see cref="KeybindingsComponent"/>, except that it ensures that it is always attached
+    /// to an object of type <see tparam="TParent"/>, and exposes the Parent property as that type.
+    /// </summary>
+    /// <typeparam name="TParent">Type of object this component must be attached to.</typeparam>
+    [PublicAPI]
+    public class KeybindingsComponent<TParent> : RogueLikeComponentBase<TParent>
+        where TParent : class, IScreenObject
+    {
         private readonly Dictionary<Keys, List<(InputKey binding, Action action)>> _actions;
         /// <summary>
         /// A mapping of keybindings to an action to be performed.
         /// </summary>
         public ReadOnlyDictionary<Keys, List<(InputKey binding, Action action)>> Actions
+            // ReSharper disable once InvokeAsExtensionMethod
             => Utility.AsReadOnly(_actions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         private readonly Dictionary<Keys, List<(InputKey binding, Direction direction)>> _motions;
@@ -126,6 +144,7 @@ namespace SadRogue.Integration.Keybindings
         /// Useful for handling move-type actions.
         /// </summary>
         public ReadOnlyDictionary<Keys, List<(InputKey binding, Direction direction)>> Motions
+            // ReSharper disable once InvokeAsExtensionMethod
             => Utility.AsReadOnly(_motions); // Strange invocation to avoid ambiguous reference exception in .NET 7+: https://github.com/Chris3606/GoRogue/issues/303
 
         /// <summary>
@@ -137,12 +156,8 @@ namespace SadRogue.Integration.Keybindings
         /// <summary>
         /// Creates a new component that maps keybindings to various forms of actions.
         /// </summary>
-        /// <param name="motionHandler">
-        /// The function to use for handling any keybindings in <see cref="Motions"/>.  If set to null, a default handler
-        /// will be used that simply sets the parent object's Position if it can move in the selected direction.
-        /// </param>
         /// <param name="sortOrder">Sort order for the component.</param>
-        public PlayerKeybindingsComponent(Action<Direction>? motionHandler = null, uint sortOrder = 5U)
+        public KeybindingsComponent(uint sortOrder = 5U)
             : base(false, false, false, true, sortOrder)
         {
             ExactMatches = true;
@@ -324,14 +339,10 @@ namespace SadRogue.Integration.Keybindings
 
         /// <summary>
         /// Function to call in order to handle motions generated from bindings set up in <see cref="Motions"/>.
-        /// The default implementation simply moves the Parent in the direction specified, if the move is possible.
+        /// The default implementation does nothing.
         /// </summary>
         /// <param name="direction">Direction generated by the motion handler.</param>
-        protected virtual void MotionHandler(Direction direction)
-        {
-            if(Parent!.CanMoveIn(direction))
-                Parent!.Position += direction;
-        }
+        protected virtual void MotionHandler(Direction direction) { }
 
         private static void InsertOrdered<T>(List<(InputKey control, T obj)> list, (InputKey control, T obj) binding)
         {

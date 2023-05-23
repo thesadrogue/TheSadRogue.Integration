@@ -10,21 +10,22 @@ namespace SadRogue.Integration.Components
 {
     /// <summary>
     /// A Component that works with both SadConsole and GoRogue's GameFramework that may be attached to any
-    /// IGameObject or anything that implements IObjectWithComponents.
+    /// IGameObject or anything that implements IObjectWithComponents, as well as any IScreenObject.
     /// </summary>
     /// <remarks>
     /// You may want to consider <see cref="RogueLikeComponentBase{TParent}"/> so that the Parent field has
     /// a more useful type.
     ///
-    /// The intended use is for you to derive from this class and
-    /// then override the methods you need. The base class there-
-    /// fore has declared empty implementations so that no undo
-    /// processing or errors occur.
+    /// The intended use is for you to derive from this class and then override the methods you need.
+    ///
+    /// If adding this component to a <see cref="RogueLikeEntity"/>, <see cref="Maps.RogueLikeMap"/>, or anything else
+    /// with an "AllComponents" field, you should attach this component to the AllComponents field ONLY; it will automatically
+    /// be attached to SadConsole's components fields as needed.  If your object only has a SadComponents field, you can instead
+    /// attach it directly there.  In either case, the Parent field will be updated accordingly.
     /// </remarks>
     [PublicAPI]
-    public abstract class RogueLikeComponentBase : RogueLikeComponentBase<IObjectWithComponents>
+    public abstract class RogueLikeComponentBase : RogueLikeComponentBase<object>
     {
-
         /// <summary>
         /// Creates a new component.
         /// </summary>
@@ -46,7 +47,7 @@ namespace SadRogue.Integration.Components
     /// <typeparam name="TParent">Type of object this component must be attached to.</typeparam>
     [PublicAPI]
     public class RogueLikeComponentBase<TParent> : ParentAwareComponentBase<TParent>, IComponent, ISortedComponent
-        where TParent : class, IObjectWithComponents
+        where TParent : class
     {
         /// <summary>
         /// The Order in which the components are processed. Lower is earlier.
@@ -105,16 +106,36 @@ namespace SadRogue.Integration.Components
         public virtual void Render(IScreenObject host, TimeSpan delta) { }
 
         /// <summary>
-        /// Hook up an event handler to run this when the component is added to an entity
+        /// Hook up an event handler to run this when the component is added to an object.  Ensure you
+        /// call the base implementation of this function if you override it; its functionality is required
+        /// for this object's Parent field to be set correctly.
         /// </summary>
         /// <param name="host">The "Parent" if you're using RogueLikeEntity</param>
-        public virtual void OnAdded(IScreenObject host) { }
+        public virtual void OnAdded(IScreenObject host)
+        {
+            // If the component was added to an AllComponents field (or the GoRogueComponents field)
+            // of some object, then the parent will be set correctly by the time this method is called.
+            // If it was added to a SadComponents field, then the parent will not be set correctly.
+            // We check for that here and set it if needed.
+            if (Parent != host)
+                Parent = (TParent)host;
+        }
 
         /// <summary>
-        /// Hook up an event handler to run this when the component is removed from an entity
+        /// Hook up an event handler to run this when the component is removed from an object.  Ensure you
+        /// call the base implementation of this function if you override it; its functionality is required
+        /// for this object's Parent field to be set correctly.
         /// </summary>
         /// <param name="host">The "Parent" if you're using RogueLikeEntity</param>
-        public virtual void OnRemoved(IScreenObject host) { }
+        public virtual void OnRemoved(IScreenObject host)
+        {
+            // If the component was removed from an AllComponents field (or the GoRogueComponents field)
+            // of some object, then the parent will be set correctly by the time this method is called.
+            // If it was removed from a SadComponents field, then the parent will not be set correctly.
+            // We check for that here and set it if needed.
+            if (Parent == host)
+                Parent = null;
+        }
 
         /// <summary>
         /// Called when IsMouse is true
