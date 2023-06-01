@@ -36,8 +36,8 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             // Add component for controlling player movement via keyboard.  Other (non-movement) keybindings can be
             // added as well
             var motionControl = new CustomKeybindingsComponent();
-            motionControl.SetMotions(PlayerKeybindingsComponent.ArrowMotions);
-            motionControl.SetMotions(PlayerKeybindingsComponent.NumPadAllMotions);
+            motionControl.SetMotions(KeybindingsComponent.ArrowMotions);
+            motionControl.SetMotions(KeybindingsComponent.NumPadAllMotions);
             player.AllComponents.Add(motionControl);
 
             // Add component for updating map's player FOV as they move
