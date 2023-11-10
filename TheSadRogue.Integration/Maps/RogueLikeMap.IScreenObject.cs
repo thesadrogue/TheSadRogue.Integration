@@ -1,13 +1,6 @@
-﻿// SadConsole does not use nullable reference types.  Since we are copying the implementation from SadConsole,
-// we will disable it for this file as well to ensure as much parity as possible.
-#nullable disable
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
+﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using SadConsole;
 using SadConsole.Components;
 using SadConsole.Input;
@@ -16,74 +9,48 @@ using SadRogue.Primitives;
 namespace SadRogue.Integration.Maps
 {
     [DataContract]
+    [JsonObject(memberSerialization: MemberSerialization.OptIn)]
     public partial class RogueLikeMap
     {
-        [DataMember(Name = "Children")]
-        private IScreenObject[] _childrenSerialized;
+        [DataMember(Name = "Position")] private Point _position;
 
-        [DataMember(Name = "Components")]
-        private IComponent[] _componentsSerialized;
-
-        [DataMember(Name = "Position")]
-        private Point _position;
-
-        private IScreenObject _parentObject;
+        private IScreenObject? _parentObject;
         private bool _isVisible = true;
         private bool _isEnabled = true;
         private bool _isFocused;
 
+        /// <inheritdoc/>
+        public event EventHandler<ValueChangedEventArgs<IScreenObject?>>? ParentChanged;
 
         /// <inheritdoc/>
-        public event EventHandler<SadConsole.ValueChangedEventArgs<IScreenObject>> ParentChanged;
+        public event EventHandler<ValueChangedEventArgs<Point>>? PositionChanged;
 
         /// <inheritdoc/>
-        public event EventHandler<SadConsole.ValueChangedEventArgs<Point>> PositionChanged;
+        public event EventHandler<ValueChangedEventArgs<Point>>? PositionChanging;
 
         /// <inheritdoc/>
-        public event EventHandler VisibleChanged;
+        public event EventHandler? IsVisibleChanged;
 
         /// <inheritdoc/>
-        public event EventHandler EnabledChanged;
+        public event EventHandler? IsEnabledChanged;
 
         /// <inheritdoc/>
-        public event EventHandler FocusLost;
+        public event EventHandler? FocusLost;
 
         /// <inheritdoc/>
-        public event EventHandler Focused;
+        public event EventHandler? Focused;
 
         /// <summary>
-        /// A filtered list from <see cref="SadComponents"/> where <see cref="IComponent.IsUpdate"/> is <see langword="true"/>.
+        /// Indicates the sorting order this object should use when parented. Sorting is a manual operation on the <see cref="Children"/> collection.
         /// </summary>
-        protected List<IComponent> ComponentsUpdate;
-
-        /// <summary>
-        /// A filtered list from <see cref="SadComponents"/> where <see cref="IComponent.IsRender"/> is <see langword="true"/>.
-        /// </summary>
-        protected List<IComponent> ComponentsRender;
-
-        /// <summary>
-        /// A filtered list from <see cref="SadComponents"/> where <see cref="IComponent.IsMouse"/> is <see langword="true"/>.
-        /// </summary>
-        protected List<IComponent> ComponentsMouse;
-
-        /// <summary>
-        /// A filtered list from <see cref="SadComponents"/> where <see cref="IComponent.IsKeyboard"/> is <see langword="true"/>.
-        /// </summary>
-        protected List<IComponent> ComponentsKeyboard;
-
-        /// <summary>
-        /// A filtered list from <see cref="SadComponents"/> that is not set for update, render, mouse, or keyboard.
-        /// </summary>
-        protected List<IComponent> ComponentsEmpty;
-
-        /// <inheritdoc/>
-        public ObservableCollection<IComponent> SadComponents { get; protected set; }
+        [DataMember]
+        public uint SortOrder { get; set; }
 
         /// <inheritdoc/>
         public ScreenObjectCollection Children { get; protected set; }
 
         /// <inheritdoc/>
-        public IScreenObject Parent
+        public IScreenObject? Parent
         {
             get => _parentObject;
             set
@@ -94,7 +61,7 @@ namespace SadRogue.Integration.Maps
                 if (_parentObject == null)
                 {
                     _parentObject = value;
-                    _parentObject.Children.Add(this);
+                    _parentObject?.Children.Add(this);
                     OnParentChanged(null, _parentObject);
                 }
                 else
@@ -110,7 +77,9 @@ namespace SadRogue.Integration.Maps
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// A position that is based on the current <see cref="Position"/> and <see cref="Parent"/> position, in pixels.
+        /// </summary>
         public Point Position
         {
             get => _position;
@@ -118,14 +87,19 @@ namespace SadRogue.Integration.Maps
             {
                 if (_position == value) return;
 
-                Point oldPoint = _position;
+                OnPositionChanging(_position, value);
+                Point oldPosition = _position;
                 _position = value;
-                OnPositionChanged(oldPoint, _position);
+                OnPositionChanged(oldPosition, _position);
             }
         }
 
         /// <inheritdoc/>
         public Point AbsolutePosition { get; protected set; }
+
+        /// <inheritdoc/>
+        [DataMember]
+        public bool IgnoreParentPosition { get; set; }
 
         /// <inheritdoc/>
         [DataMember]
@@ -182,7 +156,8 @@ namespace SadRogue.Integration.Maps
                 }
                 else
                 {
-                    if (GameHost.Instance.FocusedScreenObjects.ScreenObject == this && FocusedMode != FocusBehavior.None)
+                    if (GameHost.Instance.FocusedScreenObjects.ScreenObject == this &&
+                        FocusedMode != FocusBehavior.None)
                         GameHost.Instance.FocusedScreenObjects.Pop(this);
 
                     FocusLost?.Invoke(this, EventArgs.Empty);
@@ -198,6 +173,7 @@ namespace SadRogue.Integration.Maps
         /// <inheritdoc/>
         [DataMember]
         public bool IsExclusiveMouse { get; set; }
+
         /// <inheritdoc/>
         [DataMember]
         public bool UseKeyboard { get; set; }
@@ -209,35 +185,46 @@ namespace SadRogue.Integration.Maps
         /// <inheritdoc/>
         public virtual void Render(TimeSpan delta)
         {
-            if (!IsVisible) return;
+            IComponent[] components = ComponentsRender.ToArray();
+            int count = components.Length;
+            for (int i = 0; i < count; i++)
+                components[i].Render(this, delta);
 
-            foreach (IComponent component in ComponentsRender.ToArray())
-                component.Render(this, delta);
-
-            foreach (IScreenObject child in new List<IScreenObject>(Children))
-                child.Render(delta);
+            IScreenObject[] children = Children.ToArray();
+            count = children.Length;
+            for (int i = 0; i < count; i++)
+                if (children[i].IsVisible)
+                    children[i].Render(delta);
         }
 
         /// <inheritdoc/>
         public virtual void Update(TimeSpan delta)
         {
-            if (!IsEnabled) return;
+            if (ComponentsUpdate.Count > 0)
+            {
+                IComponent[] components = ComponentsUpdate.ToArray();
+                int count = components.Length;
+                for (int i = 0; i < count; i++)
+                    components[i].Update(this, delta);
+            }
 
-            foreach (IComponent component in ComponentsUpdate.ToArray())
-                component.Update(this, delta);
-
-            foreach (IScreenObject child in new List<IScreenObject>(Children))
-                child.Update(delta);
+            if (Children.Count > 0)
+            {
+                IScreenObject[] children = Children.ToArray();
+                int count = children.Length;
+                for (int i = 0; i < count; i++)
+                    if (children[i].IsEnabled)
+                        children[i].Update(delta);
+            }
         }
 
         /// <inheritdoc/>
         public virtual bool ProcessKeyboard(Keyboard keyboard)
         {
-            if (!UseKeyboard) return false;
-
-            foreach (var component in ComponentsKeyboard.ToArray())
+            IComponent[] components = ComponentsKeyboard.ToArray();
+            for (int i = 0; i < components.Length; i++)
             {
-                component.ProcessKeyboard(this, keyboard, out bool isHandled);
+                components[i].ProcessKeyboard(this, keyboard, out bool isHandled);
 
                 if (isHandled)
                     return true;
@@ -252,194 +239,48 @@ namespace SadRogue.Integration.Maps
             if (!IsVisible)
                 return false;
 
-            foreach (var component in ComponentsMouse.ToArray())
+            IComponent[] components = ComponentsMouse.ToArray();
+            for (int i = 0; i < components.Length; i++)
             {
-                component.ProcessMouse(this, state, out bool isHandled);
+                components[i].ProcessMouse(this, state, out bool isHandled);
 
                 if (isHandled)
                     return true;
             }
 
-            if (!UseMouse)
-                return false;
-
             return false;
         }
 
         /// <inheritdoc/>
-        public virtual void LostMouse(MouseScreenObjectState state) { }
+        public virtual void LostMouse(MouseScreenObjectState state)
+        { }
 
         /// <inheritdoc/>
-        public virtual void OnFocusLost() { }
+        public virtual void OnFocusLost()
+        { }
 
         /// <inheritdoc/>
-        public virtual void OnFocused() { }
-
-        /// <inheritdoc/>
-        public IEnumerable<TComponent> GetSadComponents<TComponent>()
-            where TComponent : class, IComponent
-        {
-            foreach (IComponent component in SadComponents)
-            {
-                if (component is TComponent c)
-                    yield return c;
-            }
-        }
-
-        /// <inheritdoc/>
-        public TComponent GetSadComponent<TComponent>()
-            where TComponent : class, IComponent
-        {
-            foreach (IComponent component in SadComponents)
-            {
-                if (component is TComponent c)
-                    return c;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Called when a component is added to the <see cref="SadComponents"/> collection.
-        /// </summary>
-        /// <param name="component">The component added.</param>
-        protected virtual void SadComponentAdded(IComponent component) { }
-
-        /// <summary>
-        /// Called when a component is removed from the <see cref="SadComponents"/> collection.
-        /// </summary>
-        /// <param name="component">The component removed.</param>
-        protected virtual void SadComponentRemoved(IComponent component) { }
-
-        /// <inheritdoc/>
-        public bool HasSadComponent<TComponent>(out TComponent component)
-            where TComponent: class, IComponent
-        {
-            foreach (IComponent comp in SadComponents)
-            {
-                if (comp is TComponent c)
-                {
-                    component = c;
-                    return true;
-                }
-            }
-
-            component = null;
-            return false;
-        }
-
-
-        private void Components_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (object item in e.NewItems)
-                    {
-                        FilterAddItem((IComponent)item);
-                        ((IComponent)item).OnAdded(this);
-                        SadComponentAdded((IComponent)item);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (object item in e.OldItems)
-                    {
-                        FilterRemoveItem((IComponent)item);
-                        ((IComponent)item).OnRemoved(this);
-                        SadComponentRemoved((IComponent)item);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (object item in e.NewItems)
-                    {
-                        FilterAddItem((IComponent)item);
-                        ((IComponent)item).OnAdded(this);
-                        SadComponentAdded((IComponent)item);
-                    }
-                    foreach (object item in e.OldItems)
-                    {
-                        FilterRemoveItem((IComponent)item);
-                        ((IComponent)item).OnRemoved(this);
-                        SadComponentRemoved((IComponent)item);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    List<IComponent> items = new List<IComponent>(ComponentsRender.Count + ComponentsUpdate.Count + ComponentsKeyboard.Count + ComponentsMouse.Count);
-
-                    while (ComponentsRender.Count != 0)
-                    {
-                        ComponentsRender[0].OnRemoved(this);
-
-                        if (!items.Contains(ComponentsRender[0]))
-                            items.Add(ComponentsRender[0]);
-
-                        FilterRemoveItem(ComponentsRender[0]);
-                    }
-                    while (ComponentsUpdate.Count != 0)
-                    {
-                        ComponentsUpdate[0].OnRemoved(this);
-
-                        if (!items.Contains(ComponentsUpdate[0]))
-                            items.Add(ComponentsUpdate[0]);
-
-                        FilterRemoveItem(ComponentsUpdate[0]);
-                    }
-                    while (ComponentsKeyboard.Count != 0)
-                    {
-                        ComponentsKeyboard[0].OnRemoved(this);
-
-                        if (!items.Contains(ComponentsKeyboard[0]))
-                            items.Add(ComponentsKeyboard[0]);
-
-                        FilterRemoveItem(ComponentsKeyboard[0]);
-                    }
-                    while (ComponentsMouse.Count != 0)
-                    {
-                        ComponentsMouse[0].OnRemoved(this);
-
-                        if (!items.Contains(ComponentsMouse[0]))
-                            items.Add(ComponentsMouse[0]);
-
-                        FilterRemoveItem(ComponentsMouse[0]);
-                    }
-                    while (ComponentsEmpty.Count != 0)
-                    {
-                        ComponentsEmpty[0].OnRemoved(this);
-
-                        if (!items.Contains(ComponentsEmpty[0]))
-                            items.Add(ComponentsEmpty[0]);
-
-                        FilterRemoveItem(ComponentsEmpty[0]);
-                    }
-
-                    foreach (IComponent item in items)
-                        SadComponentRemoved(item);
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            void FilterAddItem(IComponent component)
-                => ScreenObject.Components_FilterAddItem(component, ComponentsRender, ComponentsUpdate, ComponentsKeyboard, ComponentsMouse, ComponentsEmpty);
-
-
-            void FilterRemoveItem(IComponent component)
-                => ScreenObject.Components_FilterRemoveItem(component, ComponentsRender, ComponentsUpdate, ComponentsKeyboard, ComponentsMouse, ComponentsEmpty);
-        }
+        public virtual void OnFocused()
+        { }
 
         /// <summary>
         /// Raises the <see cref="ParentChanged"/> event.
         /// </summary>
         /// <param name="oldParent">The previous parent.</param>
         /// <param name="newParent">The new parent.</param>
-        protected virtual void OnParentChanged(IScreenObject oldParent, IScreenObject newParent)
+        protected virtual void OnParentChanged(IScreenObject? oldParent, IScreenObject? newParent)
         {
             UpdateAbsolutePosition();
-            ParentChanged?.Invoke(this, new SadConsole.ValueChangedEventArgs<IScreenObject>(oldParent, newParent));
+            ParentChanged?.Invoke(this, new ValueChangedEventArgs<IScreenObject?>(oldParent, newParent));
         }
+
+        /// <summary>
+        /// Raises the <see cref="PositionChanging"/> event.
+        /// </summary>
+        /// <param name="oldPosition">The previous position.</param>
+        /// <param name="newPosition">The new position.</param>
+        protected virtual void OnPositionChanging(Point oldPosition, Point newPosition) =>
+            PositionChanging?.Invoke(this, new ValueChangedEventArgs<Point>(oldPosition, newPosition));
 
         /// <summary>
         /// Raises the <see cref="PositionChanged"/> event.
@@ -449,50 +290,29 @@ namespace SadRogue.Integration.Maps
         protected virtual void OnPositionChanged(Point oldPosition, Point newPosition)
         {
             UpdateAbsolutePosition();
-            PositionChanged?.Invoke(this, new SadConsole.ValueChangedEventArgs<Point>(oldPosition, newPosition));
+            PositionChanged?.Invoke(this, new ValueChangedEventArgs<Point>(oldPosition, newPosition));
         }
 
         /// <summary>
         /// Called when the visibility of the object changes.
         /// </summary>
         protected virtual void OnVisibleChanged() =>
-            VisibleChanged?.Invoke(this, EventArgs.Empty);
+            IsVisibleChanged?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
         /// Called when the paused status of the object changes.
         /// </summary>
         protected virtual void OnEnabledChanged() =>
-            EnabledChanged?.Invoke(this, EventArgs.Empty);
+            IsEnabledChanged?.Invoke(this, EventArgs.Empty);
 
         /// <inheritdoc/>
         public virtual void UpdateAbsolutePosition()
         {
-            AbsolutePosition = Position + (Parent?.AbsolutePosition ?? new Point(0, 0));
+            AbsolutePosition = !IgnoreParentPosition ? Position + (Parent?.AbsolutePosition ?? Point.Zero) : Position;
 
-            foreach (IScreenObject child in Children)
-                child.UpdateAbsolutePosition();
-        }
-
-        /// <summary>
-        /// Sorts the components based on the <see cref="IComponent.SortOrder"/> value.
-        /// </summary>
-        public void SortComponents()
-        {
-            ComponentsRender.Sort(CompareComponent);
-            ComponentsUpdate.Sort(CompareComponent);
-            ComponentsKeyboard.Sort(CompareComponent);
-            ComponentsMouse.Sort(CompareComponent);
-        }
-
-        static int CompareComponent(IComponent left, IComponent right)
-        {
-            if (left.SortOrder > right.SortOrder)
-                return 1;
-
-            if (left.SortOrder < right.SortOrder)
-                return -1;
-
-            return 0;
+            int count = Children.Count;
+            for (int i = 0; i < count; i++)
+                Children[i].UpdateAbsolutePosition();
         }
 
         /// <summary>
@@ -501,42 +321,5 @@ namespace SadRogue.Integration.Maps
         /// <returns>The string "ScreenObject".</returns>
         public override string ToString() =>
             "ScreenObject";
-
-        /// <summary>
-        /// Nothing.
-        /// </summary>
-        /// <param name="context">Nothing.</param>
-        [OnSerializing]
-        protected void OnSerializingMethod(StreamingContext context)
-        {
-            _childrenSerialized = Children.ToArray();
-            _componentsSerialized = SadComponents.ToArray();
-        }
-
-        [OnSerialized]
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void OnSerialized(StreamingContext context)
-        {
-            _childrenSerialized = null;
-            _componentsSerialized = null;
-        }
-
-        [OnDeserialized]
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void OnDeserialized(StreamingContext context)
-        {
-            foreach (IScreenObject item in _childrenSerialized)
-                Children.Add(item);
-
-            foreach (IComponent item in _componentsSerialized)
-                SadComponents.Add(item);
-
-            _componentsSerialized = null;
-            _childrenSerialized = null;
-
-            UpdateAbsolutePosition();
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using GoRogue.MapGeneration;
 using SadConsole;
+using SadConsole.Configuration;
 using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using SadRogue.Integration.FieldOfView.Memory;
@@ -25,8 +26,16 @@ namespace ExampleGame
 
         private static void Main(/*string[] args*/)
         {
-            Game.Create(Width, Height);
-            Game.Instance.OnStart = Init;
+            // Configure how SadConsole starts up
+            Builder startup = new Builder()
+                    .SetScreenSize(Width, Height)
+                    .OnStart(Init)
+                    //.IsStartingScreenFocused(true)
+                    .ConfigureFonts((config, _) => config.UseBuiltinFontExtended())
+                ;
+
+            // Setup the engine and start the game
+            Game.Create(startup);
             Game.Instance.Run();
             Game.Instance.Dispose();
         }
@@ -34,7 +43,7 @@ namespace ExampleGame
         /// <summary>
         /// Runs before the game starts
         /// </summary>
-        private static void Init()
+        private static void Init(object? s, GameHost e)
         {
             // Generate map
             Map = GenerateMap();
@@ -52,6 +61,7 @@ namespace ExampleGame
             Map.IsFocused = true;
 
             // Destroy the default starting console that SadConsole created automatically because we're not using it.
+            // TODO: May not be necessary in v10
             GameHost.Instance.DestroyDefaultStartingConsole();
         }
 

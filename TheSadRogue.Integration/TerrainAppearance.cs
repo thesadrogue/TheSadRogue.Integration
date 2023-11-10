@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using SadConsole;
 using SadRogue.Primitives;
 
@@ -103,7 +104,7 @@ namespace SadRogue.Integration
         /// <param name="mirror">The mirror effect.</param>
         /// <param name="isVisible">The visibility of the glyph.</param>
         /// <param name="decorators">Decorators for the cell.</param>
-        public TerrainAppearance(RogueLikeCell terrain, Color foreground, Color background, int glyph, Mirror mirror, bool isVisible, CellDecorator[] decorators)
+        public TerrainAppearance(RogueLikeCell terrain, Color foreground, Color background, int glyph, Mirror mirror, bool isVisible, List<CellDecorator> decorators)
             : base(foreground, background, glyph, mirror, isVisible, decorators)
         {
             Terrain = terrain;
@@ -117,7 +118,7 @@ namespace SadRogue.Integration
         public TerrainAppearance(RogueLikeCell terrain, ColoredGlyph appearance)
         {
             Terrain = terrain;
-            CopyAppearanceFrom(appearance);
+            appearance.CopyAppearanceTo(this);
         }
     }
 }

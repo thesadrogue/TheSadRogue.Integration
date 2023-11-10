@@ -21,6 +21,8 @@ namespace SadRogue.Integration.Tests.Mocks
 
         public void Render(IRenderer renderer, IScreenSurface screenObject) => throw new NotImplementedException();
 
+        public string Name => throw new NotImplementedException();
+
         public uint SortOrder
         {
             get => 1;

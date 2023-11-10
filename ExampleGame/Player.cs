@@ -35,7 +35,7 @@ namespace ExampleGame
         }
 
         // If the player is added to a map, update the player FOV when the player moves
-        private void OnPositionChanged(object? sender, SadConsole.ValueChangedEventArgs<Point> e)
+        private void OnPositionChanged(object? sender, ValueChangedEventArgs<Point> e)
         {
             CalculateFOV();
         }

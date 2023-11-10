@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Basic package information -->
-    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <Authors>Chris3606, fcheadle, Thraka</Authors>
     <Company>TheSadRogue</Company>
     <Copyright>Copyright © 2023 Christopher Ridley (Chris3606), Forrest Cheadle (fcheadle), Steve De George JR (Thraka)</Copyright>
@@ -79,7 +79,7 @@
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="SadConsole" Version="9.2.2" />
+    <PackageReference Include="SadConsole" Version="10.0.0" />
   </ItemGroup>
 
   <!-- When packing, copy the nuget files to the nuget output directory -->
