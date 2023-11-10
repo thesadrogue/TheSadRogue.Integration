@@ -241,16 +241,6 @@ namespace SadRogue.Integration
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
         }
 
-        /// <inheritdoc />
-        protected override void OnPositionChanged(Point oldPosition, Point newPosition)
-        {
-            var args = new ValueChangedEventArgs<Point>(oldPosition, newPosition);
-
-            PositionablePositionChanging?.Invoke(this, args);
-            base.OnPositionChanged(oldPosition, newPosition);
-            PositionablePositionChanged?.Invoke(this, args);
-        }
-
         private static int CheckLayer(int layer) => layer != 0 ? layer : throw new ArgumentException($"{nameof(RogueLikeEntity)} objects may not reside on the terrain layer.", nameof(layer));
         #endregion
 
