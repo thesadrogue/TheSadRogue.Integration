@@ -32,19 +32,6 @@ namespace SadRogue.Integration.Maps
         public override ColoredGlyphBase this[Point pos] => _map.TerrainView[pos];
 
         /// <inheritdoc />
-        public ColoredGlyphBase[] this[Range range]
-        {
-            get
-            {
-                var array = new ColoredGlyphBase[range.End.Value - range.Start.Value];
-                for (int i = 0; i < array.Length; i++)
-                    array[i] = this[range.Start.Value + i];
-
-                return array;
-            }
-        }
-
-        /// <inheritdoc />
         public ICellSurface Surface => this;
 
         /// <inheritdoc />

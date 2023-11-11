@@ -30,7 +30,6 @@ namespace ExampleGame
             Builder startup = new Builder()
                     .SetScreenSize(Width, Height)
                     .OnStart(Init)
-                    //.IsStartingScreenFocused(true)
                     .ConfigureFonts((config, _) => config.UseBuiltinFontExtended())
                 ;
 
@@ -59,10 +58,6 @@ namespace ExampleGame
             // Set the map as the active screen so that it processes input and renders itself.
             GameHost.Instance.Screen = Map;
             Map.IsFocused = true;
-
-            // Destroy the default starting console that SadConsole created automatically because we're not using it.
-            // TODO: May not be necessary in v10
-            GameHost.Instance.DestroyDefaultStartingConsole();
         }
 
         private static RogueLikeMap GenerateMap()
