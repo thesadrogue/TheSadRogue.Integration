@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using GoRogue.MapGeneration;
-using SadConsole;
+﻿using GoRogue.MapGeneration;
 using SadConsole.Configuration;
-using SadRogue.Primitives;
 using SadRogue.Primitives.GridViews;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Maps;
@@ -30,7 +27,7 @@ namespace ExampleGame
             Builder startup = new Builder()
                     .SetScreenSize(Width, Height)
                     .OnStart(Init)
-                    .ConfigureFonts((config, _) => config.UseBuiltinFontExtended())
+                    .ConfigureFonts(true)
                 ;
 
             // Setup the engine and start the game
@@ -42,7 +39,7 @@ namespace ExampleGame
         /// <summary>
         /// Runs before the game starts
         /// </summary>
-        private static void Init(object? s, GameHost e)
+        private static void Init(object? s, GameHost host)
         {
             // Generate map
             Map = GenerateMap();
@@ -56,7 +53,7 @@ namespace ExampleGame
             Map.DefaultRenderer?.SadComponents.Add(new SadConsole.Components.SurfaceComponentFollowTarget { Target = PlayerCharacter });
 
             // Set the map as the active screen so that it processes input and renders itself.
-            GameHost.Instance.Screen = Map;
+            host.Screen = Map;
             Map.IsFocused = true;
         }
 
@@ -72,7 +69,7 @@ namespace ExampleGame
             var generatedMap = generator.Context.GetFirst<ISettableGridView<bool>>("WallFloor");
 
             // Create a RogueLikeMap structure, specifying the appropriate viewport size for the default renderer
-            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, new DefaultRendererParams((Width, Height)), 4, Distance.Manhattan);
+            RogueLikeMap map = new RogueLikeMap(MapWidth, MapHeight, new DefaultRendererParams(new Point(Width, Height)), 4, Distance.Manhattan);
 
             // Add a component that will implement a character "memory" system, where tiles will be dimmed when they aren't seen by the player,
             // and remain visible exactly as they were when the player last saw them regardless of changes to their actual appearance,

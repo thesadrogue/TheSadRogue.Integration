@@ -1,5 +1,4 @@
-﻿using SadConsole;
-using SadRogue.Primitives;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -23,12 +22,13 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             Initialize();
         }
 
-        public MessageLogConsole(ICellSurface surface, IFont font = null, Point? fontSize = null)
+        public MessageLogConsole(ICellSurface surface, IFont? font = null, Point? fontSize = null)
             : base(surface, font, fontSize)
         {
             Initialize();
         }
 
+        [MemberNotNull("_lastMessage")]
         private void Initialize()
         {
             Cursor.AutomaticallyShiftRowsUp = true;

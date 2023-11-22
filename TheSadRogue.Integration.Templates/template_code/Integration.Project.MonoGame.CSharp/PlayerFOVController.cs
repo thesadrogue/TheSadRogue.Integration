@@ -1,14 +1,12 @@
-﻿using System;
-using GoRogue.Components.ParentAware;
+﻿using GoRogue.Components.ParentAware;
 using SadRogue.Integration;
 using SadRogue.Integration.Components;
-using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
     /// <summary>
     /// Component that you can attach to your player object to ensure that it re-calculates the map's FOV whenever the
-    /// object is moved.  This could be also be achieved via a subclass of RogueLikeEntity; however the integration library
+    /// object is moved. This could be also be achieved via a subclass of RogueLikeEntity; however the integration library
     /// makes it quick and easy to create custom components that function in both SadConsole's and GoRogue's component systems.
     /// </summary>
     internal class PlayerFOVController : RogueLikeComponentBase<RogueLikeEntity>
@@ -33,12 +31,12 @@ namespace TheSadRogue.Integration.Templates.MonoGame
         public void CalculateFOV()
             => Parent?.CurrentMap?.PlayerFOV.Calculate(Parent.Position, FOVRadius, Parent.CurrentMap.DistanceMeasurement);
 
-        private void OnAdded(object s, EventArgs e) => Parent!.PositionChanged += OnPositionChanged;
+        private void OnAdded(object? s, EventArgs e) => Parent!.PositionChanged += OnPositionChanged;
 
-        private void OnRemoved(object s, ParentAwareComponentRemovedEventArgs<RogueLikeEntity> e)
+        private void OnRemoved(object? s, ParentAwareComponentRemovedEventArgs<RogueLikeEntity> e)
             => e.OldParent.PositionChanged -= OnPositionChanged;
 
-        private void OnPositionChanged(object sender, SadConsole.ValueChangedEventArgs<Point> e)
+        private void OnPositionChanged(object? sender, ValueChangedEventArgs<Point> e)
             => CalculateFOV();
     }
 }

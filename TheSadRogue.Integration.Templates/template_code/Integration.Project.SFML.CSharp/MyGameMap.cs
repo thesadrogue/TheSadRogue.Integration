@@ -1,6 +1,4 @@
-﻿using System;
-using SadRogue.Integration.Maps;
-using SadRogue.Primitives;
+﻿using SadRogue.Integration.Maps;
 
 namespace TheSadRogue.Integration.Templates.SFML
 {
@@ -19,7 +17,7 @@ namespace TheSadRogue.Integration.Templates.SFML
             Items
         }
 
-        // CUSTOMIZATION: Change the distance from Distance.Chebyshev to whatever is desired for your game.  By default,
+        // CUSTOMIZATION: Change the distance from Distance.Chebyshev to whatever is desired for your game. By default,
         // this will affect the FOV shape as well as the distance calculation used for AStar pathfinding on the Map.
         public MyGameMap(int width, int height, DefaultRendererParams? defaultRendererParams)
             : base(width, height, defaultRendererParams, Enum.GetValues<Layer>().Length - 1, Distance.Chebyshev)

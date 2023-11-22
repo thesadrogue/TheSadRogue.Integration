@@ -1,4 +1,4 @@
-﻿using SadConsole;
+﻿using SadConsole.Configuration;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -23,27 +23,33 @@ namespace TheSadRogue.Integration.Templates.MonoGame
         private const int MapWidth = 100;
         private const int MapHeight = 60;
 
-        public static MapScreen GameScreen;
+        public static MapScreen? GameScreen;
 
         private static void Main()
         {
-            Game.Create(Width, Height);
-            Game.Instance.OnStart = Init;
+            Settings.WindowTitle = "My SadConsole Game";
+
+            // Configure how SadConsole starts up
+            Builder startup = new Builder()
+                    .SetScreenSize(Width, Height)
+                    .OnStart(Init)
+                    .ConfigureFonts(true)
+                ;
+
+            // Setup the engine and start the game
+            Game.Create(startup);
             Game.Instance.Run();
             Game.Instance.Dispose();
         }
 
-        private static void Init()
+        private static void Init(object? s, GameHost host)
         {
             // Generate a dungeon map
             var map = MapFactory.GenerateDungeonMap(MapWidth, MapHeight);
 
             // Create a MapScreen and set it as the active screen so that it processes input and renders itself.
             GameScreen = new MapScreen(map);
-            GameHost.Instance.Screen = GameScreen;
-
-            // Destroy the default starting console that SadConsole created automatically because we're not using it.
-            GameHost.Instance.DestroyDefaultStartingConsole();
+            host.Screen = GameScreen;
         }
     }
 }
