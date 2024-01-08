@@ -16,11 +16,7 @@
   <ItemGroup>
     <PackageReference Include="SadConsole.Host.SFML" Version="10.0.0" />
     <PackageReference Include="SadConsole" Version="10.0.2" />
-    <!--<PackageReference Include="TheSadRogue.Integration" Version="1.0.0-beta04" />-->
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\TheSadRogue.Integration\TheSadRogue.Integration.csproj" />
+    <PackageReference Include="TheSadRogue.Integration" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
