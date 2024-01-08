@@ -93,7 +93,7 @@ namespace SadRogue.Integration.Maps
     public partial class RogueLikeMap : Map, IScreenObject
     {
         private readonly List<IScreenSurface> _renderers;
-        private readonly Dictionary<IScreenSurface, Renderer> _surfaceEntityRenderers;
+        private readonly Dictionary<IScreenSurface, EntityManager> _surfaceEntityRenderers;
 
         /// <summary>
         /// List of renderers (IScreenSurfaces) that currently render the map.
@@ -229,7 +229,7 @@ namespace SadRogue.Integration.Maps
             ObjectRemoved += Object_Removed;
 
             _renderers = new List<IScreenSurface>();
-            _surfaceEntityRenderers = new Dictionary<IScreenSurface, Renderer>();
+            _surfaceEntityRenderers = new Dictionary<IScreenSurface, EntityManager>();
             TerrainView = new LambdaTranslationGridView<IGameObject?, ColoredGlyph>(Terrain, GetTerrainAppearance);
 
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
@@ -238,6 +238,7 @@ namespace SadRogue.Integration.Maps
             // ScreenObject initialization
             UseMouse = Settings.DefaultScreenObjectUseMouse;
             UseKeyboard = Settings.DefaultScreenObjectUseKeyboard;
+            Children = new ScreenObjectCollection(this);
             SadComponents = new ObservableCollection<IComponent>();
             ComponentsUpdate = new List<IComponent>();
             ComponentsRender = new List<IComponent>();
@@ -245,7 +246,6 @@ namespace SadRogue.Integration.Maps
             ComponentsMouse = new List<IComponent>();
             ComponentsEmpty = new List<IComponent>();
             SadComponents.CollectionChanged += Components_CollectionChanged;
-            Children = new ScreenObjectCollection(this);
 
             // Create a default renderer if needed
             if (defaultRendererParams.HasValue)
@@ -295,7 +295,7 @@ namespace SadRogue.Integration.Maps
 
             // Create an EntityRenderer and configure it with all the appropriate entities,
             // then add it to the main surface
-            var entityRenderer = new Renderer { DoEntityUpdate = false, SkipExistsChecks = true };
+            var entityRenderer = new EntityManager { DoEntityUpdate = false, SkipExistsChecks = true };
             _surfaceEntityRenderers[renderer] = entityRenderer;
             renderer.SadComponents.Add(entityRenderer);
             entityRenderer.AddRange(Entities.Items.Cast<Entity>());

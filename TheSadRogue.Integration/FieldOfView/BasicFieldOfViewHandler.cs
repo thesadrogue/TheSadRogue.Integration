@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using SadConsole;
 using SadRogue.Primitives;
 
@@ -67,12 +65,7 @@ namespace SadRogue.Integration.FieldOfView
         protected override void UpdateTerrainSeen(RogueLikeCell terrain)
         {
             terrain.Appearance.IsVisible = true;
-            if (terrain.Appearance.Decorators.Contains(ExploredDecorator))
-            {
-                // If there is only 1 decorator, it must be ours so we can replace
-                // the array with a static blank one
-                terrain.Appearance.Decorators = terrain.Appearance.Decorators.Length == 1 ? Array.Empty<CellDecorator>() : terrain.Appearance.Decorators.Where(i => i != ExploredDecorator).ToArray();
-            }
+            CellDecoratorHelpers.RemoveDecorator(ExploredDecorator, terrain.Appearance);
         }
 
         /// <summary>
@@ -88,7 +81,7 @@ namespace SadRogue.Integration.FieldOfView
 
             // If the unseen terrain is outside of FOV, apply the decorator to tint the square appropriately.
             if (parent.PlayerExplored[terrain.Position])
-                terrain.Appearance.Decorators = terrain.Appearance.Decorators.Append(ExploredDecorator).ToArray();
+                CellDecoratorHelpers.AddDecorator(ExploredDecorator, terrain.Appearance);
             else // If the unseen tile isn't explored, it's invisible
                 terrain.Appearance.IsVisible = false;
         }

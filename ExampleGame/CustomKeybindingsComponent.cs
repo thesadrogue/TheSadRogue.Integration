@@ -1,7 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
-using SadRogue.Primitives;
 
 namespace ExampleGame
 {

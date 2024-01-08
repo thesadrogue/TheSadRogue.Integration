@@ -13,7 +13,7 @@ namespace SadRogue.Integration.Maps
     /// A CellSurface that renders the terrain layer of a map.
     /// </summary>
     [PublicAPI]
-    public class MapTerrainCellSurface : GridViewBase<ColoredGlyph>, ICellSurface
+    public class MapTerrainCellSurface : GridViewBase<ColoredGlyphBase>, ICellSurface
     {
         private bool _isDirty = true;
         private readonly BoundedRectangle _viewArea;
@@ -29,7 +29,10 @@ namespace SadRogue.Integration.Maps
         public override int Width => _viewArea.BoundingBox.Width;
 
         /// <inheritdoc />
-        public override ColoredGlyph this[Point pos] => _map.TerrainView[pos];
+        public override ColoredGlyphBase this[Point pos] => _map.TerrainView[pos];
+
+        /// <inheritdoc />
+        public ICellSurface Surface => this;
 
         /// <inheritdoc />
         public Rectangle Area => _viewArea.BoundingBox;
@@ -145,7 +148,7 @@ namespace SadRogue.Integration.Maps
         // Disabled nullability check because the issue is due to SadConsole not annotating nullability
         /// <inheritdoc />
 #pragma warning disable 8613
-        public IEnumerator<ColoredGlyph?> GetEnumerator()
+        public IEnumerator<ColoredGlyphBase?> GetEnumerator()
 #pragma warning restore 8613
         {
             foreach (var pos in this.Positions())

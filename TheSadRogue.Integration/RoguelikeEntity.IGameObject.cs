@@ -33,13 +33,6 @@ namespace SadRogue.Integration
         public IComponentCollection GoRogueComponents { get; private set; } = null!;
 
         /// <inheritdoc />
-        Point IPositionable.Position
-        {
-            get => base.Position;
-            set => base.Position = value;
-        }
-
-        /// <inheritdoc />
         public bool IsTransparent
         {
             get => _isTransparent;
@@ -57,22 +50,6 @@ namespace SadRogue.Integration
         public void OnMapChanged(Map? newMap)
             => this.SafelySetCurrentMap(ref _currentMap, newMap, AddedToMap, RemovedFromMap);
 
-        private event EventHandler<ValueChangedEventArgs<Point>>? PositionablePositionChanging;
-        /// <inheritdoc />
-        event EventHandler<ValueChangedEventArgs<Point>>? IPositionable.PositionChanging
-        {
-            add => PositionablePositionChanging += value;
-            remove => PositionablePositionChanging -= value;
-        }
-
-        private event EventHandler<ValueChangedEventArgs<Point>>? PositionablePositionChanged;
-        /// <inheritdoc />
-        event EventHandler<ValueChangedEventArgs<Point>>? IPositionable.PositionChanged
-        {
-            add => PositionablePositionChanged += value;
-            remove => PositionablePositionChanged -= value;
-        }
-
         /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs<bool>>? TransparencyChanging;
 
@@ -84,5 +61,7 @@ namespace SadRogue.Integration
 
         /// <inheritdoc />
         public event EventHandler<ValueChangedEventArgs<bool>>? WalkabilityChanged;
+
+        // TODO: Position is in danger here because the underlying field doesn't revert
     }
 }

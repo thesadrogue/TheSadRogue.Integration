@@ -1,7 +1,6 @@
 ﻿using SadRogue.Integration;
 using SadRogue.Integration.FieldOfView.Memory;
 using SadRogue.Integration.Keybindings;
-using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -9,9 +8,9 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// Simple class with some static functions for creating map objects.
     /// </summary>
     /// <remarks>
-    /// CUSTOMIZATION:  This demonstrates how to create objects based on "composition"; using components.  The integration
-    /// library offers a robust component system that integrates both SadConsole's and GoRogue's components into one
-    /// interface to support this.  You can either add more functions to create more objects, or remove this and
+    /// CUSTOMIZATION:  This demonstrates how to create objects based on "composition," which means using components.
+    /// The integration library offers a robust component system that integrates both SadConsole's and GoRogue's components
+    /// into one interface. You can either add more functions to create more objects, or remove this and
     /// implement the "factory" system in the GoRogue.Factories namespace, which provides a more robust interface for it.
     ///
     /// Note that SadConsole components cannot be attached directly to `RogueLikeCell` or `MemoryAwareRogueLikeCell`
@@ -33,7 +32,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
             // Create entity with appropriate attributes
             var player = new RogueLikeEntity('@', false, layer: (int)MyGameMap.Layer.Monsters);
 
-            // Add component for controlling player movement via keyboard.  Other (non-movement) keybindings can be
+            // Add component for controlling player movement via keyboard. Other (non-movement) keybindings can be
             // added as well
             var motionControl = new CustomKeybindingsComponent();
             motionControl.SetMotions(KeybindingsComponent.ArrowMotions);

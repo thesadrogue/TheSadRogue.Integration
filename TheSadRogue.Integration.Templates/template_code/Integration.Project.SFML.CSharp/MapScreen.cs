@@ -1,5 +1,4 @@
 ﻿using GoRogue.Random;
-using SadConsole;
 using SadRogue.Integration;
 using ShaiRandom.Generators;
 
@@ -18,8 +17,9 @@ namespace TheSadRogue.Integration.Templates.SFML
             // Record the map we're rendering
             Map = map;
 
-            // Create a renderer for the map, specifying viewport size.  The value in DefaultRenderer is automatically
-            // managed by the map, and renders whenever the map is the active screen.
+            // Create a renderer for the map, specifying viewport size. The viewport size sets the visible width and
+            // height of the renderer. The value in DefaultRenderer is automatically managed by the map, and renders
+            // whenever the map is the active screen.
             //
             // CUSTOMIZATION: Pass in custom fonts/viewport sizes here.
             //

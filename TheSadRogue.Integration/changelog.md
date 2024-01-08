@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 None.
 
+## [1.0.0] - 2023-11-11
+- Updated to GoRogue 3.0.0-beta08 and SadConsole v10
+- Removed support for all platforms prior to .NET 6.0 (these versions are no longer supported by SadConsole)
+
 ## [1.0.0-beta04] - 2023-05-23
 
 ### Added

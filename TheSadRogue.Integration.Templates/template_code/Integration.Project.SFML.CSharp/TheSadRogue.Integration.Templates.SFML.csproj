@@ -3,12 +3,24 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>default</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SadConsole.Host.SFML" Version="9.2.1" />
-    <PackageReference Include="TheSadRogue.Integration" Version="1.0.0-beta04" />
+    <Using Include="SadConsole" />
+    <Using Include="SadRogue.Primitives" />
+    <Using Include="SadConsole.Console" Alias="Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SadConsole.Host.SFML" Version="10.0.0" />
+    <PackageReference Include="SadConsole" Version="10.0.2" />
+    <!--<PackageReference Include="TheSadRogue.Integration" Version="1.0.0-beta04" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TheSadRogue.Integration\TheSadRogue.Integration.csproj" />
   </ItemGroup>
 
 </Project>

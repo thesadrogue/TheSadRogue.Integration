@@ -223,52 +223,6 @@ namespace SadRogue.Integration
             GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
         }
 
-        /// <summary>
-        /// Creates a new entity.
-        /// </summary>
-        /// <param name="appearance">The appearance of the entity when displayed.  No copy will be made of this value; the given instance will be used directly.</param>
-        /// <param name="walkable">Whether or not the entity can be walked through.</param>
-        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
-        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
-        /// <param name="idGenerator">
-        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
-        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
-        /// </param>
-        /// <param name="customComponentCollection">
-        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
-        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
-        /// use cases.
-        /// </param>
-        public RogueLikeEntity(ref ColoredGlyph appearance, bool walkable = true,
-                               bool transparent = true, int layer = 1, Func<uint>? idGenerator = null,
-                               IComponentCollection? customComponentCollection = null)
-            : this(new Point(0, 0), ref appearance, walkable, transparent, layer, idGenerator,
-                customComponentCollection)
-        { }
-
-        /// <summary>
-        /// Creates a new entity.
-        /// </summary>
-        /// <param name="position">Position the entity will start at.</param>
-        /// <param name="appearance">The appearance of the entity when displayed.  No copy will be made of this value; the given instance will be used directly.</param>
-        /// <param name="walkable">Whether or not the entity can be walked through.</param>
-        /// <param name="transparent">Whether or not the entity is transparent for the purposes of FOV.</param>
-        /// <param name="layer">The layer on which the entity resides. Must NOT be 0, because layer 0 is reserved for terrain.</param>
-        /// <param name="idGenerator">
-        /// The function used to generate and return an unsigned integer to use assign to the <see cref="ID" /> field.
-        /// Most of the time, you will not need to specify this as the default implementation will be sufficient.
-        /// </param>
-        /// <param name="customComponentCollection">
-        /// A custom component collection to use for objects.  If not specified, a <see cref="ComponentCollection"/> is
-        /// used.  Typically you will not need to specify this, as a ComponentCollection is sufficient for nearly all
-        /// use cases.
-        /// </param>
-        public RogueLikeEntity(Point position, ref ColoredGlyph appearance, bool walkable = true, bool transparent = true, int layer = 1, Func<uint>? idGenerator = null, IComponentCollection? customComponentCollection = null)
-            : base(ref appearance, CheckLayer(layer))
-        {
-            GoRogueInitialize(position, walkable, transparent, idGenerator, customComponentCollection);
-        }
-
 
         private void GoRogueInitialize(Point position, bool walkable = true, bool transparent = true,
             Func<uint>? idGenerator = null, IComponentCollection? customComponentContainer = null)
@@ -285,16 +239,6 @@ namespace SadRogue.Integration
             GoRogueComponents.ParentForAddedComponents = this;
             AllComponents.ComponentAdded += On_GoRogueComponentAdded;
             AllComponents.ComponentRemoved += On_GoRogueComponentRemoved;
-        }
-
-        /// <inheritdoc />
-        protected override void OnPositionChanged(Point oldPosition, Point newPosition)
-        {
-            var args = new Primitives.ValueChangedEventArgs<Point>(oldPosition, newPosition);
-
-            PositionablePositionChanging?.Invoke(this, args);
-            base.OnPositionChanged(oldPosition, newPosition);
-            PositionablePositionChanged?.Invoke(this, args);
         }
 
         private static int CheckLayer(int layer) => layer != 0 ? layer : throw new ArgumentException($"{nameof(RogueLikeEntity)} objects may not reside on the terrain layer.", nameof(layer));

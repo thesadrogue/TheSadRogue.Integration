@@ -51,6 +51,7 @@ namespace SadRogue.Integration.Tests.Mocks
             public Texture(Stream textureStream)
             {
                 _graphic = SixLabors.ImageSharp.Image.Load(textureStream);
+                ResourcePath = null!;
             }
         }
 
@@ -73,6 +74,11 @@ namespace SadRogue.Integration.Tests.Mocks
             throw new NotImplementedException();
         }
 
+        public override void ResizeWindow(int width, int height, bool resizeOutputSurface = false)
+            => throw new NotImplementedException();
+
+        public override ITexture CreateTexture(int width, int height) => throw new NotImplementedException();
+
         public override IRenderer GetRenderer(string name)
         {
             return null;
@@ -87,8 +93,6 @@ namespace SadRogue.Integration.Tests.Mocks
         {
             return new Texture(textureStream);
         }
-
-        public override void ResizeWindow(int width, int height) => throw new NotImplementedException();
 
         public override void Run()
         {
