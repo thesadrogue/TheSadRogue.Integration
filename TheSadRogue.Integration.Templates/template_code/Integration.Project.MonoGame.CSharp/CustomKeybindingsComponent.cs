@@ -1,7 +1,6 @@
 ﻿using GoRogue.GameFramework;
 using SadRogue.Integration;
 using SadRogue.Integration.Keybindings;
-using SadRogue.Primitives;
 
 namespace TheSadRogue.Integration.Templates.MonoGame
 {
@@ -13,7 +12,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
     /// CUSTOMIZATION: This component is meant to be attached directly to the player entity; if you want to attach it to a renderer, map, or other
     /// surface instead, you'll need to edit the MotionHandler to reference the player directly instead of using the Parent property.  You may also
     /// want to change the parent class type parameter to specify a different type for the parent.
-    /// 
+    ///
     /// CUSTOMIZATION: Components can also be attached to maps, so the code for calling TakeTurn on all entities could
     /// be moved to a map component as well so that it is more re-usable by code that doesn't pertain to movement.
     /// </remarks>
@@ -23,7 +22,7 @@ namespace TheSadRogue.Integration.Templates.MonoGame
         {
             if (!Parent!.CanMoveIn(direction)) return;
 
-            Parent.Position += direction;
+            Parent!.Position += direction;
 
             foreach (var entity in Parent.CurrentMap!.Entities.Items)
             {

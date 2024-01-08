@@ -64,7 +64,7 @@ namespace SadRogue.Integration.Maps
         public bool HasSadComponent<TComponent>([NotNullWhen(true)] out TComponent? component)
             where TComponent : class, IComponent =>
 
-            (component = GetSadComponent<TComponent>()) == null ? false : true;
+            (component = GetSadComponent<TComponent>()) != null;
 
         private void Components_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
@@ -159,8 +159,6 @@ namespace SadRogue.Integration.Maps
                     foreach (IComponent item in items)
                         OnSadComponentRemoved(item);
 
-                    break;
-                default:
                     break;
             }
         }
