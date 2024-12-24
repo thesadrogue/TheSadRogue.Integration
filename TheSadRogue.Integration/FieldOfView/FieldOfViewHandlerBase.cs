@@ -40,7 +40,7 @@ namespace SadRogue.Integration.FieldOfView
         }
 
         /// <summary>
-        /// Whether or not the handler is actively setting things to seen/unseen as appropriate.
+        /// Whether the handler is actively setting things to seen/unseen as appropriate.
         /// </summary>
         public bool IsEnabled => CurrentState == State.Enabled;
 
@@ -75,12 +75,20 @@ namespace SadRogue.Integration.FieldOfView
 
         private HashSet<Point> _newlyUnseenSinceLastReset;
 
+        private readonly bool _newlySeenIncludesAllSeen;
+
         /// <summary>
         /// Creates a handler component that will manage visibility of objects for the map it is added to.
         /// </summary>
         /// <param name="startingState">The starting value for <see cref="CurrentState"/>.</param>
-        protected FieldOfViewHandlerBase(State startingState = State.Enabled)
+        /// <param name="newlySeenIncludesAllSeen">When true, the newly seen events will fire whenever a square is in
+        /// the list of seen squares, instead of just when a cell was unseen and becomes seen.  This is useful for
+        /// implementing FOV gradient or similar features where a cell might change state even if it was already seen.
+        /// </param>
+        protected FieldOfViewHandlerBase(State startingState = State.Enabled, bool newlySeenIncludesAllSeen = false)
         {
+            _newlySeenIncludesAllSeen = newlySeenIncludesAllSeen;
+
             // Can't have more than one of these on a map; they would interfere with each other.
             Added += IncompatibleWith<FieldOfViewHandlerBase>;
 
@@ -287,7 +295,16 @@ namespace SadRogue.Integration.FieldOfView
             }
         }
 
-        private void Parent_PlayerFOVRecalculated(object? sender, EventArgs e)
+        /// <summary>
+        /// Called when the map's player FOV is recalculated.
+        /// </summary>
+        /// <remarks>
+        /// Typically you will not need to override this; but if you have some custom constraints on how you handle
+        /// FOV, the option is available.
+        /// </remarks>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event args.</param>
+        protected virtual void Parent_PlayerFOVRecalculated(object? sender, EventArgs e)
         {
             if (!IsEnabled) return;
 
@@ -295,8 +312,9 @@ namespace SadRogue.Integration.FieldOfView
             // from a Map member.
             var parent = Parent!;
 
-            // Update values for any position that has just been exposed
-            foreach (var position in parent.PlayerFOV.NewlySeen)
+            // Update values for any position that has just been exposed (or all positions in FOV if configured)
+            var iterable = _newlySeenIncludesAllSeen ? parent.PlayerFOV.CurrentFOV : parent.PlayerFOV.NewlySeen;
+            foreach (var position in iterable)
             {
                 var terrain = parent.GetTerrainAt<RogueLikeCell>(position);
                 if (terrain != null)
